@@ -61,4 +61,3 @@ typings/
 .next
 
 # database info
-db/db_info.js
