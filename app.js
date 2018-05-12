@@ -3,6 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var passport = require('passport')
+  , LocalStrategy = require('passport-local').Strategy;
+var cookieSession = require('cookie-session');
+var flash = require('connect-flash');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -18,7 +22,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'node_modules')));
 
+app.use(cookieSession({
+  keys: ['node_yun'],
+  cookie: {
+    maxAge: 1000 * 60 * 60 // 유효기간 1시간
+  }
+}));
+
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
+//Router
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
