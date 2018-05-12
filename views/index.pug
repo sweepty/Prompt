@@ -3,3 +3,13 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+
+  form#frm_login(action='/login', method='post', name='frm_login')
+    .form-group
+      label(for='username') Id
+      input.form-control(name='username', type='text', placeholder='Enter Id')
+      label(for='password') Password
+      input#exampleInputPassword1.form-control(name='password',type='password', placeholder='Password')
+    button.btn.btn-primary(type='submit', value='Login') Submit
+  |
+  a.btn.btn-outline-primary(href='/users/new') Register
