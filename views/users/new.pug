@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  .container
+    h1.main-title Register
+    form(action='/users/new', method='POST')
+      .form-group
+        label(for='username') Username(ID)
+        input.form-control(type='text', id='username', name='username', placeholder='Id')
+      .form-group
+        label(for='password') Password
+        input.form-control(type='password', id='password', name='password', placeholder='Password')
+      .form-group
+        label(for='password_confirmation') Password Confirmation
+        input.form-control(type='password', id='password_confirmation', name='password_confirmation', placeholder='Password')
+      .form-group
+        label(for='name') Name
+        input.form-control(type='text', id='name', name='name', placeholder='Name')
+      .form-group
+        label(for='employee_id') Employee ID
+        input.form-control(type='text', id='employee_id', name='employee_id', placeholder='Employee ID')
+      .form-group
+        label(for='client_id') Client ID
+        input.form-control(type='text', id='client_id', name='client_id', placeholder='Client ID')
+      | 
+      button.btn.btn-primary(type='submit') Register 
