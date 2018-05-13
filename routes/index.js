@@ -62,9 +62,25 @@ passport.use(new LocalStrategy({
           return done(false, null);
         } else {
           console.log('로그인 성공^*^');
-          return done(null, {
-            user_id: result[0].username,
-          });
+          req.flash('success','로그인 성공!');
+          connection.query('select employee_id from user where username = ?', username, function(err, result){
+            if (err) {
+              console.log('error:', err);
+            }
+            //client.
+            if (result.length === 0){
+              console.log('고객입니다');
+              req.redirect('/client');
+            } else{ //employee
+              console.log('직원입니다.');
+              //직원 중에서도 경영진이랑 일반직원으로 나눠야함.
+              req.redirect('/employee');
+
+            }
+          })
+          // return done(null, {
+          //   user_id: result[0].username,
+          // });
         }
       }
     }
