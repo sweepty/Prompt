@@ -7,9 +7,11 @@ var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
 var cookieSession = require('cookie-session');
 var flash = require('connect-flash');
+var bodyParser = require('body-parser');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var employeeRouter = require('./routes/employee');
 
 var app = express();
 
@@ -19,10 +21,12 @@ app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'node_modules')));
+
 
 app.use(cookieSession({
   keys: ['node_yun'],
@@ -38,6 +42,7 @@ app.use(passport.session());
 //Router
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/employee', employeeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
