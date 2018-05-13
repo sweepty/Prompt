@@ -4,7 +4,7 @@ block content
   h1= title
   p Welcome to #{title}
 
-  form#frm_login(action='/login', method='post', name='frm_login')
+  form#frm_login(action='/', method='post', name='frm_login')
     .form-group
       label(for='username') Id
       input.form-control(name='username', type='text', placeholder='Enter Id')
