@@ -2,8 +2,8 @@ extends ../layout
 
 block content
   .container
-    h1.main-title 직원 회원가입
-    form(action='/users/new', method='POST')
+    h1.main-title 고객 회원가입
+    form(action='/users/new/client', method='POST')
       .form-group
         label(for='username') Username(ID)
         input.form-control(type='text', id='username', name='username', placeholder='Id')
@@ -17,8 +17,7 @@ block content
         label(for='name') Name
         input.form-control(type='text', id='name', name='name', placeholder='Name')
       .form-group
-        label(for='employee_id') Employee ID
-        input.form-control(type='text', id='employee_id', name='employee_id', placeholder='Employee ID')
-
+        label(for='client_id') Client ID
+        input.form-control(type='text', id='client_id', name='client_id', placeholder='Client ID')
       | 
       button.btn.btn-primary(type='submit') Register 
