@@ -5,7 +5,6 @@ var mysql = require('mysql');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt-nodejs');
-// var bodyParser = require('body-parser');
 var mysql_dbc = require('../db/db_con')();
 var connection = mysql_dbc.init();
 mysql_dbc.test_open(connection);
@@ -14,7 +13,7 @@ function needAuth(req, res, next) {
   if (req.isAuthenticated()) {
     next();
   } else {
-    req.flash('danger', 'Please signin first.');
+   req.flash('danger', 'Please signin first.');
     res.redirect('/');
   }
 }
@@ -46,11 +45,11 @@ router.post('/new', passport.authenticate('join-local', {
 passport.use('join-local', new LocalStrategy({
   usernameField: 'username',
   passwordField: 'password',
-  passReqToCallback: true
+  passReqToCallback: true,
   }, function(req, username, password, done) {
     var name = req.body.name;
-    var employee_id = req.body.employee_id == null ? "" : req.body.employee_id;
-    var client_id = req.body.client_id == null ? "" : req.body.client_id;
+    var employee_id = req.body.employee_id == null ? '' : req.body.employee_id;
+    var client_id = req.body.client_id == null ? '' : req.body.client_id;
     connection.query('select * from user where username = ?', [username], function (err, rows) {
       if (err) { return done(err); }
       if (rows.length) {

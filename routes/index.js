@@ -13,15 +13,6 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Prompt Solution' });
 });
 
-// router.post('/signin', function(req, res, next) {
-//   var username = "hello";
-//   var password = "1234";
-
-//   password = passport.bcrypt.make(password);
-
-//   connection.query("INSERT (username, password) INTO users VALUE (?, ?)", username, password,)
-// });
-
 passport.serializeUser(function (user, done) {
   done(null, user)
 });
@@ -36,7 +27,7 @@ var isAuthenticated = function (req, res, next) {
 };
 
 router.post('/', passport.authenticate('local', {
-  failureRedirect: 'back', 
+  failureRedirect: '/', 
   failureFlash: true
   }), // 인증 실패 시 401 리턴, {} -> 인증 스트레티지
   function (req, res) {
@@ -66,22 +57,28 @@ passport.use(new LocalStrategy({
         } else {
           console.log('로그인 성공^*^');
           req.flash('success','로그인 성공!');
-          connection.query('select * from user where username = ?', [username], function(err, res, result){
+          connection.query('select employee_id from user where username = ?', [username], function(err, res, result){
             if (err) {
               console.log('error:', err);
               return done(null, false, req.flash('loginMessage', '사용자를 찾을 수 없습니다.'));
-            }
+            }; 
             //고객.
             if (result === null){
               console.log('고객입니다');
-              // req.redirect('/client');
+              connection.query('select client_id from user where username= ?', [username], function(err, res, clientid){
+                if (err) {
+                  console.log('error:', err);
+                  return done(null, false, req.flash('loginMessage', '사용자를 찾을 수 없습니다.'));
+                } else {
+                  return done(null, {'user': result});
+                }
+              });
+
             } else{ //직원(경영진, 일반직원)
               console.log('직원입니다.'); //직원 중에서도 경영진이랑 일반직원으로 나눠야함.>>>추후에.
-              // req.flash('success','직원환영'); //여기 넘어가는게 안됨;-;
-              // res.redirect('/');
+              return done(null, {'user': result});
             }
-            return done(null, {user: username});
-          })
+          });
         }
       }
     }
