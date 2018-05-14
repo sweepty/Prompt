@@ -24,7 +24,7 @@ var isAuthenticated = function (req, res, next) {
 
 //프로젝트 페이지
 router.get('/', function(req, res, next) {
-  const user = req.session.user.user[0].employee_id;
+  const user = req.session.user.user_id[0].employee_id;
   console.log(user,'유저의 employee_id');
   connection.query('select p.project_id, p.name, p.start_date, p.end_date, p.created_at, j.job , p.EA from works_on w join project p on w.project_id = p.project_id and w.employee_id = ? join job j on w.job_id = j.job_id',
   [user], function(err,rows){ 
