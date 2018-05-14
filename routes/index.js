@@ -46,7 +46,7 @@ router.post('/', function(req, res, next) {
     req.logIn(user, function(err) {
       if (err) return next(err);
       req.session.user = user;
-      res.redirect('/employee'); 
+      res.redirect('/project'); 
     });
   }) (req, res, next);
 });
