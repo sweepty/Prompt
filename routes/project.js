@@ -28,14 +28,10 @@ router.get('/', function(req, res, next) {
       var info = rows;
       // console.log(info,'프로젝트');
       res.render('project/index', {
+        //user 정보(role)
         projects: info, 
         title: '프로젝트 전체 목록'
       });
-    } else{
-      res.render('project/index',{
-        projects: [],
-        title: '프로젝트가 존재하지 않습니다'
-      })
     }
   });
 });
