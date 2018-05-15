@@ -10,7 +10,12 @@ mysql_dbc.test_open(connection);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Prompt Solution' });
+  if (req.isAuthenticated()) {
+    res.redirect('/project')
+  } else {
+    res.render('index', { title: 'Prompt Solution' });
+  }
+  
 });
 
 passport.serializeUser(function (user, done) {
@@ -31,11 +36,11 @@ var isAuthenticated = function (req, res, next) {
 //   failureFlash: true
 //   }), // 인증 실패 시 401 리턴, {} -> 인증 스트레티지
 //   function (req, res) {
-//     res.redirect('/employee'); 
+//     res.redirect('/project'); 
 // });
 
 router.post('/', function(req, res, next) {
-  console.log('login local');
+  console.log('login-local');
   passport.authenticate('login-local', function(err, user, info) {
     if (err) {
       res.status(500).json(err); // 500 : Server Error
@@ -51,7 +56,7 @@ router.post('/', function(req, res, next) {
   }) (req, res, next);
 });
 
-passport.use('login-local',new LocalStrategy({
+passport.use('login-local', new LocalStrategy({
   usernameField: 'username',
   passwordField: 'password',
   passReqToCallback: true //인증을 수행하는 인증 함수로 HTTP request를 그대로  전달할지 여부를 결정한다
