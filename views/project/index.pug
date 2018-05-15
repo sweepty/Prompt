@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+  h1= title
+  p= user
+
+  table.table
+    thead
+      tr
+        th 프로젝트 id
+        th 프로젝트 명
+        th 시작일
+        th 종료일
+    tbody
+      each pro in projects
+        tr
+          td= pro.project_id
+          td= pro.name
+          td= pro.start_date
+          td= pro.end_date
+
+
+  
+

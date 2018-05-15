@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+  h1= title
+  p= user
+
+  table.table
+    thead
+      tr
+        th id
+        th project name
+        th job
+        th project start date
+        th project end date
+        th 평가 열림?
+    tbody
+      each pro in projects
+        tr
+          td= pro.project_id
+          td= pro.name
+          td= pro.job
+          td= pro.start_date
+          td= pro.end_date
+          td= pro.EA == true ? 'yes' : 'no'
+
+  
+

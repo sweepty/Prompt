@@ -26,18 +26,32 @@ var isAuthenticated = function (req, res, next) {
   res.redirect('/');
 };
 
-router.post('/', passport.authenticate('local', {
-  failureRedirect: '/', 
-  failureFlash: true
-  }), // 인증 실패 시 401 리턴, {} -> 인증 스트레티지
-  function (req, res) {
-    res.redirect('/employee'); 
-});
-router.get('/login', function(req, res, next) {
-  res.render('/employee', { title: 'Prompt Solution' });
+// router.post('/', passport.authenticate('local', {
+//   failureRedirect: '/', 
+//   failureFlash: true
+//   }), // 인증 실패 시 401 리턴, {} -> 인증 스트레티지
+//   function (req, res) {
+//     res.redirect('/employee'); 
+// });
+
+router.post('/', function(req, res, next) {
+  console.log('login local');
+  passport.authenticate('login-local', function(err, user, info) {
+    if (err) {
+      res.status(500).json(err); // 500 : Server Error
+    }
+    if (!user) {
+      return res.status(401).json(info.message); // 401 : 권한없음
+    }
+    req.logIn(user, function(err) {
+      if (err) return next(err);
+      req.session.user = user;
+      res.redirect('/project'); 
+    });
+  }) (req, res, next);
 });
 
-passport.use(new LocalStrategy({
+passport.use('login-local',new LocalStrategy({
   usernameField: 'username',
   passwordField: 'password',
   passReqToCallback: true //인증을 수행하는 인증 함수로 HTTP request를 그대로  전달할지 여부를 결정한다
@@ -56,27 +70,30 @@ passport.use(new LocalStrategy({
           return done(false, null);
         } else {
           console.log('로그인 성공^*^');
-          req.flash('success','로그인 성공!');
-          connection.query('select employee_id from user where username = ?', [username], function(err, res, result){
+
+          //직원인지 고객인지 판별
+          connection.query('select employee_id from user where username = ?', [username], function(err, rows){
             if (err) {
               console.log('error:', err);
               return done(null, false, req.flash('loginMessage', '사용자를 찾을 수 없습니다.'));
             }; 
             //고객.
-            if (result === null){
+            if (rows === null){
               console.log('고객입니다');
-              connection.query('select client_id from user where username= ?', [username], function(err, res, clientid){
+              connection.query('select client_id from user where username= ?', [username], function(err, rows){
                 if (err) {
                   console.log('error:', err);
                   return done(null, false, req.flash('loginMessage', '사용자를 찾을 수 없습니다.'));
                 } else {
-                  return done(null, {'user': result});
+                  return done(null, {'user_id': rows});
                 }
               });
 
             } else{ //직원(경영진, 일반직원)
-              console.log('직원입니다.'); //직원 중에서도 경영진이랑 일반직원으로 나눠야함.>>>추후에.
-              return done(null, {'user': result});
+              console.log('직원입니다.'); //직원 중에서도 경영진이랑 일반직원으로 나눠야함.>>> 추후에.
+              console.log(rows,'직원아이디 나오나확인');
+              
+              return done(null, {user: username, user_id: rows});
             }
           });
         }
