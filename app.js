@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'node_modules')));
 
 
 app.use(cookieSession({
-  keys: ['node_yun'],
+  keys: ['dbpdbpteeeaaamm22'],
   cookie: {
     maxAge: 1000 * 60 * 60 // 유효기간 1시간
   }
