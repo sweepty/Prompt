@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mysql_dbc = require('../db/db_con')();
 var connection = mysql_dbc.init();
-var passport = require('passport'), 
+var passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy;
 
 mysql_dbc.test_open(connection);
@@ -22,7 +22,7 @@ var isAuthenticated = function (req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  connection.query('select * from project',function(err,rows){ 
+  connection.query('select * from project',function(err,rows){
     if (err) throw(err);
     if (rows && rows.length > 0){
       var info = rows;
@@ -69,13 +69,13 @@ router.get('/my', function(req, res, next) {
     'select p.project_id, p.name, p.start_date, p.end_date, p.created_at, j.job , p.EA '+
     'from works_on w join project p on w.project_id = p.project_id and w.employee_id = ? '+
     'join job j on w.job_id = j.job_id',
-  [user], function(err,rows){ 
+  [user], function(err,rows){
     if (err) throw(err);
     if (rows && rows.length > 0){
       var info = rows;
       // console.log(info,'프로젝트');
       res.render('project/employee', {
-        projects: info, 
+        projects: info,
         title: '참가한 프로젝트 전체'
       });
     } else{
@@ -89,22 +89,27 @@ router.get('/my', function(req, res, next) {
 });
 //프로젝트 상세 조회
 router.get('/my/:id', function(req, res, next) {
-  
+
 });
 
 //경영진 프로젝트 조회
 router.get('/bod', function(req, res, next) {
+<<<<<<< HEAD
+  connection.query('select p.project_id pid, p.name pname, c.name cname, p.start_date, p.end_date, p.price from orderer o join project p on o.project_id = p.project_id join client c on o.client_id = c.client_id;'
+  , function(err,rows){
+=======
   connection.query('select p.project_id pid, p.name pname, c.name cname, p.start_date, p.end_date, p.price '+
   'from orderer o join project p '+
   'on o.project_id = p.project_id '+
   'join client c on o.client_id = c.client_id;'
-  , function(err,rows){ 
+  , function(err,rows){
+>>>>>>> 85cce6230d7930865eb7926bfec6d19be7d300be
     if (err) throw(err);
     if (rows && rows.length > 0){
       var info = rows;
       // console.log(info,'프로젝트');
       res.render('project/bod', {
-        projects: info, 
+        projects: info,
         title: '프로젝트 전체 조회'
       });
     } else{

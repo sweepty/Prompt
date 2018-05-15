@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mysql_dbc = require('../db/db_con')();
 var connection = mysql_dbc.init();
-var passport = require('passport'), 
+var passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt-nodejs');
 
@@ -32,7 +32,7 @@ var isAuthenticated = function (req, res, next) {
 };
 
 // router.post('/', passport.authenticate('local', {
-//   failureRedirect: '/', 
+//   failureRedirect: '/',
 //   failureFlash: true
 //   }), // 인증 실패 시 401 리턴, {} -> 인증 스트레티지
 //   function (req, res) {
@@ -51,7 +51,7 @@ router.post('/', function(req, res, next) {
     req.logIn(user, function(err) {
       if (err) return next(err);
       req.session.user = user;
-      res.redirect('/project'); 
+      res.redirect('/project');
     });
   }) (req, res, next);
 });
@@ -81,7 +81,7 @@ passport.use('login-local', new LocalStrategy({
             if (err) {
               console.log('error:', err);
               return done(null, false, req.flash('loginMessage', '사용자를 찾을 수 없습니다.'));
-            }; 
+            };
             //고객.
             if (rows === null){
               console.log('고객입니다');
@@ -90,14 +90,15 @@ passport.use('login-local', new LocalStrategy({
                   console.log('error:', err);
                   return done(null, false, req.flash('loginMessage', '사용자를 찾을 수 없습니다.'));
                 } else {
-                  return done(null, {'user_id': rows});
+                  return done(null, {'user_id': rows,
+                                      'roles': 'emp'});
                 }
               });
 
             } else{ //직원(경영진, 일반직원)
               console.log('직원입니다.'); //직원 중에서도 경영진이랑 일반직원으로 나눠야함.>>> 추후에.
               console.log(rows,'직원아이디 나오나확인');
-              
+
               return done(null, {user: username, user_id: rows});
             }
           });

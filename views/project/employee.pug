@@ -4,7 +4,7 @@ block content
   h1= title
   p= user
 
-  table.table
+  table#dataTable.table.table-bordered(width='100%', cellspacing='0')
     thead
       tr
         th id
@@ -24,4 +24,3 @@ block content
           td= pro.EA == true ? 'yes' : 'no'
 
   
-
