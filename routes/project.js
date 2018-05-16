@@ -27,7 +27,7 @@ router.get('/', function(req, res, next) {
     if (rows && rows.length > 0){
       var info = rows;
       // console.log(info,'프로젝트');
-      res.render('project/index', {
+      res.render('project/emp_list', {
         //user 정보(role)
         projects: info,
         title: '프로젝트 전체 목록'
