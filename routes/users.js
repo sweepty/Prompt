@@ -108,9 +108,9 @@ passport.use('join-local', new LocalStrategy({
 
                 if (result.length == 0){ // 처음가입하는 직원임
                   bcrypt.hash(password, null, null, function(err, hash) {
-                    var sql = {username: username, password: hash, name: name ,employee_id: employee_id};
-                    var employee_id = employee_id;
-
+                    console.log(employee_id,'직원번호');
+                    var sql = {username: username, password: hash, name: name , employee_id: employee_id};
+    
                     connection.query('insert into user set ?', sql, function (err, rows) {
                       if (err) throw err;
                       console.log('직원 회원가입 성공!');
