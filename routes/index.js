@@ -93,14 +93,23 @@ passport.use('login-local', new LocalStrategy({
               return done(null, false, req.flash('loginMessage', '사용자를 찾을 수 없습니다.'));
             };
             //고객.
-            if (rows.client_id != null){
+            user = rows[0]
+            if (user.client_id != null){
               console.log('고객입니다');
-              return done(null, {user: rows, 'roles': 'client'});
+              return done(null, {
+                username: user.username,
+                id: user.user_id,
+                roles: 'client'
+              });
 
             } else{ //직원
               console.log('직원입니다.');
               console.log(rows,'직원아이디 나오나확인');
-              return done(null, {user: rows, 'roles': 'employee'});
+              return done(null, {
+                username: user.username,
+                id: user.user_id,
+                roles: 'employee'
+              });
             }
           });
         }

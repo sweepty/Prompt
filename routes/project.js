@@ -25,15 +25,17 @@ function needAuth(req, res, next) {
 
 /* GET home page. */
 router.get('/', needAuth, function(req, res, next) {
-  console.log(req.session.user.user[0], '유저info');
+  console.log(req.user, '유저info');
+  if (req.user.roles == "employee") {
+    console.log("skfjalsdjflas)")
+  }
   connection.query('select * from project',function(err,rows){
     if (err) throw(err);
     if (rows && rows.length > 0){
       var info = rows;
       res.render('project/index', {
-        user: req.session.user.user[0],
-        projects: info, 
-
+        user: req.user,
+        projects: info,
         title: '프로젝트 전체 목록'
       });
     }
@@ -43,7 +45,7 @@ router.get('/', needAuth, function(req, res, next) {
 //프로젝트 생성 페이지 get
 router.get('/new', needAuth, function(req, res, next){
   res.render('project/new',{
-    user: req.session.user.user[0],
+    user: req.user,
     title: '프로젝트 생성페이지'
   });
 });
@@ -77,8 +79,8 @@ router.post('/new', function(req, res, next){
 
 //일반직원 프로젝트 조회 (전체 v / 시작 전 / 진행중 / 완료 )
 router.get('/my', function(req, res, next) {
-  console.log(req.session.user.user[0],'유저 info확인');
-  const user = req.session.user.user[0].employee_id;
+  console.log(req.user,'유저 info확인');
+  const user = req.user.employee_id;
   const all = '';
   const query = 'select p.project_id, p.name, p.start_date, p.end_date, p.created_at, j.job , p.EA '+
   'from works_on w join project p on w.project_id = p.project_id and w.employee_id = ? '+
@@ -87,7 +89,7 @@ router.get('/my', function(req, res, next) {
   connection.query(query,[user], function(err,rows){
     if (err) throw(err);
     res.render('project/employee', {
-      user: req.session.user.user[0],
+      user: req.user,
       projects: rows,
       title: '참가한 프로젝트 전체'
     });
@@ -108,7 +110,7 @@ router.get('/bod', function(req, res, next) {
   , function(err,rows){
     if (err) throw(err);
     res.render('project/bod', {
-      user: req.session.user.user[0],
+      user: req.user,
       projects: rows,
       title: '프로젝트 전체 조회'
     });
