@@ -30,14 +30,6 @@ var isAuthenticated = function (req, res, next) {
   res.redirect('/');
 };
 
-// router.post('/', passport.authenticate('local', {
-//   failureRedirect: '/',
-//   failureFlash: true
-//   }), // 인증 실패 시 401 리턴, {} -> 인증 스트레티지
-//   function (req, res) {
-//     res.redirect('/project'); 
-// });
-
 router.post('/', function(req, res, next) {
   console.log('login-local');
   passport.authenticate('login-local', function(err, user, info) {
@@ -45,8 +37,7 @@ router.post('/', function(req, res, next) {
       res.status(500).json(err); // 500 : Server Error
     }
     if (!user) {
-      return res.redirect('/');
-      // res.status(401).json(info.message); // 401 : 권한없음
+      res.redirect('/');
     }
     req.logIn(user, function(err) {
       if (err) return next(err);
@@ -85,7 +76,6 @@ passport.use('login-local', new LocalStrategy({
         else {
           console.log('로그인 성공^*^');
           
-
           //직원인지 고객인지 판별
           connection.query('select * from user where username = ?', [username], function(err, rows){
             if (err) {
@@ -96,18 +86,21 @@ passport.use('login-local', new LocalStrategy({
             user = rows[0]
             if (user.client_id != null){
               console.log('고객입니다');
+              console.log(user,'고객정보 확인');
               return done(null, {
                 username: user.username,
-                id: user.user_id,
+                user_id: user.user_id,
+                client_id: user.client_id,
                 roles: 'client'
               });
 
             } else{ //직원
               console.log('직원입니다.');
-              console.log(rows,'직원아이디 나오나확인');
+              console.log(user,'직원정보 확인');
               return done(null, {
                 username: user.username,
-                id: user.user_id,
+                user_id: user.user_id,
+                employee_id: user.employee_id,
                 roles: 'employee'
               });
             }
