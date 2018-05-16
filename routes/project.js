@@ -33,6 +33,7 @@ router.get('/', needAuth, function(req, res, next) {
       res.render('project/index', {
         user: req.session.user.user[0],
         projects: info, 
+
         title: '프로젝트 전체 목록'
       });
     }
@@ -68,7 +69,7 @@ router.post('/new', function(req, res, next){
     //orderer insert
     connection.query(query2,data2, function(err, result){
       if (err) throw(err);
-      
+
       
     })
   });
