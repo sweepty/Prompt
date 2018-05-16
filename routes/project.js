@@ -27,20 +27,30 @@ function needAuth(req, res, next) {
 router.get('/', needAuth, function(req, res, next) {
   console.log(req.user, '유저info');
   if (req.user.roles == "employee") {
-    console.log("skfjalsdjflas)")
-  }
-  connection.query('select * from project',function(err,rows){
-    if (err) throw(err);
-    if (rows && rows.length > 0){
-      var info = rows;
-      // console.log(info,'프로젝트');
+    //직원 우선은 모든 프로젝트를 보여주도록 함.
+    connection.query('select * from project',function(err,rows){
+      if (err) throw(err);
       res.render('project/emp_list', {
-        //user 정보(role)
-        projects: info,
+        username: req.user.name,
+        employee_id: req.user.employee_id,
+        projects: rows,
         title: '프로젝트 전체 목록'
       });
-    }
-  });
+    });
+  } else{ //고객 의뢰한 프로젝트만 보여주기
+    const client_id = req.user.client_id;
+    connection.query('select p.project_id, p.name, p.EA, p.start_date, p.end_date, p.price, o.manager '+
+    'from project p inner join orderer o on p.project_id = o.project_id '+
+    'join client c on o.client_id = c.client_id and c.client_id =?;',client_id, function(err,rows){
+      if (err) throw(err);
+      res.render('project/emp_list', {
+        username: req.user.name,
+        client_id: client_id,
+        projects: rows,
+        title: '의뢰한 프로젝트 목록'
+      });
+    });
+  }
 });
 
 //프로젝트 생성 페이지 get
@@ -67,14 +77,14 @@ router.post('/new', function(req, res, next){
   //project insert
   connection.query(query,data, function(err, result){
     if (err) throw(err);
-    //project_id를 어디서 가져옴? insert의 result에 있나?
     var data2 = {project_id: result.project_id, client_id: client_id, manager: manager_name, email: manager_email};
     //orderer insert
-    connection.query(query2,data2, function(err, result){
+    connection.query(query2, data2, function(err, result){
       if (err) throw(err);
-
-
-    })
+      res.render('/project/bod',{
+        username: req.user.username,
+      });
+    });
   });
 });
 
@@ -83,7 +93,7 @@ router.get('/my', function(req, res, next) {
   console.log(req.user,'유저 info확인');
   const user = req.user.employee_id;
   const all = '';
-  const query = 'select p.project_id, p.name, p.start_date, p.end_date, p.created_at, j.job , p.EA '+
+  const query = 'select distinct p.project_id, p.name, p.start_date, p.end_date, p.created_at, j.job , p.EA '+
   'from works_on w join project p on w.project_id = p.project_id and w.employee_id = ? '+
   'join job j on w.job_id = j.job_id'
   //전체
@@ -98,17 +108,24 @@ router.get('/my', function(req, res, next) {
 });
 
 //프로젝트 상세 조회
-router.get('/my/:id', function(req, res, next) {
-
-});
+// router.get('/:id', function(req, res, next) {
+//   var id = req.user.project_id;
+//   connection.query('select * from project where project_id =?',[id], function(err, rows){
+//     if (err) throw(err);
+//     console.log(rows,'상세페이지 정보~~~~~~~~~~')
+//     res.render('project/emp_list',{ //임시로 emp_list로 해놓음.
+//       user: req.user,
+//       projects: rows,
+//     })
+//   })
+// });
 
 //경영진 프로젝트 조회
 router.get('/bod', function(req, res, next) {
-  connection.query('select p.project_id pid, p.name pname, c.name cname, p.start_date, p.end_date, p.price '+
+  connection.query('select distinct p.project_id pid, p.name pname, c.name cname, p.start_date, p.end_date, p.price '+
   'from orderer o join project p '+
   'on o.project_id = p.project_id '+
-  'join client c on o.client_id = c.client_id'
-  , function(err,rows){
+  'join client c on o.client_id = c.client_id', function(err,rows){
     if (err) throw(err);
     res.render('project/bod', {
       user: req.user,
