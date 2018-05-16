@@ -29,7 +29,7 @@ router.get('/', function(req, res, next) {
       // console.log(info,'프로젝트');
       res.render('project/index', {
         //user 정보(role)
-        projects: info, 
+        projects: info,
         title: '프로젝트 전체 목록'
       });
     }
@@ -94,16 +94,11 @@ router.get('/my/:id', function(req, res, next) {
 
 //경영진 프로젝트 조회
 router.get('/bod', function(req, res, next) {
-<<<<<<< HEAD
-  connection.query('select p.project_id pid, p.name pname, c.name cname, p.start_date, p.end_date, p.price from orderer o join project p on o.project_id = p.project_id join client c on o.client_id = c.client_id;'
-  , function(err,rows){
-=======
   connection.query('select p.project_id pid, p.name pname, c.name cname, p.start_date, p.end_date, p.price '+
   'from orderer o join project p '+
   'on o.project_id = p.project_id '+
   'join client c on o.client_id = c.client_id;'
   , function(err,rows){
->>>>>>> 85cce6230d7930865eb7926bfec6d19be7d300be
     if (err) throw(err);
     if (rows && rows.length > 0){
       var info = rows;
