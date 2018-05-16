@@ -33,14 +33,9 @@ router.get('/', needAuth, function(req, res, next) {
     if (err) throw(err);
     if (rows && rows.length > 0){
       var info = rows;
-<<<<<<< HEAD
       // console.log(info,'프로젝트');
       res.render('project/emp_list', {
         //user 정보(role)
-=======
-      res.render('project/index', {
-        user: req.user,
->>>>>>> c1b3b84f1fa36791773319f774183b369b8ea0b7
         projects: info,
         title: '프로젝트 전체 목록'
       });
@@ -56,11 +51,11 @@ router.get('/new', needAuth, function(req, res, next){
   });
 });
 
-//프로젝트 생성 
+//프로젝트 생성
 router.post('/new', function(req, res, next){
   const query = 'insert into project set ?';
   const query2 = 'insert into orderer set ?';
-  
+
   var pname = req.body.projectname; //이름
   var startdate = req.body.startdate; //시작일
   var enddate = req.body.enddate; //종료일
@@ -78,7 +73,7 @@ router.post('/new', function(req, res, next){
     connection.query(query2,data2, function(err, result){
       if (err) throw(err);
 
-      
+
     })
   });
 });

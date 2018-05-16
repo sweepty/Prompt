@@ -3,11 +3,11 @@
   .modal-dialog(role='document')
     .modal-content
       .modal-header
-        h5#exampleModalLabel.modal-title Ready to Leave?
+        h5#exampleModalLabel.modal-title 로그아웃 하시겠습니까?
         button.close(type='button', data-dismiss='modal', aria-label='Close')
           span(aria-hidden='true') ×
       .modal-body
-        | Select "Logout" below if you are ready to end your current session.
+        | 로그아웃 하시려면 아래 Logout 버튼을 눌러주세요.
       .modal-footer
         button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-        a.btn.btn-primary(href='login.html') Logout
+        a.btn.btn-primary(href='signout') Logout
