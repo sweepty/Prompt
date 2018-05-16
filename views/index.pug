@@ -1,18 +1,35 @@
-extends layout
+html(lang='en')
 
-block content
-  h1= title
-  p Welcome to #{title}
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description', content='')
+    meta(name='author', content='')
 
-  form#frm_login(action='/', method='post', name='frm_login')
-    .form-group
-      label(for='username') Id
-      input.form-control(name='username', type='text', placeholder='Enter Id')
-      label(for='password') Password
-      input.form-control(name='password',type='password', placeholder='Password')
-    button.btn.btn-primary(type='submit', value='Login') Submit
-  |
-  |
-  a.btn.btn-outline-primary(href='/users/new') 직원 회원가입
-  //고객 회원가입 작동 안됨.
-  //- a.btn.btn-outline-primary(href='/users/new/client') 고객 회원가입
+    title SB Admin - Start Bootstrap Template
+
+    include includes/css/core.pug
+
+    include includes/css/custom.pug
+
+  body.bg-dark
+    .container
+      .card.card-body.ma-auto.mt-5
+        h1.text-center 프람트 테크놀로지
+      .card.card-login.mx-auto.mt-5
+        .card-header
+          | Login
+        .card-body
+          form#frm_login(action='/', method='post', name='frm_login')
+            .form-group
+              label(for='username') ID
+              input#exampleInputEmail1.form-control(name='username', type='text', placeholder='Enter Id')
+            .form-group
+              label(for='password') Password
+              input#exampleInputPassword1.form-control(name='password',type='password', placeholder='Enter Password')
+            button.btn.btn-primary.btn-block(type='submit', value='Login') Login
+          .text-center
+            a.btn.btn-outline-primary(href='/users/new') 직원 회원가입
+
+    include includes/js/core.pug
