@@ -28,7 +28,8 @@ passport.deserializeUser(function(user_id, done) {
 
 function validateForm(form, options) {
   var username = form.username || "";
-  var email = form.email || "";
+  var employee_id = form.employee_id || "";
+  var client_id = form.client_id || "";
   name = name.trim();
   email = email.trim();
 
@@ -36,8 +37,11 @@ function validateForm(form, options) {
     return '이름을 입력해주세요.';
   }
 
-  if (!email) {
-    return '이메일을 입력해주세요.';
+  if (!employee_id) {
+    return '직원번호를 입력해주세요.';
+  }
+  if (!client_id) {
+    return '고객번호를 입력해주세요.';
   }
 
   if (!form.password && options.needPassword) {
@@ -82,6 +86,52 @@ router.post('/new/client', passport.authenticate('join-local', {
   failureFlash: true
 }));
 
+// --------------- 개인 정보 상세 ------------------
+// 조회
+router.get('/myinfo', needAuth, function (req, res) {
+  const sql = 'select username, name from user where user_id= ?';
+  connection.query(sql, req.user.user_id, function(err, rows){
+    if (err) {throw(err)};
+    res.render('users/edit',{
+      info : rows[0],
+      title: '개인정보'
+    });
+  })
+});
+
+//수정
+router.put('/myinfo', needAuth, function(req, res){
+  const sql = 'select * from user username = ?';
+  const sql2 = 'update user set ? where user_id = ?';
+  //아이디 중복확인...
+  connection.query(sql, req.body.username, function(err, rows){
+    if (err) throw(err);
+    if (rows.length === 0){
+      console.log('중복되는 아이디는 아님ㅇㅇ');
+      //암호화
+      bcrypt.hash(req.body.password, null, null, function(err, hash) {
+        const values = {
+          username: req.body.username, 
+          password: hash,
+          name: req.body.name
+        }
+        connection.query(sql2, values, req.user.user_id, function(err, rows){
+          if (err) throw(err);
+          console.log('정보 업데이트 성공~');
+          var user = rows[0];
+          res.render('/myinfo', {
+            username: user.username,
+            user_id: user.user_id
+          });
+        });
+      });
+    } else {
+      console.log('아이디 중복!!')
+      res.render('back', {message:'이미 존재하는 아이디입니다'});
+    }
+  });
+});
+
 passport.use('join-local', new LocalStrategy({
   usernameField: 'username',
   passwordField: 'password',
@@ -114,7 +164,13 @@ passport.use('join-local', new LocalStrategy({
                     connection.query('insert into user set ?', sql, function (err, rows) {
                       if (err) throw err;
                       console.log('직원 회원가입 성공!');
-                      return done(null, {'user' : rows});
+                      var user = rows[0];
+                      console.log(user.employee_id,'테스트용!!!');
+                      return done(null, {
+                        username: user.username,
+                        employee_id: user.employee_id,
+                        role: 'employee'
+                      });
                     });
                   });
                 } else{ //이미 가입된 직원
@@ -140,10 +196,15 @@ passport.use('join-local', new LocalStrategy({
                 if (result.length == 0){
                   bcrypt.hash(password, null, null, function(err, hash) {
                     var sql = {username: username, password: hash, name: name , client_id: client_id};
-                    connection.query('insert into user set ?', sql, function (err, res) {
+                    connection.query('insert into user set ?', sql, function (err, rows) {
                       if (err) throw err;
                       console.log('고객회원가입성공!');
-                      return done(null, { 'user' : result });
+                      var user = rows[0];
+                      return done(null, {
+                        username: user.username,
+                        client_id: user.client_id,
+                        role: 'client'
+                      });
                     });
                   });
                 } else{
@@ -161,22 +222,5 @@ passport.use('join-local', new LocalStrategy({
     })
   }
 ));
-
-// --------------- 개인 정보 상세 ------------------
-// 조회
-// router.get('/myinfo', needAuth, function (req, res) {
-//   res.render('users/myinfo',{
-//     title: 'My Info',
-//     user: req.session.user.user[0]
-//   })
-// });
-
-// //수정
-// router.put('/myinfo/edit', needAuth, function(req, res){
-//   const sql = 'update user set ? where user_id = ?';
-//   const values = {}
-//   connection.query(sql, )
-// });
-
 
 module.exports = router;
