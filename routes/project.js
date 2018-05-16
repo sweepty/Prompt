@@ -14,21 +14,33 @@ passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
-var isAuthenticated = function (req, res, next) {
-  if (req.isAuthenticated())
-    return next();
-  res.redirect('/');
+function needAuth(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    req.flash('danger', 'Please signin first.');
+    res.redirect('/');
+  }
 };
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', needAuth, function(req, res, next) {
+  console.log(req.user, '유저info');
+  if (req.user.roles == "employee") {
+    console.log("skfjalsdjflas)")
+  }
   connection.query('select * from project',function(err,rows){
     if (err) throw(err);
     if (rows && rows.length > 0){
       var info = rows;
+<<<<<<< HEAD
       // console.log(info,'프로젝트');
       res.render('project/emp_list', {
         //user 정보(role)
+=======
+      res.render('project/index', {
+        user: req.user,
+>>>>>>> c1b3b84f1fa36791773319f774183b369b8ea0b7
         projects: info,
         title: '프로젝트 전체 목록'
       });
@@ -37,56 +49,59 @@ router.get('/', function(req, res, next) {
 });
 
 //프로젝트 생성 페이지 get
-router.get('/new', function(req, res, next){
-  res.render('project/new',{title: '프로젝트 생성페이지'});
+router.get('/new', needAuth, function(req, res, next){
+  res.render('project/new',{
+    user: req.user,
+    title: '프로젝트 생성페이지'
+  });
 });
 
-//프로젝트 생성 post
+//프로젝트 생성 
 router.post('/new', function(req, res, next){
-  const query = 'insert into project(name,startdate,enddate,price,EA) values(?,?,?,?)';
-  const query2 = 'insert into orderer() values()'
-  var pname = req.body.projectname;
-  var startdate = req.body.startdate;
-  var enddate = req.body.enddate;
-  // var  = req.body.;
-  // var  = req.body.;
-  // var  = req.body.;
-  // var  = req.body.;
-  // var  = req.body.;
-  // connection.query()
-});
-//프로젝트 수정
-//프로젝트 삭제
+  const query = 'insert into project set ?';
+  const query2 = 'insert into orderer set ?';
+  
+  var pname = req.body.projectname; //이름
+  var startdate = req.body.startdate; //시작일
+  var enddate = req.body.enddate; //종료일
+  var price = req.body.price; //가격
+  var client_id = req.body.client; // 발주처 client id
+  var manager_name = req.body.managername; // 발주처 관리자 이름
+  var manager_email = req.body.manageremail; // 발주처 관리자 이메일
+  var data = {name: pname, startdate: startdate, enddate: enddate ,price: price};
+  //project insert
+  connection.query(query,data, function(err, result){
+    if (err) throw(err);
+    //project_id를 어디서 가져옴? insert의 result에 있나?
+    var data2 = {project_id: result.project_id, client_id: client_id, manager: manager_name, email: manager_email};
+    //orderer insert
+    connection.query(query2,data2, function(err, result){
+      if (err) throw(err);
 
+      
+    })
+  });
+});
 
 //일반직원 프로젝트 조회 (전체 v / 시작 전 / 진행중 / 완료 )
 router.get('/my', function(req, res, next) {
-  const user = req.session.user.user_id[0].employee_id;
-  console.log(user,'유저의 employee_id');
-  const all = ''
+  console.log(req.user,'유저 info확인');
+  const user = req.user.employee_id;
+  const all = '';
+  const query = 'select p.project_id, p.name, p.start_date, p.end_date, p.created_at, j.job , p.EA '+
+  'from works_on w join project p on w.project_id = p.project_id and w.employee_id = ? '+
+  'join job j on w.job_id = j.job_id'
   //전체
-  connection.query(
-    'select p.project_id, p.name, p.start_date, p.end_date, p.created_at, j.job , p.EA '+
-    'from works_on w join project p on w.project_id = p.project_id and w.employee_id = ? '+
-    'join job j on w.job_id = j.job_id',
-  [user], function(err,rows){
+  connection.query(query,[user], function(err,rows){
     if (err) throw(err);
-    if (rows && rows.length > 0){
-      var info = rows;
-      // console.log(info,'프로젝트');
-      res.render('project/employee', {
-        projects: info,
-        title: '참가한 프로젝트 전체'
-      });
-    } else{
-      res.render('project/employee',{
-        projects: [],
-        title: '참가한 프로젝트가 없습니다.'
-      })
-    }
+    res.render('project/employee', {
+      user: req.user,
+      projects: rows,
+      title: '참가한 프로젝트 전체'
+    });
   });
-
 });
+
 //프로젝트 상세 조회
 router.get('/my/:id', function(req, res, next) {
 
@@ -97,22 +112,14 @@ router.get('/bod', function(req, res, next) {
   connection.query('select p.project_id pid, p.name pname, c.name cname, p.start_date, p.end_date, p.price '+
   'from orderer o join project p '+
   'on o.project_id = p.project_id '+
-  'join client c on o.client_id = c.client_id;'
+  'join client c on o.client_id = c.client_id'
   , function(err,rows){
     if (err) throw(err);
-    if (rows && rows.length > 0){
-      var info = rows;
-      // console.log(info,'프로젝트');
-      res.render('project/bod', {
-        projects: info,
-        title: '프로젝트 전체 조회'
-      });
-    } else{
-      res.render('project/bod',{
-        projects: [],
-        title: '프로젝트가 없습니다'
-      })
-    }
+    res.render('project/bod', {
+      user: req.user,
+      projects: rows,
+      title: '프로젝트 전체 조회'
+    });
   });
 });
 

@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description', content='')
+    meta(name='author', content='')
+
+    title SB Admin - Start Bootstrap Template
+    // Page level plugin CSS
+    link(href='/vendor/datatables/dataTables.bootstrap4.css', rel='stylesheet')
+    include ../includes/css/core.pug
+
+    include ../includes/css/custom.pug
+
+  body#page-top.fixed-nav.sticky-footer.bg-dark
+    include cus_navbar.pug
+    .content-wrapper
+      .container-fluid
+        block content
+      // /.container-fluid
+      // /.content-wrapper
+
+      include ../includes/footer.pug
+
+      include ../includes/scroll-to-top.pug
+
+      include ../includes/modals/logout.pug
+
+      include ../includes/js/core.pug
+
+      include ../includes/js/custom.pug
