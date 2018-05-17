@@ -8,22 +8,26 @@ block content
       input.form-control(type='text', id='project_name', name='project_name', placeholder='project_name')
     .form-group
       label(for='password') 시작일
-      input.form-control(type='text', id='start_date', name='start_date', placeholder='start_date')
+      input.form-control(type='date', id='start_date', name='start_date', placeholder='start_date')
+      input.form-control(type='time', id='start_time', name='start_time', placeholder='start_time')
     .form-group
       label(for='password_confirmation') 종료일
-      input.form-control(type='text', id='end_date', name='end_date', placeholder='end_date')
+      input.form-control(type='date', id='end_date', name='end_date', placeholder='end_date')
+      input.form-control(type='time', id='end_time', name='end_time', placeholder='end_time')
     .form-group
       label(for='name') 가격
       input.form-control(type='text', id='price', name='price', placeholder='price')
     .form-group
-      label(for='employee_id') 발주처 id
-      input.form-control(type='text', id='client', name='client', placeholder='client')
+      label(for="client_id") 발주처
+      select.form-control(name="client_id")
+        each client in clients
+          option(value=client.client_id)= client.name
     .form-group
-      label(for='employee_id') 발주처 관리자이름
+      label(for='manager_name') 발주처 관리자이름
       input.form-control(type='text', id='manager_name', name='manager_name', placeholder='manager_name')
     .form-group
-      label(for='employee_id') 발주처 이메일
-      input.form-control(type='text', id='manager_email', name='manager_email', placeholder='manager_email')
+      label(for='manager_email') 발주처 이메일
+      input.form-control(type='email', id='manager_email', name='manager_email', placeholder='manager_email')
 
 
     | 
