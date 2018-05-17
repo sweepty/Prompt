@@ -1,0 +1,30 @@
+extends ../layout/emp_layout.pug
+
+block content
+  h1.main-title 프로젝트 등록
+  form(action='/project/new', method='POST')
+    .form-group
+      label(for='username') 프로젝트 이름
+      input.form-control(type='text', id='project_name', name='project_name', placeholder='project_name')
+    .form-group
+      label(for='password') 시작일
+      input.form-control(type='text', id='start_date', name='start_date', placeholder='start_date')
+    .form-group
+      label(for='password_confirmation') 종료일
+      input.form-control(type='text', id='end_date', name='end_date', placeholder='end_date')
+    .form-group
+      label(for='name') 가격
+      input.form-control(type='text', id='price', name='price', placeholder='price')
+    .form-group
+      label(for='employee_id') 발주처 id
+      input.form-control(type='text', id='client', name='client', placeholder='client')
+    .form-group
+      label(for='employee_id') 발주처 관리자이름
+      input.form-control(type='text', id='manager_name', name='manager_name', placeholder='manager_name')
+    .form-group
+      label(for='employee_id') 발주처 이메일
+      input.form-control(type='text', id='manager_email', name='manager_email', placeholder='manager_email')
+
+
+    | 
+    button.btn.btn-primary(type='submit') Register 

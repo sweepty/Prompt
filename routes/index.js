@@ -47,7 +47,7 @@ router.post('/', function(req, res, next) {
   }) (req, res, next);
 });
 
-//로그아웃 
+//로그아웃
 router.get('/signout', (req, res) => {
   req.logout();
   res.clearCookie('dbpdbpteeeaaamm22');
@@ -63,7 +63,7 @@ passport.use('login-local', new LocalStrategy({
     if (err) {
       console.log('err :' + err);
       return done(false, null);
-    } 
+    }
     else {
       if (result === null) {
         console.log('존재하지 않는 아이디입니다.');
@@ -72,10 +72,10 @@ passport.use('login-local', new LocalStrategy({
         if (!bcrypt.compareSync(password, result[0].password)) {
           console.log('패스워드가 일치하지 않습니다');
           return done(false, null);
-        } 
+        }
         else {
           console.log('로그인 성공^*^');
-          
+
           //직원인지 고객인지 판별
           connection.query('select * from user where username = ?', [username], function(err, rows){
             if (err) {

@@ -43,7 +43,7 @@ router.get('/', needAuth, function(req, res, next) {
     'from project p inner join orderer o on p.project_id = o.project_id '+
     'join client c on o.client_id = c.client_id and c.client_id =?;',client_id, function(err,rows){
       if (err) throw(err);
-      res.render('project/emp_list', {
+      res.render('project/cus_list', {
         username: req.user.name,
         client_id: client_id,
         projects: rows,
@@ -55,7 +55,7 @@ router.get('/', needAuth, function(req, res, next) {
 
 //프로젝트 생성 페이지 get
 router.get('/new', needAuth, function(req, res, next){
-  res.render('project/new',{
+  res.render('project/emp_new',{
     user: req.user,
     title: '프로젝트 생성페이지'
   });
@@ -66,26 +66,27 @@ router.post('/new', function(req, res, next){
   const query = 'insert into project set ?';
   const query2 = 'insert into orderer set ?';
 
-  var pname = req.body.projectname; //이름
-  var startdate = req.body.startdate; //시작일
-  var enddate = req.body.enddate; //종료일
+  var pname = req.body.project_name; //이름
+  var startdate = req.body.start_date; //시작일
+  var enddate = req.body.end_date; //종료일
   var price = req.body.price; //가격
   var client_id = req.body.client; // 발주처 client id
-  var manager_name = req.body.managername; // 발주처 관리자 이름
-  var manager_email = req.body.manageremail; // 발주처 관리자 이메일
+  var manager_name = req.body.manager_name; // 발주처 관리자 이름
+  var manager_email = req.body.manager_email; // 발주처 관리자 이메일
   var data = {name: pname, startdate: startdate, enddate: enddate ,price: price};
+  console.log(data);
   //project insert
-  connection.query(query,data, function(err, result){
-    if (err) throw(err);
-    var data2 = {project_id: result.project_id, client_id: client_id, manager: manager_name, email: manager_email};
-    //orderer insert
-    connection.query(query2, data2, function(err, result){
-      if (err) throw(err);
-      res.render('/project/bod',{
-        username: req.user.username,
-      });
-    });
-  });
+  // connection.query(query,data, function(err, result){
+  //   if (err) throw(err);
+  //   var data2 = {project_id: result.project_id, client_id: client_id, manager: manager_name, email: manager_email};
+  //   //orderer insert
+  //   connection.query(query2, data2, function(err, result){
+  //     if (err) throw(err);
+  //     res.render('/project/bod',{
+  //       username: req.user.username,
+  //     });
+  //   });
+  //});
 });
 
 //일반직원 프로젝트 조회 (전체 v / 시작 전 / 진행중 / 완료 )
