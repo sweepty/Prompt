@@ -26,39 +26,6 @@ passport.deserializeUser(function(user_id, done) {
   done(null, user_id);
 });
 
-function validateForm(form, options) {
-  var username = form.username || "";
-  var employee_id = form.employee_id || "";
-  var client_id = form.client_id || "";
-  name = name.trim();
-  email = email.trim();
-
-  if (!name) {
-    return '이름을 입력해주세요.';
-  }
-
-  if (!employee_id) {
-    return '직원번호를 입력해주세요.';
-  }
-  if (!client_id) {
-    return '고객번호를 입력해주세요.';
-  }
-
-  if (!form.password && options.needPassword) {
-    return '비밀번호를 입력해주세요.';
-  }
-
-  if (form.password !== form.password_confirmation) {
-    return '비밀번호가 일치하지 않습니다.';
-  }
-
-  if (form.password.length < 4) {
-    return '비밀번호는 4자 이상이어야 합니다.';
-  }
-
-  return null;
-}
-
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
