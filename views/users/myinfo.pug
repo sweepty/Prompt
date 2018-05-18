@@ -1,0 +1,20 @@
+extends ../layout
+
+block content
+  .container
+    h1.main-title 개인정보수정
+    form(action=`/users/myinfo`, method='POST')
+      .form-group
+        label(for='name') 이름
+        input.form-control(type='text', id='name', name='name', placeholder='Name')
+      .form-group
+        label(for='id') 아이디
+        input.form-control(type='text', id='id', name='id', placeholder='ID')
+      .form-group
+        label(for='password') 비밀번호
+        input.form-control(type='password', id='password', name='password', placeholder='Password')
+      .form-group
+        label(for='password_confirmation') 비밀번호 확인
+        input.form-control(type='password', id='password_confirmation', name='password_confirmation', placeholder='Password')
+      | 
+      button.btn.btn-primary(type='submit') 수정완료

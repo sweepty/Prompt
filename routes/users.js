@@ -92,7 +92,7 @@ router.get('/myinfo', needAuth, function (req, res) {
   const sql = 'select username, name from user where user_id= ?';
   connection.query(sql, req.user.user_id, function(err, rows){
     if (err) {throw(err)};
-    res.render('users/edit',{
+    res.render('users/myinfo',{
       info : rows[0],
       title: '개인정보'
     });
