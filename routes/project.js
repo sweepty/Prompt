@@ -109,17 +109,26 @@ router.get('/my', function(req, res, next) {
 });
 
 //프로젝트 상세 조회
-// router.get('/:id', function(req, res, next) {
-//   var id = req.user.project_id;
-//   connection.query('select * from project where project_id =?',[id], function(err, rows){
-//     if (err) throw(err);
-//     console.log(rows,'상세페이지 정보~~~~~~~~~~')
-//     res.render('project/emp_list',{ //임시로 emp_list로 해놓음.
-//       user: req.user,
-//       projects: rows,
-//     })
-//   })
-// });
+router.get('/:id', function(req, res, next) {
+  var id = req.params.id;
+  const query ='select p.project_id p_id, p.name pname, p.start_date p_start_date, p.end_date p_end_date,'+ 
+  'c.name cname, o.manager, o.email o_email, e.name ename, j.job job, w.start_date, w.end_date,e.name, '+
+  'e.employee_id e_id, w.start_date w_start_date, w.end_date w_end_date '+
+  'from project p join works_on w on p.project_id = w.project_id '+
+  'join employee e on w.employee_id=e.employee_id '+
+  'join job j on j.job_id=w.job_id '+
+  'join orderer o on o.project_id '+
+  'join client c on c.client_id=o.client_id '+
+  'where p.project_id=?'
+  connection.query(query,[id], function(err, rows){
+    if (err) throw(err);
+    res.render('project/emp_detail',{ 
+      user: req.user,
+      project: rows,
+      title: '프로젝트 상세 조회'
+    })
+  })
+});
 
 //경영진 프로젝트 조회
 router.get('/bod', function(req, res, next) {

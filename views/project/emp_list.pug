@@ -2,8 +2,6 @@ extends ../layout/emp_layout.pug
 
 block content
   h1= title
-  p= user
-
   .card.mb-3
     .card-header
       i.fa.fa-table
@@ -22,7 +20,8 @@ block content
               each pro in projects
                 tr
                   td= pro.project_id
-                  td= pro.name
+                  td
+                    a.title(href=`/project/${pro.project_id}`)=pro.name
                   td= pro.start_date
                   td= pro.end_date
 
