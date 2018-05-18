@@ -55,38 +55,42 @@ router.get('/', needAuth, function(req, res, next) {
 
 //프로젝트 생성 페이지 get
 router.get('/new', needAuth, function(req, res, next){
-  res.render('project/emp_new',{
-    user: req.user,
-    title: '프로젝트 생성페이지'
+  // 고객 id를 몰라도 이름으로 알 수 있도록 하기 위해서ㅇㅇ
+  connection.query('select client_id, name from client', function(err, rows){
+    connection.query('select * from employee')
+    res.render('project/emp_new',{
+      user: req.user,
+      clients: rows,
+      title: '프로젝트 생성페이지'
+    });
   });
 });
 
-//프로젝트 생성
+//프로젝트 생성 
 router.post('/new', function(req, res, next){
   const query = 'insert into project set ?';
   const query2 = 'insert into orderer set ?';
-
+  //나중에 시작일 종료일 수정하기.
   var pname = req.body.project_name; //이름
-  var startdate = req.body.start_date; //시작일
-  var enddate = req.body.end_date; //종료일
+  var start_date = req.body.start_date +' '+ req.body.start_time; //시작일
+  var end_date = req.body.end_date +' '+ req.body.end_time; //종료일
   var price = req.body.price; //가격
-  var client_id = req.body.client; // 발주처 client id
+  var client_id = req.body.client_id; // 발주처
   var manager_name = req.body.manager_name; // 발주처 관리자 이름
   var manager_email = req.body.manager_email; // 발주처 관리자 이메일
-  var data = {name: pname, startdate: startdate, enddate: enddate ,price: price};
+  var data = {name: pname, start_date: start_date, end_date: end_date, EA: false, price: price};
   console.log(data);
   //project insert
-  // connection.query(query,data, function(err, result){
-  //   if (err) throw(err);
-  //   var data2 = {project_id: result.project_id, client_id: client_id, manager: manager_name, email: manager_email};
-  //   //orderer insert
-  //   connection.query(query2, data2, function(err, result){
-  //     if (err) throw(err);
-  //     res.render('/project/bod',{
-  //       username: req.user.username,
-  //     });
-  //   });
-  //});
+  connection.query(query,data, function(err, rows){
+    if (err) throw(err);
+    var data2 = {project_id: rows.insertId, client_id: client_id, manager: manager_name, email: manager_email};
+    //orderer insert
+    connection.query(query2, data2, function(err, result){
+      if (err) throw(err);
+      //이부분이 이상하다.
+      res.render('/project');
+    });
+  });
 });
 
 //일반직원 프로젝트 조회 (전체 v / 시작 전 / 진행중 / 완료 )
@@ -109,17 +113,17 @@ router.get('/my', function(req, res, next) {
 });
 
 //프로젝트 상세 조회
-// router.get('/:id', function(req, res, next) {
-//   var id = req.user.project_id;
-//   connection.query('select * from project where project_id =?',[id], function(err, rows){
-//     if (err) throw(err);
-//     console.log(rows,'상세페이지 정보~~~~~~~~~~')
-//     res.render('project/emp_list',{ //임시로 emp_list로 해놓음.
-//       user: req.user,
-//       projects: rows,
-//     })
-//   })
-// });
+router.get('/:id', function(req, res, next) {
+  var id = req.user.project_id;
+  connection.query('select * from project where project_id =?',[id], function(err, rows){
+    if (err) throw(err);
+    console.log(rows,'상세페이지 정보~~~~~~~~~~')
+    res.render('project/emp_list',{ //임시로 emp_list로 해놓음.
+      user: req.user,
+      projects: rows,
+    })
+  })
+});
 
 //경영진 프로젝트 조회
 router.get('/bod', function(req, res, next) {

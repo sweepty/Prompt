@@ -28,7 +28,14 @@ block content
     .form-group
       label(for='manager_email') 발주처 이메일
       input.form-control(type='email', id='manager_email', name='manager_email', placeholder='manager_email')
-
+    .form-group
+      label(for='search') 직원 선택
+      form.form-inline.search-input-group(action='/employee', method='GET')
+      #search-form.col-lg-offset-3.col-lg-9
+        .input-group
+          input.form-control.mr-sm-2(type='text', id='search' name='term', placeholder='Search', aria-label='Search', value=term)
+          .button.btn.btn-success
+            i.fa.fa-search
 
     | 
     button.btn.btn-primary(type='submit') Register 
