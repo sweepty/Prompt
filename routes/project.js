@@ -93,26 +93,54 @@ router.post('/new', function(req, res, next){
   });
 });
 
-//일반직원 프로젝트 조회 (전체 v / 시작 전 / 진행중 / 완료 )
-router.get('/my', function(req, res, next) {
-  console.log(req.user,'유저 info확인');
-  const user = req.user.employee_id;
-  const all = '';
-  const query = 'select distinct p.project_id, p.name, p.start_date, p.end_date, p.created_at, j.job , p.EA '+
-  'from works_on w join project p on w.project_id = p.project_id and w.employee_id = ? '+
-  'join job j on w.job_id = j.job_id'
-  //전체
-  connection.query(query,[user], function(err,rows){
-    if (err) throw(err);
-    res.render('project/employee', {
-      user: req.user,
-      projects: rows,
-      title: '참가한 프로젝트 전체'
-    });
+//----------------직원 프로젝트(진행, 완료, 시작) 페이지------------------------
+var queryy = 'select distinct p.project_id, p.name, p.start_date, p.end_date, p.created_at, j.job , p.EA, w.start_date '+
+'from works_on w join project p on w.project_id = p.project_id and w.employee_id = ? '+
+'join job j on w.job_id = j.job_id ';
+//진행중인 프로젝트
+function findinProgress(req, res, next) {
+  var request = queryy+'where w.end_date is NULL';
+  connection.query(request,[req.user.employee_id], function(error, rows) {
+    req.in_progress = rows;
+    return next();          
   });
-});
+}
+//완료한 프로젝트
+function findDone(req, res, next) {
+  var request = queryy +'where w.end_date is not NULL';
+  connection.query(request,[req.user.employee_id], function(error, rows) {
+    req.done = rows;
+    next();
+  });
+}
 
-//프로젝트 상세 조회
+// //시작 전인 프로젝트
+// function findDidNotStart(req, res, next) {
+//   var now = new Date();
+//   console.log( now.getTime() );
+//   // var today = moment.utc().day();
+//   // console.log(today);
+//   // var todayTimestampStart = moment(today+' 00:00:00').format('x');
+//   var request = queryy +'where DATE(w.start_date) > ?';
+//   connection.query(request,[now.getTime(),req.user.employee_id], function(error, rows) {
+//     console.log(rows[0].start_date,'오늘의 타임스탬프~~');
+//     console.log(rows);
+//     req.notstart = rows;
+//     next();
+//   });
+// }
+
+function renderProjectPage(req, res) {
+  res.render('project/employee', {
+    inProgress: req.in_progress,
+    done: req.done,
+    title: '참가한 프로젝트 전체',
+    user: req.user
+  });
+}
+router.get('/my',needAuth, findinProgress, findDone, renderProjectPage);
+
+//------------------ employee 프로젝트 상세 조회-----------------------------------
 router.get('/:id', function(req, res, next) {
   var project_id = req.params.id;
   var query_client = 'select p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
