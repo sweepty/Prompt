@@ -57,7 +57,7 @@ router.get('/', needAuth, function(req, res, next) {
 router.get('/new', needAuth, function(req, res, next){
   // 고객 id를 몰라도 이름으로 알 수 있도록 하기 위해서ㅇㅇ
   connection.query('select client_id, name from client', function(err, rows){
-    connection.query('select * from employee')
+    // connection.query('select * from employee')
     res.render('project/emp_new',{
       user: req.user,
       clients: rows,
@@ -114,25 +114,41 @@ router.get('/my', function(req, res, next) {
 
 //프로젝트 상세 조회
 router.get('/:id', function(req, res, next) {
-  var id = req.params.id;
-  const query ='select p.project_id p_id, p.name pname, p.start_date p_start_date, p.end_date p_end_date,'+ 
-  'c.name cname, o.manager, o.email o_email, e.name ename, j.job job, w.start_date, w.end_date,e.name, '+
-  'e.employee_id e_id, w.start_date w_start_date, w.end_date w_end_date '+
-  'from project p join works_on w on p.project_id = w.project_id '+
-  'join employee e on w.employee_id=e.employee_id '+
-  'join job j on j.job_id=w.job_id '+
-  'join orderer o on o.project_id '+
+  var project_id = req.params.id;
+  var query_client = 'select p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
+  'from project p join orderer o on p.project_id=o.project_id '+
   'join client c on c.client_id=o.client_id '+
-  'where p.project_id=?'
-  connection.query(query,[id], function(err, rows){
+  'where p.project_id =?'
+  var query_members = 
+  'select p.project_id p_id, p.EA, w.start_date, w.end_date, w.end_date, e.name, j.job '+
+  'from project p join works_on w on p.project_id=w.project_id '+
+  'join employee e on e.employee_id=w.employee_id '+
+  'join job j on j.job_id=w.job_id '+
+  'where p.project_id = ? and w.employee_id '
+  connection.query(query_client,[project_id], function(err, rows){
     if (err) throw(err);
-    res.render('project/emp_detail',{ 
-      user: req.user,
-      project: rows,
-      title: '프로젝트 상세 조회'
-    })
+    var client = rows[0];
+    //자신에 대한 정보
+    connection.query(query_members+'= ?', [project_id, req.user.employee_id], function(err, rows){
+      if (err) throw(err);
+      var my = rows;
+      // 자신을 제외한 팀원들을 보여주도록 함.
+      connection.query(query_members+'not in (?)',[project_id, req.user.employee_id], function(err, rows){
+        if (err) throw(err);
+        console.log(rows,'프로젝트확인');
+        res.render('project/emp_detail',{ 
+          user: req.user,
+          client: client,
+          project: rows,
+          my: my,
+          title: '프로젝트 상세 조회'
+        });
+      })
+    });
   })
 });
+
+
 
 
 //경영진 프로젝트 조회
