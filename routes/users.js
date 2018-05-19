@@ -13,7 +13,7 @@ function needAuth(req, res, next) {
   if (req.isAuthenticated()) {
     next();
   } else {
-   req.flash('danger', 'Please signin first.');
+    req.flash('danger', 'Please signin first.');
     res.redirect('/');
   }
 }
@@ -60,44 +60,33 @@ router.get('/myinfo', needAuth, function (req, res) {
   connection.query(sql, req.user.user_id, function(err, rows){
     if (err) {throw(err)};
     res.render('users/myinfo',{
-      info : rows[0],
-      title: '개인정보'
+      info : rows[0]
     });
   })
 });
 
 //수정
-router.put('/myinfo', needAuth, function(req, res){
+router.post('/myinfo', needAuth, function(req, res){
   const sql = 'select * from user username = ?';
   const sql2 = 'update user set ? where user_id = ?';
-  //아이디 중복확인...
-  connection.query(sql, req.body.username, function(err, rows){
-    if (err) throw(err);
-    if (rows.length === 0){
-      console.log('중복되는 아이디는 아님ㅇㅇ');
-      //암호화
-      bcrypt.hash(req.body.password, null, null, function(err, hash) {
-        const values = {
-          username: req.body.username, 
-          password: hash,
-          name: req.body.name
-        }
-        connection.query(sql2, values, req.user.user_id, function(err, rows){
-          if (err) throw(err);
-          console.log('정보 업데이트 성공~');
-          var user = rows[0];
-          res.render('/myinfo', {
-            username: user.username,
-            user_id: user.user_id
-          });
-        });
-      });
-    } else {
-      console.log('아이디 중복!!')
-      res.render('back', {message:'이미 존재하는 아이디입니다'});
-    }
+  console.log(req.user.user_id,'user아이디 확인');
+  req.flash('success', 'Successfully updated');
+  //암호화
+  bcrypt.hash(req.body.password, null, null, function(err, hash) {
+    const value = { password: hash }
+    connection.query('update user set ? where user_id = ?', [value, req.user.user_id], function(err, rows){
+      if (err) {
+        throw(err);
+      };
+      console.log('정보 업데이트 성공~');
+      var user = rows[0];
+      req.flash('success', 'Successfully updated'); //왜 flash가 안될까. 
+      res.redirect('/project'); //업데이트 성공하면 어디로 보내줘야할까..
+    });
   });
 });
+
+//--------------직원, 고객 회원가입------------------
 
 passport.use('join-local', new LocalStrategy({
   usernameField: 'username',
