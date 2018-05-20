@@ -1,0 +1,14 @@
+extends ../layout/emp_layout.pug
+
+block content
+  h1.main-title 평가 작성
+  form(action='/evaluation/:project_id', method='POST')
+    .form-group
+      label(for='score') 점수
+      input.form-control(type='text', id='score', name='score', placeholder='score')
+    .form-group
+      label(for='content') 내용
+      input.form-control(type='text', id='content', name='content', placeholder='content')
+
+    | 
+    button.btn.btn-primary(type='submit') Register 
