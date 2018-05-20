@@ -15,6 +15,14 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
           //i.fa.fa-fw.fa-dashboard
           span.nav-link-text
             | 개인정보수정
+      each item in user.roles
+        case item
+          when 'management'
+            li.nav-item(data-toggle='tooltip', data-placement='right', title='Dashboard')
+              a.nav-link(href='/')
+                //i.fa.fa-fw.fa-dashboard
+                span.nav-link-text
+                  | 인사관리
     ul.navbar-nav.sidenav-toggler
       li.nav-item
         a#sidenavToggler.nav-link.text-center
