@@ -31,8 +31,7 @@ router.get('/', needAuth, function(req, res, next) {
     connection.query('select * from project',function(err,rows){
       if (err) throw(err);
       res.render('project/emp_list', {
-        username: req.user.name,
-        employee_id: req.user.employee_id,
+        user: req.user,
         projects: rows,
         title: '프로젝트 전체 목록'
       });
@@ -44,8 +43,7 @@ router.get('/', needAuth, function(req, res, next) {
     'join client c on o.client_id = c.client_id and c.client_id =?;',client_id, function(err,rows){
       if (err) throw(err);
       res.render('project/cus_list', {
-        username: req.user.name,
-        client_id: client_id,
+        user: req.user,
         projects: rows,
         title: '의뢰한 프로젝트 목록'
       });

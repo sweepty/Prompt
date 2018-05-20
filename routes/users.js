@@ -120,11 +120,10 @@ passport.use('join-local', new LocalStrategy({
                     connection.query('insert into user set ?', sql, function (err, rows) {
                       if (err) throw err;
                       console.log('직원 회원가입 성공!');
-                      var user = rows[0];
-                      console.log(user.employee_id,'테스트용!!!');
                       return done(null, {
-                        username: user.username,
-                        employee_id: user.employee_id,
+                        user: rows[0],
+                        // username: user.username,
+                        // employee_id: user.employee_id,
                         role: 'employee'
                       });
                     });
@@ -154,11 +153,11 @@ passport.use('join-local', new LocalStrategy({
                     var sql = {username: username, password: hash, name: name , client_id: client_id};
                     connection.query('insert into user set ?', sql, function (err, rows) {
                       if (err) throw err;
-                      console.log('고객회원가입성공!');
-                      var user = rows[0];
+                      console.log(rows[0],'고객회원가입성공!');
                       return done(null, {
-                        username: user.username,
-                        client_id: user.client_id,
+                        user: rows[0],
+                        // username: user.username,
+                        // client_id: user.client_id,
                         role: 'client'
                       });
                     });
