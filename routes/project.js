@@ -4,7 +4,7 @@ var mysql_dbc = require('../db/db_con')();
 var connection = mysql_dbc.init();
 var passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy;
-
+var moment = require('moment');
 mysql_dbc.test_open(connection);
 
 passport.serializeUser(function (user, done) {
@@ -98,15 +98,16 @@ var queryy = 'select distinct p.project_id, p.name, p.start_date, p.end_date, p.
 //진행중인 프로젝트
 function findinProgress(req, res, next) {
   var request = queryy+'where w.end_date is NULL';
-  connection.query(request,[req.user.employee_id], function(error, rows) {
+  connection.query(request,[req.user.user.employee_id], function(error, rows) {
     req.in_progress = rows;
     return next();
   });
 }
 //완료한 프로젝트
 function findDone(req, res, next) {
+  console.log( dateString);
   var request = queryy +'where w.end_date is not NULL';
-  connection.query(request,[req.user.employee_id], function(error, rows) {
+  connection.query(request,[req.user.user.employee_id], function(error, rows) {
     req.done = rows;
     next();
   });
@@ -114,8 +115,6 @@ function findDone(req, res, next) {
 
 // //시작 전인 프로젝트
 // function findDidNotStart(req, res, next) {
-//   var now = new Date();
-//   console.log( now.getTime() );
 //   // var today = moment.utc().day();
 //   // console.log(today);
 //   // var todayTimestampStart = moment(today+' 00:00:00').format('x');
@@ -151,15 +150,16 @@ router.get('/:id', function(req, res, next) {
   'join employee e on e.employee_id=w.employee_id '+
   'join job j on j.job_id=w.job_id '+
   'where p.project_id = ? and w.employee_id '
+  const user = req.user.user;
   connection.query(query_client, [project_id], function(err, rows){
     if (err) throw(err);
     var client = rows[0];
     //자신에 대한 정보
-    connection.query(query_members+'= ?', [project_id, req.user.employee_id], function(err, rows){
+    connection.query(query_members+'= ?', [project_id, user.employee_id], function(err, rows){
       if (err) throw(err);
       var my = rows;
       // 자신을 제외한 팀원들을 보여주도록 함.
-      connection.query(query_members+'not in (?)',[project_id, req.user.employee_id], function(err, rows){
+      connection.query(query_members+'not in (?)',[project_id, user.employee_id], function(err, rows){
         if (err) throw(err);
         console.log(rows,'프로젝트확인');
         res.render('project/emp_detail',{
