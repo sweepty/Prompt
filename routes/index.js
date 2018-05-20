@@ -65,7 +65,7 @@ passport.use('login-local', new LocalStrategy({
       return done(false, null);
     }
     else {
-      if (result === null) {
+      if (result.length === 0) {
         console.log('존재하지 않는 아이디입니다.');
         return done(false, null);
       } else {
