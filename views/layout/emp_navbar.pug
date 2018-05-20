@@ -10,11 +10,26 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
           //i.fa.fa-fw.fa-dashboard
           span.nav-link-text
             | 프로젝트
-      li.nav-item(data-toggle='tooltip', data-placement='right', title='Dashboard')
-        a.nav-link(href='/users/myinfo')
-          //i.fa.fa-fw.fa-dashboard
-          span.nav-link-text
-            | 개인정보수정
+
+      each item in user.roles
+        case item
+          when 'management'
+            li.nav-item.dropdown(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+              a.nav-link(href='/')  
+                span.nav-link-text
+                  | 인사관리 
+              .dropdown-menu(aria-labelledby='messagesDropdown')
+                h6.dropdown-header 인사 관리:
+                .dropdown-divider
+                a.dropdown-item(href='#')
+                  strong 신입사원 추가 
+                  .dropdown-message.small 신입 사원을 추가합니다
+                .dropdown-divider
+                a.dropdown-item(href='#')
+                  strong 전체 직원 조회
+                  .dropdown-message.small 모든 직원을 조회합니다.
+
+
       each item in user.roles
         case item
           when 'management'
@@ -22,7 +37,12 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
               a.nav-link(href='/')
                 //i.fa.fa-fw.fa-dashboard
                 span.nav-link-text
-                  | 인사관리
+                  | 평가관리
+      li.nav-item(data-toggle='tooltip', data-placement='right', title='Dashboard')
+        a.nav-link(href='/users/myinfo')
+          //i.fa.fa-fw.fa-dashboard
+          span.nav-link-text
+            | 개인정보수정
     ul.navbar-nav.sidenav-toggler
       li.nav-item
         a#sidenavToggler.nav-link.text-center
