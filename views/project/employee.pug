@@ -4,6 +4,7 @@ block content
   h1= title
   p= user
 
+  h3 참가 중인 프로젝트
   table#dataTable.table.table-bordered(width='100%', cellspacing='0')
     thead
       tr
@@ -12,15 +13,57 @@ block content
         th job
         th project start date
         th project end date
-        th 평가 열림?
     tbody
-      each pro in projects
+      each pro in inProgress
         tr
           td= pro.project_id
-          td= pro.name
+          td
+            a.title(href=`/project/${pro.project_id}`)=pro.name
           td= pro.job
           td= pro.start_date
           td= pro.end_date
-          td= pro.EA == true ? 'yes' : 'no'
+  
+  h3 완료한 프로젝트
+  table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+    thead
+      tr
+        th id
+        th project name
+        th job
+        th project start date
+        th project end date
+        th 평가
+    tbody
+      each pro in done
+        tr
+          td= pro.project_id
+          td
+            a.title(href=`/project/${pro.project_id}`)=pro.name
+          td= pro.job
+          td= pro.start_date
+          td= pro.end_date
+          td
+            a.btn.btn-outline-info(href=`/evaluation/${pro.project_id}`) 평가하기
+  //- h3 시작전
+  //- table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+  //-   thead
+  //-     tr
+  //-       th id
+  //-       th project name
+  //-       th job
+  //-       th project start date
+  //-       th project end date
+  //-       th 평가
+  //-   tbody
+  //-     each pro in not
+  //-       tr
+  //-         td= pro.project_id
+  //-         td
+  //-           a.title(href=`/project/${pro.project_id}`)=pro.name
+  //-         td= pro.job
+  //-         td= pro.start_date
+  //-         td= pro.end_date
+  //-         td
+  //-           a.btn.btn-outline-info(href=`/evaluation/${pro.project_id}`) 평가하기
 
   

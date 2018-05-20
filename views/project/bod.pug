@@ -4,6 +4,8 @@ block content
   h1= title
   p= user
 
+  //진행중인 프로젝트
+  h2="진행중인 프로젝트"
   table#dataTable.table.table-bordered(width='100%', cellspacing='0')
     thead
       tr
@@ -14,10 +16,57 @@ block content
         th 종료일
         th 가격
     tbody
-      each pro in projects
+      each pro in inProgress
         tr
           td= pro.pid
-          td= pro.pname
+          td
+            a.title(href=`/project/${pro.project_id}`)=pro.pname
+          td= pro.cname
+          td= pro.start_date
+          td= pro.end_date
+          td= pro.price
+
+  //예정된 프로젝트
+  br
+  h2="예정된 프로젝트"
+  table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+    thead
+      tr
+        th 프로젝트 id
+        th 프로젝트명
+        th 발주처
+        th 시작일
+        th 종료일
+        th 가격
+    tbody
+      each pro in reserve
+        tr
+          td= pro.pid
+          td
+            a.title(href=`/project/${pro.project_id}`)=pro.pname
+          td= pro.cname
+          td= pro.start_date
+          td= pro.end_date
+          td= pro.price
+
+  //완료된 프로젝트
+  br
+  h2="완료된 프로젝트"
+  table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+    thead
+      tr
+        th 프로젝트 id
+        th 프로젝트명
+        th 발주처
+        th 시작일
+        th 종료일
+        th 가격
+    tbody
+      each pro in done
+        tr
+          td= pro.pid
+          td
+            a.title(href=`/project/${pro.project_id}`)=pro.pname
           td= pro.cname
           td= pro.start_date
           td= pro.end_date

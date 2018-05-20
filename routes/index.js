@@ -59,54 +59,53 @@ passport.use('login-local', new LocalStrategy({
   passwordField: 'password',
   passReqToCallback: true //인증을 수행하는 인증 함수로 HTTP request를 그대로  전달할지 여부를 결정한다
 }, function (req, username, password, done) {
-  connection.query('select * from user where username = ?', [username], function (err, result) {
+  connection.query('select * from (user left outer join authorities on user.user_id = authorities.user_id) left outer join role  on authorities.role_id = role.role_id where username = ?', [username], function (err, result) {
+    // 어차피 return하면 아래 행은 실행되지 않는거기 때문에 이런식으로 짜는게 훨씬 보기 좋아요.
     if (err) {
       console.log('err :' + err);
       return done(false, null);
     }
-    else {
-      if (result === null) {
-        console.log('존재하지 않는 아이디입니다.');
-        return done(false, null);
-      } else {
-        if (!bcrypt.compareSync(password, result[0].password)) {
-          console.log('패스워드가 일치하지 않습니다');
-          return done(false, null);
-        }
-        else {
-          console.log('로그인 성공^*^');
 
-          //직원인지 고객인지 판별
-          connection.query('select * from user where username = ?', [username], function(err, rows){
-            if (err) {
-              console.log('error:', err);
-              return done(null, false, req.flash('loginMessage', '사용자를 찾을 수 없습니다.'));
-            };
-            //고객.
-            user = rows[0]
-            if (user.client_id != null){
-              console.log('고객입니다');
-              console.log(user,'고객정보 확인');
-              return done(null, {
-                username: user.username,
-                user_id: user.user_id,
-                client_id: user.client_id,
-                roles: 'client'
-              });
+    //사용자가 없는경우
+    if (result.length === 0) {
+      console.log('사용자가 없습니다.');
+      return done(false, null);
+    }
 
-            } else{ //직원
-              console.log('직원입니다.');
-              console.log(user,'직원정보 확인');
-              return done(null, {
-                username: user.username,
-                user_id: user.user_id,
-                employee_id: user.employee_id,
-                roles: 'employee'
-              });
-            }
-          });
-        }
+    user = result[0]
+    //비밀번호가 일치하지 않는 경우
+    if (!bcrypt.compareSync(password, user.password)) {
+      return done(false, null);
+    }
+
+    roles = []
+    //사용자 권한 체크
+    for(var i in result) {
+      if(result[i].role != null) {
+        roles.push(result[i].role)
       }
+    }
+    //사용자 role 확인
+    if (user.client_id != null){
+      console.log('고객입니다');
+      console.log(user,'고객정보 확인');
+      roles.unshift('client')
+      return done(null, {
+        username: user.username,
+        user_id: user.user_id,
+        client_id: user.client_id,
+        roles: roles
+      });
+    } else { //직원
+      console.log('직원입니다.');
+      console.log(user,'직원정보 확인');
+      roles.unshift('employee')
+      return done(null, {
+        username: user.username,
+        user_id: user.user_id,
+        employee_id: user.employee_id,
+        roles: roles
+      });
     }
   })
 }));

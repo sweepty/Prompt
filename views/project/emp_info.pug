@@ -1,0 +1,24 @@
+extends ../layout/emp_layout.pug
+
+block content
+  h1= "인사관리 - 전체 직원 조회"
+  br
+ 
+  table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+    thead
+      tr 
+        th No.
+        th 이름
+        th 주민번호
+        th role 
+        th 상세보기
+    tbody 
+      each emp in users
+        tr 
+          td= emp.employee_id
+          td= emp.name
+          td= emp.RRNumber
+          td= "none"
+          td 
+            a.title(href=`/emp/${emp.employee_id}`)
+                button.btn.btn-primary 보기
