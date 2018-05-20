@@ -80,7 +80,7 @@ router.post('/myinfo', needAuth, function(req, res){
       };
       console.log('정보 업데이트 성공~');
       var user = rows[0];
-      req.flash('success', 'Successfully updated'); //왜 flash가 안될까. 
+      req.flash('success', 'Successfully updated'); //왜 flash가 안될까.
       res.redirect('/project'); //업데이트 성공하면 어디로 보내줘야할까..
     });
   });
@@ -116,7 +116,7 @@ passport.use('join-local', new LocalStrategy({
                   bcrypt.hash(password, null, null, function(err, hash) {
                     console.log(employee_id,'직원번호');
                     var sql = {username: username, password: hash, name: name , employee_id: employee_id};
-    
+
                     connection.query('insert into user set ?', sql, function (err, rows) {
                       if (err) throw err;
                       console.log('직원 회원가입 성공!');
@@ -134,11 +134,11 @@ passport.use('join-local', new LocalStrategy({
                   return done(null, false, {message: '이미 가입되어있습니다.'});
                 }
               });
-            } else{ //틀린 직원번호 넣었을 때 
+            } else{ //틀린 직원번호 넣었을 때
               console.log('직원번호 틀림');
               return done(null, false, {message: '직원번호가 틀렸습니다.'});
             }
-          });  
+          });
         } else {
           //직원번호 확인
           connection.query('select * from client where client_id = ?', [client_id], function(err, result){

@@ -66,7 +66,7 @@ router.get('/new', needAuth, function(req, res, next){
   });
 });
 
-//프로젝트 생성 
+//프로젝트 생성
 router.post('/new', function(req, res, next){
   const query = 'insert into project set ?';
   const query2 = 'insert into orderer set ?';
@@ -102,7 +102,7 @@ function findinProgress(req, res, next) {
   var request = queryy+'where w.end_date is NULL';
   connection.query(request,[req.user.employee_id], function(error, rows) {
     req.in_progress = rows;
-    return next();          
+    return next();
   });
 }
 //완료한 프로젝트
@@ -147,7 +147,7 @@ router.get('/:id', function(req, res, next) {
   'from project p join orderer o on p.project_id=o.project_id '+
   'join client c on c.client_id=o.client_id '+
   'where p.project_id =?'
-  var query_members = 
+  var query_members =
   'select p.project_id p_id, p.EA, w.start_date, w.end_date, w.end_date, e.name, j.job '+
   'from project p join works_on w on p.project_id=w.project_id '+
   'join employee e on e.employee_id=w.employee_id '+
@@ -164,7 +164,7 @@ router.get('/:id', function(req, res, next) {
       connection.query(query_members+'not in (?)',[project_id, req.user.employee_id], function(err, rows){
         if (err) throw(err);
         console.log(rows,'프로젝트확인');
-        res.render('project/emp_detail',{ 
+        res.render('project/emp_detail',{
           user: req.user,
           client: client,
           project: rows,
