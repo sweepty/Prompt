@@ -56,8 +56,10 @@ router.post('/new/client', passport.authenticate('join-local', {
 // --------------- 개인 정보 상세 ------------------
 // 조회
 router.get('/myinfo', needAuth, function (req, res) {
-  const sql = 'select username, name from user where user_id= ?';
-  connection.query(sql, req.user.user_id, function(err, rows){
+  const sql = 'select * from user where user_id= ?';
+  console.log(req.user.user,"안녕");
+  console.log(req.user,"22222");
+  connection.query(sql, [req.user.user.user_id], function(err, rows){
     if (err) {throw(err)};
     res.render('users/myinfo',{
       info : rows[0]
@@ -69,12 +71,12 @@ router.get('/myinfo', needAuth, function (req, res) {
 router.post('/myinfo', needAuth, function(req, res){
   const sql = 'select * from user username = ?';
   const sql2 = 'update user set ? where user_id = ?';
-  console.log(req.user.user_id,'user아이디 확인');
+  console.log(req.user.user.user_id,'user아이디 확인');
   req.flash('success', 'Successfully updated');
   //암호화
   bcrypt.hash(req.body.password, null, null, function(err, hash) {
     const value = { password: hash }
-    connection.query('update user set ? where user_id = ?', [value, req.user.user_id], function(err, rows){
+    connection.query('update user set ? where user_id = ?', [value, req.user.user.user_id], function(err, rows){
       if (err) {
         throw(err);
       };
