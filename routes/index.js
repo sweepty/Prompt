@@ -59,7 +59,7 @@ passport.use('login-local', new LocalStrategy({
   passwordField: 'password',
   passReqToCallback: true //인증을 수행하는 인증 함수로 HTTP request를 그대로  전달할지 여부를 결정한다
 }, function (req, username, password, done) {
-  connection.query('select * from user where username = ?', [username], function (err, result) {
+  connection.query('select * from (user left outer join authorities on user.user_id = authorities.user_id) left outer join role  on authorities.role_id = role.role_id where username = ?', [username], function (err, result) {
     // 어차피 return하면 아래 행은 실행되지 않는거기 때문에 이런식으로 짜는게 훨씬 보기 좋아요.
     if (err) {
       console.log('err :' + err);
@@ -68,6 +68,7 @@ passport.use('login-local', new LocalStrategy({
 
     //사용자가 없는경우
     if (result.length === 0) {
+      console.log('사용자가 없습니다.');
       return done(false, null);
     }
 
@@ -77,24 +78,33 @@ passport.use('login-local', new LocalStrategy({
       return done(false, null);
     }
 
+    roles = []
+    //사용자 권한 체크
+    for(var i in result) {
+      if(result[i].role != null) {
+        roles.push(result[i].role)
+      }
+    }
     //사용자 role 확인
     if (user.client_id != null){
       console.log('고객입니다');
       console.log(user,'고객정보 확인');
+      roles.unshift('client')
       return done(null, {
         username: user.username,
         user_id: user.user_id,
         client_id: user.client_id,
-        roles: 'client'
+        roles: roles
       });
     } else { //직원
       console.log('직원입니다.');
       console.log(user,'직원정보 확인');
+      roles.unshift('employee')
       return done(null, {
         username: user.username,
         user_id: user.user_id,
         employee_id: user.employee_id,
-        roles: 'employee'
+        roles: roles
       });
     }
   })
