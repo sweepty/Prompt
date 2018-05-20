@@ -1,9 +1,15 @@
-extends ../layout/emp_layout.pug
+extends ../layout/emp_layout.pug 
 
 block content
-  h1= "인사관리 - 전체 직원 조회"
-  br
- 
+  h1= "인사관리 - "+(all==1?"전체직원 목록":"참여중인 직원 목록")
+  br 
+
+  ul.nav.nav-pills.nav-fill.flex-column.flex-sm-row
+    li.nav-item
+      a.flex-sm-fill.text-sm-center.nav-link(class=(all==1?"active":"") href='#') 전체직원 목록
+    li.nav-item
+      a.flex-sm-fill.text-sm-center.nav-link(class=(all==0?"active":"") href='#') 참여중인 직원 목록 
+    
   table#dataTable.table.table-bordered(width='100%', cellspacing='0')
     thead
       tr 
@@ -13,11 +19,11 @@ block content
         th role 
         th 상세보기
     tbody 
-      each emp in users
+      each user in users
         tr 
-          td= emp.employee_id
-          td= emp.name
-          td= emp.RRNumber
+          td= user.employee_id
+          td= user.name
+          td= user.RRNumber
           td= "none"
           td 
             a.title(href=`/emp/${emp.employee_id}`)
