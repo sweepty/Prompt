@@ -13,6 +13,7 @@ var moment = require('moment');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var projectRouter = require('./routes/project');
+var evaluationRouter = require('./routes/evaluation');
 
 var app = express();
 
@@ -43,6 +44,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/project', projectRouter);
+app.use('/evaluation', evaluationRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

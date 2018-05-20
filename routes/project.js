@@ -79,7 +79,7 @@ router.post('/new', function(req, res, next){
   var data = {name: pname, start_date: start_date, end_date: end_date, EA: false, price: price};
   console.log(data);
   //project insert
-  connection.query(query,data, function(err, rows){
+  connection.query(query, data, function(err, rows){
     if (err) throw(err);
     var data2 = {project_id: rows.insertId, client_id: client_id, manager: manager_name, email: manager_email};
     //orderer insert
@@ -151,7 +151,7 @@ router.get('/:id', function(req, res, next) {
   'join employee e on e.employee_id=w.employee_id '+
   'join job j on j.job_id=w.job_id '+
   'where p.project_id = ? and w.employee_id '
-  connection.query(query_client,[project_id], function(err, rows){
+  connection.query(query_client, [project_id], function(err, rows){
     if (err) throw(err);
     var client = rows[0];
     //자신에 대한 정보
