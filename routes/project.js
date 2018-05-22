@@ -36,11 +36,11 @@ router.get('/', needAuth, function(req, res, next) {
         title: '프로젝트 전체 목록'
       });
     });
-  } else{ //고객 의뢰한 프로젝트만 보여주기
-    const client_id = req.user.client_id;
+  } else{ //고객 의뢰한 프로젝트만 보여주기 (진행중, 완료)
+    const client_id = req.user.user.client_id;
     connection.query('select p.project_id, p.name, p.EA, p.start_date, p.end_date, p.price, o.manager '+
     'from project p inner join orderer o on p.project_id = o.project_id '+
-    'join client c on o.client_id = c.client_id and c.client_id =?;',client_id, function(err,rows){
+    'join client c on o.client_id = c.client_id where c.client_id =?',client_id, function(err,rows){
       if (err) throw(err);
       res.render('project/cus_list', {
         user: req.user,
@@ -54,8 +54,9 @@ router.get('/', needAuth, function(req, res, next) {
 //프로젝트 생성 페이지 get
 router.get('/new', needAuth, function(req, res, next){
   // 고객 id를 몰라도 이름으로 알 수 있도록 하기 위해서ㅇㅇ
-  connection.query('select client_id, name from client', function(err, rows){
-    // connection.query('select * from employee')
+  connection.query('select * from client', function(err, rows){
+    if (err) throw(err);
+    // connection.query('select * from employee ')
     res.render('project/emp_new',{
       user: req.user,
       clients: rows,
@@ -78,6 +79,7 @@ router.post('/new', function(req, res, next){
   var manager_email = req.body.manager_email; // 발주처 관리자 이메일
   var data = {name: pname, start_date: start_date, end_date: end_date, EA: false, price: price};
   console.log(data);
+
   //project insert
   connection.query(query, data, function(err, rows){
     if (err) throw(err);
@@ -91,21 +93,38 @@ router.post('/new', function(req, res, next){
   });
 });
 
+
+// router.get('/list',needAuth, function(req, res, next) {
+//   connection.query('insert into works_on set ?',[],function(err, rows){
+//     if (err) {
+//       next(err);
+//     }
+//     res.redirect('back');
+//   })
+// });
+
 //----------------직원 프로젝트(진행, 완료, 시작) 페이지------------------------
-var queryy = 'select distinct p.project_id, p.name, p.start_date, p.end_date, p.created_at, j.job , p.EA, w.start_date '+
+var queryy = 'select distinct p.project_id, p.name, p.created_at, j.job , p.EA, w.start_date, w.end_date '+
 'from works_on w join project p on w.project_id = p.project_id and w.employee_id = ? '+
 'join job j on w.job_id = j.job_id ';
 //진행중인 프로젝트
 function findinProgress(req, res, next) {
-  var request = queryy+'where w.end_date is NULL';
-  connection.query(request,[req.user.user.employee_id], function(error, rows) {
+  //현재시간
+  var now = new Date();
+  console.log(now.getTime()); //unix 1526915447212
+  var current = now.getTime();
+  console.log(moment(now.getTime()).format());//timestamp 2018-05-22T00:10:47+09:00
+
+  var request = queryy+'where w.end_date is NULL'; // and where UNIX_TIMESTAMP(w.start_date) < ?
+  connection.query(request,[req.user.user.employee_id, current], function(err, rows) {
+    if (err) throw(err);
+    console.log(rows,'타임스탬프확인')
     req.in_progress = rows;
     return next();
   });
 }
 //완료한 프로젝트
 function findDone(req, res, next) {
-  console.log( dateString);
   var request = queryy +'where w.end_date is not NULL';
   connection.query(request,[req.user.user.employee_id], function(error, rows) {
     req.done = rows;
@@ -115,14 +134,17 @@ function findDone(req, res, next) {
 
 // //시작 전인 프로젝트
 // function findDidNotStart(req, res, next) {
-//   // var today = moment.utc().day();
-//   // console.log(today);
-//   // var todayTimestampStart = moment(today+' 00:00:00').format('x');
-//   var request = queryy +'where DATE(w.start_date) > ?';
-//   connection.query(request,[now.getTime(),req.user.employee_id], function(error, rows) {
-//     console.log(rows[0].start_date,'오늘의 타임스탬프~~');
+//   //현재시간을 unix
+//   var now = new Date();
+//   var current = now.getTime();
+//   console.log(moment(now.getTime()).format());
+
+//   var request = queryy +'where w.start_date < now()';
+//   connection.query(request,[req.user.user.employee_id], function(err, rows) {
+//     if (err) throw(err);
+//     // console.log(rows[0].start_date,'오늘의 타임스탬프~~');
 //     console.log(rows);
-//     req.notstart = rows;
+//     req.notyet = rows;
 //     next();
 //   });
 // }
@@ -132,6 +154,7 @@ function renderProjectPage(req, res) {
     inProgress: req.in_progress,
     done: req.done,
     title: '참가한 프로젝트 전체',
+    notyet: req.notyet,
     user: req.user
   });
 }
@@ -154,6 +177,7 @@ router.get('/:id', function(req, res, next) {
   connection.query(query_client, [project_id], function(err, rows){
     if (err) throw(err);
     var client = rows[0];
+    console.log(client,'pname확인');
     //자신에 대한 정보
     connection.query(query_members+'= ?', [project_id, user.employee_id], function(err, rows){
       if (err) throw(err);
@@ -162,6 +186,7 @@ router.get('/:id', function(req, res, next) {
       connection.query(query_members+'not in (?)',[project_id, user.employee_id], function(err, rows){
         if (err) throw(err);
         console.log(rows,'프로젝트확인');
+        
         res.render('project/emp_detail',{
           user: req.user,
           client: client,
@@ -174,22 +199,20 @@ router.get('/:id', function(req, res, next) {
   })
 });
 
-
-
-
-//경영진 프로젝트 조회
+// 경영진 프로젝트 조회
 router.get('/bod', function(req, res, next) {
+  console.log('경영진');
   connection.query('select distinct p.project_id pid, p.name pname, c.name cname, p.start_date, p.end_date, p.price '+
   'from orderer o join project p '+
   'on o.project_id = p.project_id '+
   'join client c on o.client_id = c.client_id', function(err,rows){
     if (err) throw(err);
+    console.log(rows,'확인용');
     res.render('project/bod', {
       user: req.user,
-      projects: rows,
+      inProgress: rows,
       title: '프로젝트 전체 조회'
     });
   });
 });
-
 module.exports = router;

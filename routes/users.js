@@ -71,7 +71,7 @@ router.get('/myinfo', needAuth, function (req, res) {
 router.post('/myinfo', needAuth, function(req, res){
   const sql = 'select * from user username = ?';
   const sql2 = 'update user set ? where user_id = ?';
-  console.log(req.user.user.user_id,'user아이디 확인');
+  console.log(req.user.user_id,'user아이디 확인');
   req.flash('success', 'Successfully updated');
   //암호화
   bcrypt.hash(req.body.password, null, null, function(err, hash) {

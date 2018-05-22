@@ -28,14 +28,53 @@ block content
     .form-group
       label(for='manager_email') 발주처 이메일
       input.form-control(type='email', id='manager_email', name='manager_email', placeholder='manager_email')
-    .form-group
-      label(for='search') 직원 선택
-      form.form-inline.search-input-group(action='/employee', method='GET')
-      #search-form.col-lg-offset-3.col-lg-9
-        .input-group
-          input.form-control.mr-sm-2(type='text', id='search' name='term', placeholder='Search', aria-label='Search', value=term)
-          .button.btn.btn-success
-            i.fa.fa-search
-
-    | 
-    button.btn.btn-primary(type='submit') Register 
+    
+    label 테이블^*^
+    // Example DataTables Card
+    .card.mb-3
+      .card-header
+        i.fa.fa-table
+        |  Data Table Example
+      .card-body
+        .table-responsive
+          table#example.table.table-bordered(style='width:100%')
+            thead
+              tr
+                th id
+                th 고객명
+                th 주소
+                th tel
+                th 추가하기
+            tfoot
+              tr
+                th Name
+                th Position
+            tbody
+              each c in clients
+                tr
+                  td= c.client_id
+                  td= c.name 
+                  td= c.address
+                  td= c.tel
+                  td
+                    a.btn.btn-outline-info 추가하기            
+      | 
+    button.btn.btn-primary(type='submit') 프로젝트 등록하기 
+  
+  script(type='text/javascript').
+    $(document).ready( function () {
+      $('#example').DataTable({
+        select: true,
+        "lengthMenu" : [ [ 5, 10, 50, -1 ], [ 5, 10, 50, "All" ] ],
+        data: {"dfdf","abc","bdgdfdf","Dfdfdf"},
+        columns: [
+            { title: "Name" },
+            { title: "Position" },
+            { title: "Office" },
+            { title: "Extn." },
+            { title: "Start date" },
+            { title: "Salary" }
+        ]
+      });
+    } );
+    
