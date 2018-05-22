@@ -26,7 +26,7 @@ function needAuth(req, res, next) {
 /* GET home page. */
 router.get('/', needAuth, function(req, res, next) {
   console.log(req.user.user.role, 'management 유저info');
-  if (req.user.user.role == "management") {
+  if (req.user.user.role == "management") { // 여기 어떻게.....
     console.log("managment임")
     connection.query('select * from employee e join department d on e.department_id = d.department_id',function(err, rows){
       if (err) throw(err);
@@ -43,11 +43,24 @@ router.get('/', needAuth, function(req, res, next) {
         });
       })
     });
-  } else{
-      res.render('project/emp_info', {
-          
-      })
   }
 });
+
+router.get('/:id', function(req, res, next){
+  var id = req.params.id;
+  console.log(req.params.id,'아이디?');
+  if (req.user.user.role == "management") { // 여기 어떻게.....
+    console.log("managment임")
+    connection.query('select e.employee_id, p.project_id, e.name e_name, p.name p_name, w.start_date, w.end_date '+
+    'from	works_on w right outer join employee e on w.employee_id=e.employee_id '+
+    'right outer join project p on p.project_id=w.project_id where e.employee_id = ?',[id],function(err, rows){
+      if (err) throw(err);
+      res.render('project/emp_info_detail', {
+        user: req.user,
+        employee: rows
+      });
+    });
+  }
+})
 
 module.exports = router;

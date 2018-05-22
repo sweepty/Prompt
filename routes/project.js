@@ -88,7 +88,7 @@ router.post('/new', function(req, res, next){
     connection.query(query2, data2, function(err, result){
       if (err) throw(err);
       //이부분이 이상하다.
-      res.render('/project');
+      res.render('project/emp_list');
     });
   });
 });
