@@ -64,5 +64,5 @@ block content
                   td= pro.start_date
                   td= pro.end_date == null ? '진행중': pro.w_end_date
                   td
-                    a.btn.btn-outline-info(href=`/evaluation/${pro.p_id}`)=pro.EA == true ? '평가하기':'평가 불가'
+                    a.btn.btn-outline-info(href=`/evaluation/${pro.p_id}`)=pro.end_date != null ? '평가하기':'평가 불가'
                   

@@ -44,4 +44,17 @@ router.post('/evaluation/:project_id', function(req, res, next){
   console.log(data);
 });
 
+//질문
+router.get('/:id', function(req, res, next) {
+  connection.query('select distinct ei.evaluation_info_id ei_id, ei.score ei_score, ei.content ei_content, q.question_id q_id, q.score q_score, q.comment q_comment, q.question q_question '+
+  'from evaluation_info ei join question q '+
+  'on ei.question_id = q.question_id ', function(err,rows){
+    if (err) throw(err);
+    res.render('/evaluation/:project_id', {
+      user: req.user,
+      question: question,
+      title: '질문'
+    });
+  });
+});
 module.exports = router;

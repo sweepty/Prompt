@@ -17,6 +17,7 @@ block content
               th 프로젝트 명
               th 시작일
               th 종료일
+              th 평가하기
             tbody
               each pro in projects
                 tr
@@ -24,3 +25,5 @@ block content
                   td= pro.name
                   td= pro.start_date
                   td= pro.end_date
+                  td
+                    a.btn.btn-outline-info(href=`/evaluation/${pro.p_id}`)=pro.end_date != null ? '평가하기':'평가 불가'
