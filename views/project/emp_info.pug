@@ -6,9 +6,9 @@ block content
 
   ul.nav.nav-pills.nav-fill.flex-column.flex-sm-row
     li.nav-item
-      a.flex-sm-fill.text-sm-center.nav-link(class=(all==1?"active":"") href='#') 전체직원 목록
+      a.flex-sm-fill.text-sm-center.nav-link(class=(all==1?"active":"") href='all') 전체직원 목록
     li.nav-item
-      a.flex-sm-fill.text-sm-center.nav-link(class=(all==0?"active":"") href='#') 참여중인 직원 목록 
+      a.flex-sm-fill.text-sm-center.nav-link(class=(all==0?"active":"") href='ing') 참여중인 직원 목록 
     
   table#dataTable.table.table-bordered(width='100%', cellspacing='0')
     thead
@@ -16,15 +16,22 @@ block content
         th No.
         th 이름
         th 주민번호
-        th role 
+        th 학력
+        th 입사일
+        th 부서
+        th 이메일
         th 상세보기
     tbody 
-      each user in users
+      each emp in employees
         tr 
-          td= user.employee_id
-          td= user.name
-          td= user.RRNumber
-          td= "none"
-          td 
+          td= emp.employee_id
+          td= emp.name
+          td= emp.RRNumber
+          td= emp.education
+          td= emp.date_of_entry
+          td= emp.department_name
+          td= emp.email
+          td
             a.title(href=`/emp/${emp.employee_id}`)
                 button.btn.btn-primary 보기
+  
