@@ -61,7 +61,7 @@ router.get('/:id', function(req, res, next) {
   var project_id = req.params.id;
   var query_q = 'select distinct ei.evaluation_info_id ei_id, ei.score ei_score, ei.content ei_content, q.question_id q_id, q.score q_score, q.comment q_comment, q.question q_question '+
   'from evaluation_info ei join question q '+
-  'on ei.question_id = q.question_id '
+  'on ei.question_id = q.question_id'
   const user = req.user;
   connection.query(query_q, function(err,rows){
     if (err) throw(err);
