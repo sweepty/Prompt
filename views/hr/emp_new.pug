@@ -10,15 +10,20 @@ block content
       label(for='RNNumber') 주민등록번호
       input.form-control(type='text', id='RRNumber', name='RRNumber', placeholder='RRNumber')
     .form-group
-      label(for='email') email
-      input.form-control(type='email', id='email', name='email', placeholder='email')
-    .form-group
       label(for="education") 최종학력
       select.form-control(name="education")
         option(value="H")= "고졸"
         option(value="B")= "학사"
         option(value="M")= "석사"
         option(value="D")= "박사"
+    .form-group
+      label(for="client_id") 부서
+      select.form-control(name="department_id")
+        each department in departments
+          option(value=department.department_id)= department.name
+    .form-group
+      label(for='email') email
+      input.form-control(type='email', id='email', name='email', placeholder='email')
   button.btn.btn-primary(type='submit') 신입사원 등록하기 
   
   script(type='text/javascript').
