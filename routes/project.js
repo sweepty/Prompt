@@ -26,7 +26,7 @@ function needAuth(req, res, next) {
 /* GET home page. */
 router.get('/', needAuth, function(req, res, next) {
   console.log(req.user, '유저info');
-  if (req.user.roles[0] == "employee") {
+  if (req.user.roles.includes("employee")) {
     //직원 우선은 모든 프로젝트를 보여주도록 함.
     connection.query('select * from project',function(err,rows){
       if (err) throw(err);

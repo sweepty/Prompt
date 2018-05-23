@@ -1,37 +1,58 @@
 extends ../layout/emp_layout.pug 
 
 block content
-  h1= "인사관리 - "+(all==1?"전체직원 목록":"참여중인 직원 목록")
-  br 
-
-  ul.nav.nav-pills.nav-fill.flex-column.flex-sm-row
+  h1= "인사관리 - 직원 조회"
+  br
+  ul#pills-tab.nav.nav-pills.mb-3(role='tablist')
     li.nav-item
-      a.flex-sm-fill.text-sm-center.nav-link(class=(all==1?"active":"") href='all') 전체직원 목록
+      a#pills-home-tab.nav-link.active(data-toggle='pill', href='#pills-home', role='tab', aria-controls='pills-home', aria-selected='true') 전체 직원
     li.nav-item
-      a.flex-sm-fill.text-sm-center.nav-link(class=(all==0?"active":"") href='ing') 참여중인 직원 목록 
+      a#pills-profile-tab.nav-link(data-toggle='pill', href='#pills-profile', role='tab', aria-controls='pills-profile', aria-selected='false') 프로젝트 참여 직원
+  #pills-tabContent.tab-content
+    #pills-home.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='pills-home-tab')
+      table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+        thead
+          tr 
+            th No.
+            th 이름
+            th 주민번호
+            th 학력
+            th 입사일
+            th 부서
+            th 이메일
+            th 상세보기
+        tbody 
+          each emp in employees
+            tr 
+              td= emp.employee_id
+              td= emp.name
+              td= emp.RRNumber
+              td= emp.education
+              td= emp.date_of_entry
+              td= emp.department_name
+              td= emp.email
+              td
+                a.title(href=`/management/${emp.employee_id}`)
+                    button.btn.btn-primary 보기
+    #pills-profile.tab-pane.fade(role='tabpanel', aria-labelledby='pills-profile-tab')
+      table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+        thead
+          tr 
+            th No.
+            th 이름
+            th 프로젝트 명
+            th 시작일
+            th 상세보기
+        tbody 
+          each emp in p_employees
+            tr 
+              td= emp.employee_id
+              td= emp.e_name
+              td= emp.p_name
+              td= emp.start_date
+              td
+                a.title(href=`/management/${emp.employee_id}`)
+                    button.btn.btn-primary 보기
     
-  table#dataTable.table.table-bordered(width='100%', cellspacing='0')
-    thead
-      tr 
-        th No.
-        th 이름
-        th 주민번호
-        th 학력
-        th 입사일
-        th 부서
-        th 이메일
-        th 상세보기
-    tbody 
-      each emp in employees
-        tr 
-          td= emp.employee_id
-          td= emp.name
-          td= emp.RRNumber
-          td= emp.education
-          td= emp.date_of_entry
-          td= emp.department_name
-          td= emp.email
-          td
-            a.title(href=`/management/${emp.employee_id}`)
-                button.btn.btn-primary 보기
+  
   
