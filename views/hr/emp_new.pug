@@ -20,7 +20,7 @@ block content
       label(for="client_id") 부서
       select.form-control(name="department_id")
         each department in departments
-          option(value=department.department_id)= department.name
+          option(value=department.department_id)= department.department_name
     .form-group
       label(for='email') email
       input.form-control(type='email', id='email', name='email', placeholder='email')
