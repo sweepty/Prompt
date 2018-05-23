@@ -59,15 +59,6 @@ router.get('/myinfo', needAuth, function (req, res) {
   res.render('users/myinfo',{
     user: req.user
   });
-  // // const sql = 'select * from user where user_id= ?';
-  // // console.log(req.user,"안녕");
-  // // console.log(req.user,"22222");
-  // connection.query(sql, [req.user.user_id], function(err, rows){
-  //   if (err) {throw(err)};
-  //   res.render('users/myinfo',{
-  //     user : req.user
-  //   });
-  // })
 });
 
 //수정
@@ -127,6 +118,7 @@ passport.use('join-local', new LocalStrategy({
                       console.log('직원 회원가입 성공!');
                       return done(null, {
                         username: user.username,
+                        user_id: rows.insertId,
                         employee_id: user.employee_id,
                         role: 'employee'
                       });
@@ -160,6 +152,7 @@ passport.use('join-local', new LocalStrategy({
                       console.log(rows[0],'고객회원가입성공!');
                       return done(null, {
                         username: user.username,
+                        user_id: rows.insertId,
                         client_id: user.client_id,
                         role: 'client'
                       });
