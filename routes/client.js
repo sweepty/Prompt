@@ -33,17 +33,18 @@ router.get('/', function(req, res, next){
   });
 });
 
-// // 고객 상세 조회 페이지
-// router.get('/:id',function(req, res, next){
-//   var id = req.params.id;
-//   connection.query('select * from client c join orderer o on c.client_id=o.client_id '+
-//   'join project p on p.project_id=o.project_id where c.client_id = ?', [id], function(err, rows){
-//     res.render('customer/detail',{
-//       user: req.user,
-//       client: rows
-//     });
-//   });
-// });
+// 고객 상세 조회 페이지
+router.get('/:id',function(req, res, next){
+  var id = req.params.id;
+  connection.query('select * from client c join orderer o on c.client_id=o.client_id '+
+  'join project p on p.project_id=o.project_id where c.client_id = ?', [id], function(err, rows){
+    console.log(rows,'고객 상세');
+    res.render('customer/cus_detail',{
+      user: req.user,
+      client: rows
+    });
+  });
+});
 
 //------------고객 추가----------
 router.get('/new', function(req, res, next){
