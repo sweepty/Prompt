@@ -37,7 +37,7 @@ router.get('/new', (req, res, next) => {
 });
 // employee 가입 성공했을때 리다이렉트 시키는 부분
 router.post('/new', passport.authenticate('join-local', {
-  successRedirect: '/project',
+  successRedirect: '/',
   failureRedirect: '/users/new',
   failureFlash: true
 }));
@@ -48,7 +48,7 @@ router.get('/new/client', (req, res, next) => {
 });
 // client 성공했을때 리다이렉트 시키는 부분
 router.post('/new/client', passport.authenticate('join-local', {
-  successRedirect: '/project',
+  successRedirect: '/',
   failureRedirect: '/users/new/client',
   failureFlash: true
 }));
@@ -92,6 +92,7 @@ passport.use('join-local', new LocalStrategy({
     var name = req.body.name;
     var employee_id = req.body.employee_id;
     var client_id = req.body.client_id;
+    roles = [];
     connection.query('select * from user where username = ?', [username], function (err, rows) {
       if (err) { return done(err); }
       if (rows.length) {
@@ -116,11 +117,13 @@ passport.use('join-local', new LocalStrategy({
                     connection.query('insert into user set ?', sql, function (err, rows) {
                       if (err) throw err;
                       console.log('직원 회원가입 성공!');
+                      roles.unshift('employee');                      
                       return done(null, {
-                        username: user.username,
-                        user_id: rows.insertId,
-                        employee_id: user.employee_id,
-                        role: 'employee'
+                        message: '회원 가입 성공! 로그인해주세요.'
+                        // username: username,
+                        // user_id: rows.insertId,
+                        // employee_id: employee_id,
+                        // roles: roles
                       });
                     });
                   });
@@ -149,17 +152,19 @@ passport.use('join-local', new LocalStrategy({
                     var sql = {username: username, password: hash, name: name , client_id: client_id};
                     connection.query('insert into user set ?', sql, function (err, rows) {
                       if (err) throw err;
+                      roles.unshift('client');
                       console.log(rows[0],'고객회원가입성공!');
                       return done(null, {
-                        username: user.username,
-                        user_id: rows.insertId,
-                        client_id: user.client_id,
-                        role: 'client'
+                        message: '회원 가입 성공! 로그인해주세요.'
+                        // username: username,
+                        // user_id: rows.insertId,
+                        // client_id: client_id,
+                        // roles: roles
                       });
                     });
                   });
                 } else{
-                  console.log('이미 가입되어있습니다.')
+                  console.log('이미 가입되어있습니다.');
                   return done(null, false, {message: '이미 가입되어있습니다.'});
                 }
               });
