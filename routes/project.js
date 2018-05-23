@@ -119,49 +119,94 @@ router.post('/new', function(req, res, next){
   });
 });
 
+//------------------ 프로젝트 상세 조회-----------------------------------
+router.get('/:id', function(req, res, next) {
+  var project_id = req.params.id;
+  var query_client = 'select p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
+  'from project p join orderer o on p.project_id=o.project_id '+
+  'join client c on c.client_id=o.client_id '+
+  'where p.project_id =?'
+  var query_members =
+  'select p.project_id p_id, p.EA, w.start_date, w.end_date, w.end_date, e.name, e.employee_id, j.job '+
+  'from project p join works_on w on p.project_id=w.project_id '+
+  'join employee e on e.employee_id=w.employee_id '+
+  'join job j on j.job_id=w.job_id '+
+  'where p.project_id = ? and w.employee_id '
+  const user = req.user;
+  connection.query(query_client, [project_id], function(err, rows){
+    if (err) throw(err);
+    var client = rows[0];
+    console.log(client,'pname확인');
+    // 경영진인 경우
+    if (req.user.roles.includes("management")) {
+      connection.query(query_members,[project_id], function(err, rows){
+        if (err) throw(err);
+        res.render('project/emp_m_detail',{
+          user: req.user,
+          client: client,
+          project: rows,
+          project_id: project_id
+        })
+      });
+    } else {
+      //일반 직원
+      if (req.user.roles.includes("employee")) {
+        //자신에 대한 정보
+        connection.query(query_members+'= ?', [project_id, user.employee_id], function(err, rows){
+          if (err) throw(err);
+          var my = rows;
+          // 자신을 제외한 팀원들을 보여주도록 함.
+          connection.query(query_members+'not in (?)',[project_id, user.employee_id], function(err, rows){
+            if (err) throw(err);
+            console.log(rows,'프로젝트확인');
+            
+            res.render('project/emp_detail',{
+              user: req.user,
+              client: client,
+              project: rows,
+              my: my,
+              title: '프로젝트 상세 조회'
+            });
+          })
+        });
+      } else { //고객
+
+
+      }
+    }
+  })
+});
+
+
 // 프로젝트 새 직원 추가
 router.get('/:id/new', function(req,res, next){
   var id = req.params.id;
   connection.query('select * from employee', function(err, result){
     if (err) throw(err);
     connection.query('select * from job', function(err, job){
-      res.render('project/team',{
+      res.render('project/emp_team',{
         user: req.user,
         employees: result,
-        job: job
+        job: job,
+        id: id,
       });
     });
   })
-})
+});
+
 router.post('/:id/new', function(req, res, next){
   var id = req.params.id;
   var employee_id = req.body.employee_id;
+  var start_date = req.body.start_date+' '+req.body.start_time;
   var job_id = req.body.job_id;
-  var data ={project_id: id, employee_id: employee_id, job_id: job_id};
+  var data ={project_id: id, employee_id: employee_id, job_id: job_id, start_date: start_date};
+  console.log(data,' 데이터 확인 ');
   connection.query('insert into works_on set ?', data, function(err, result){
     if (err) throw(err);
-    res.render('project/employee',{
-      user: req.user,
-    })
+    console.log('투입완료');
+    res.redirect(`/project/${id}`);
   });
 });
-
-// connection.query('insert into works_on set ?', data, function(err, result){
-//   if (err) throw(err);
-//   res.render('project/employee',{
-//     user: req.user,
-
-//   })
-// }
-
-// router.get('/list',needAuth, function(req, res, next) {
-//   connection.query('insert into works_on set ?',[],function(err, rows){
-//     if (err) {
-//       next(err);
-//     }
-//     res.redirect('back');
-//   })
-// });
 
 //----------------직원 프로젝트(진행, 완료, 시작) 페이지------------------------
 var queryy = 'select distinct p.project_id, p.name, p.created_at, j.job , p.EA, w.start_date, w.end_date '+
@@ -219,45 +264,6 @@ function renderProjectPage(req, res) {
   });
 };
 router.get('/my',needAuth, findinProgress, findDone, renderProjectPage);
-
-//------------------ employee 프로젝트 상세 조회-----------------------------------
-router.get('/:id', function(req, res, next) {
-  var project_id = req.params.id;
-  var query_client = 'select p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
-  'from project p join orderer o on p.project_id=o.project_id '+
-  'join client c on c.client_id=o.client_id '+
-  'where p.project_id =?'
-  var query_members =
-  'select p.project_id p_id, p.EA, w.start_date, w.end_date, w.end_date, e.name, j.job '+
-  'from project p join works_on w on p.project_id=w.project_id '+
-  'join employee e on e.employee_id=w.employee_id '+
-  'join job j on j.job_id=w.job_id '+
-  'where p.project_id = ? and w.employee_id '
-  const user = req.user;
-  connection.query(query_client, [project_id], function(err, rows){
-    if (err) throw(err);
-    var client = rows[0];
-    console.log(client,'pname확인');
-    //자신에 대한 정보
-    connection.query(query_members+'= ?', [project_id, user.employee_id], function(err, rows){
-      if (err) throw(err);
-      var my = rows;
-      // 자신을 제외한 팀원들을 보여주도록 함.
-      connection.query(query_members+'not in (?)',[project_id, user.employee_id], function(err, rows){
-        if (err) throw(err);
-        console.log(rows,'프로젝트확인');
-        
-        res.render('project/emp_detail',{
-          user: req.user,
-          client: client,
-          project: rows,
-          my: my,
-          title: '프로젝트 상세 조회'
-        });
-      })
-    });
-  })
-});
 
 // 경영진 프로젝트 조회
 router.get('/bod', function(req, res, next) {
