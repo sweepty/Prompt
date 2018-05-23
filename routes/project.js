@@ -104,19 +104,39 @@ router.post('/new', function(req, res, next){
     });
   });
 });
-router.get('/:id/addteam', function(req,res, next){
+router.get('/:id/new', function(req,res, next){
+  var id = req.params.id;
+  connection.query('select * from employee', function(err, result){
+    if (err) throw(err);
+    connection.query('select * from job', function(err, job){
+      res.render('project/team',{
+        user: req.user,
+        employees: result,
+        job: job
+      });
+    });
+  })
+})
+router.post('/:id/new', function(req, res, next){
   var id = req.params.id;
   var employee_id = req.body.employee_id;
   var job_id = req.body.job_id;
   var data ={project_id: id, employee_id: employee_id, job_id: job_id};
   connection.query('insert into works_on set ?', data, function(err, result){
     if (err) throw(err);
-    res.render('project/:id',{
+    res.render('project/employee',{
       user: req.user,
-      
     })
-  })
-})
+  });
+});
+
+// connection.query('insert into works_on set ?', data, function(err, result){
+//   if (err) throw(err);
+//   res.render('project/employee',{
+//     user: req.user,
+
+//   })
+// }
 
 // router.get('/list',needAuth, function(req, res, next) {
 //   connection.query('insert into works_on set ?',[],function(err, rows){
@@ -181,7 +201,7 @@ function renderProjectPage(req, res) {
     notyet: req.notyet,
     user: req.user
   });
-}
+};
 router.get('/my',needAuth, findinProgress, findDone, renderProjectPage);
 
 //------------------ employee 프로젝트 상세 조회-----------------------------------
