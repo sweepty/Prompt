@@ -2,7 +2,7 @@ extends ../layout/emp_layout.pug
 
 block content
   h1.main-title 발주처 추가
-  form(action='/hr/cus_new', method='POST')
+  form(action='/customer/cus_new', method='POST')
     .form-group
       label(for='client_name') 발주처명
       input.form-control(type='text', id='client_name', name='client_name', placeholder='client_name')
@@ -14,20 +14,5 @@ block content
       input.form-control(type='text', id='address', name='address', placeholder='address')
   button.btn.btn-primary(type='submit') 발주처 등록하기 
   
-  script(type='text/javascript').
-    $(document).ready( function () {
-      $('#example').DataTable({
-        select: true,
-        "lengthMenu" : [ [ 5, 10, 50, -1 ], [ 5, 10, 50, "All" ] ],
-        data: {"dfdf","abc","bdgdfdf","Dfdfdf"},
-        columns: [
-            { title: "Name" },
-            { title: "Position" },
-            { title: "Office" },
-            { title: "Extn." },
-            { title: "Start date" },
-            { title: "Salary" }
-        ]
-      });
-    } );
+  
     
