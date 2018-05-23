@@ -1,0 +1,18 @@
+extends ../layout/emp_layout.pug
+
+block content
+  h1.main-title 발주처 추가
+  form(action='/customer/cus_new', method='POST')
+    .form-group
+      label(for='client_name') 발주처명
+      input.form-control(type='text', id='client_name', name='client_name', placeholder='client_name')
+    .form-group
+      label(for='tel') 대표번호
+      input.form-control(type='text', id='tel', name='tel', placeholder='tel')
+    .form-group
+      label(for='address') 주소
+      input.form-control(type='text', id='address', name='address', placeholder='address')
+  button.btn.btn-primary(type='submit') 발주처 등록하기 
+  
+  
+    
