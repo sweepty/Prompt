@@ -51,19 +51,22 @@ router.post('/:id', function(req, res, next){
     connection.query(query2, data2, function(err, result){
       if (err) throw(err);
       //이부분이 이상하다.
-      res.render('/evaluation/:project_id');
+      res.render('evaluation/emp_eva');
     });
   });
 });
 
 //질문
 router.get('/:id', function(req, res, next) {
-  connection.query('select distinct ei.evaluation_info_id ei_id, ei.score ei_score, ei.content ei_content, q.question_id q_id, q.score q_score, q.comment q_comment, q.question q_question '+
+  var project_id = req.params.id;
+  var query_q = 'select distinct ei.evaluation_info_id ei_id, ei.score ei_score, ei.content ei_content, q.question_id q_id, q.score q_score, q.comment q_comment, q.question q_question '+
   'from evaluation_info ei join question q '+
-  'on ei.question_id = q.question_id ', function(err,rows){
+  'on ei.question_id = q.question_id '
+  const user = req.user;
+  connection.query(query_q, function(err,rows){
     if (err) throw(err);
     console.log(rows,'평가목록');
-    res.render('/evaluation/:project_id', {
+    res.render('evaluation/emp_eva', {
       user: req.user,
       question: rows,
       title: '질문'
