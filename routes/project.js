@@ -86,7 +86,7 @@ router.get('/new', needAuth, function(req, res, next){
 router.post('/new', function(req, res, next){
   const query = 'insert into project set ?';
   const query2 = 'insert into orderer set ?';
-  const query3 = 'insert into works_on set ?';
+  // const query3 = 'insert into works_on set ?';
   //나중에 시작일 종료일 수정하기.
   var pname = req.body.project_name; //이름
   var start_date = req.body.start_date +' '+ req.body.start_time; //시작일
@@ -107,13 +107,13 @@ router.post('/new', function(req, res, next){
     //orderer insert
     connection.query(query2, data2, function(err, result){
       if (err) throw(err);
-      //이부분이 이상하다.
-      var data3 = {employee_id: pm, project_id: rows.insertId, job_id: 1};
-      connection.query(query3,data3, function(err, result){
-        if (err) throw(err);
-        console.log(result,'웍스온 추가 됐나확인');
-        res.redirect('/project');
-      })
+      res.redirect('/project');
+      // var data3 = {employee_id: pm, project_id: rows.insertId, job_id: 1};
+      // connection.query(query3,data3, function(err, result){
+      //   if (err) throw(err);
+      //   console.log(result,'웍스온 추가 됐나확인');
+      //   res.redirect('/project');
+      // })
       
     });
   });
@@ -141,7 +141,7 @@ router.post('/:id/new', function(req, res, next){
   var employee_id = req.body.employee_id;
   var start_date = req.body.start_date+' '+req.body.start_time;
   var job_id = req.body.job_id;
-  var data ={project_id: id, employee_id: employee_id, job_id: job_id, start_date: start_date};
+  var data ={project_id: id, employee_id: employee_id, job_id: job_id, start_date: start_date, end_date: null};
   console.log(data,' 데이터 확인 ');
   connection.query('insert into works_on set ?', data, function(err, result){
     if (err) throw(err);

@@ -48,7 +48,7 @@ router.post('/new', function(req, res, next){
   connection.query('insert into employee set ?',data, function(err, rows){
     if (err) throw(err);
     console.log(req.user,'직원추가 결과확인하기');
-    res.redirect('back');
+    res.redirect('/management');
   });
 });
 

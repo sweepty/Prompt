@@ -7,15 +7,15 @@ block content
       label(for='username') 프로젝트 이름
       input.form-control(type='text', id='project_name', name='project_name', placeholder='project_name')
     .form-group
-      label(for='password') 시작일
+      label(for='start_date') 시작일
       input.form-control(type='date', id='start_date', name='start_date', placeholder='start_date')
       input.form-control(type='time', id='start_time', name='start_time', placeholder='start_time')
     .form-group
-      label(for='password_confirmation') 종료일
+      label(for='end_date') 종료일
       input.form-control(type='date', id='end_date', name='end_date', placeholder='end_date')
       input.form-control(type='time', id='end_time', name='end_time', placeholder='end_time')
     .form-group
-      label(for='name') 가격
+      label(for='price') 가격
       input.form-control(type='text', id='price', name='price', placeholder='price')
     .form-group
       label(for="client_id") 발주처
@@ -28,11 +28,6 @@ block content
     .form-group
       label(for='manager_email') 발주처 이메일
       input.form-control(type='email', id='manager_email', name='manager_email', placeholder='manager_email')
-    .form-group
-      label(for="add_pm") pm 설정
-      select.form-control(name="add_pm")
-        each e in employees
-          option(value=e.employee_id)= e.name            
       | 
     button.btn.btn-primary(type='submit') 프로젝트 등록하기 
     
