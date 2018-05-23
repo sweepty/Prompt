@@ -98,12 +98,14 @@ router.post('/new', function(req, res, next){
       connection.query(query3,data3, function(err, result){
         if (err) throw(err);
         console.log(result,'웍스온 추가 됐나확인');
-        res.render('back');
+        res.redirect('/project');
       })
       
     });
   });
 });
+
+// 프로젝트 새 직원 추가
 router.get('/:id/new', function(req,res, next){
   var id = req.params.id;
   connection.query('select * from employee', function(err, result){
