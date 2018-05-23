@@ -116,15 +116,25 @@ passport.use('join-local', new LocalStrategy({
 
                     connection.query('insert into user set ?', sql, function (err, rows) {
                       if (err) throw err;
-                      console.log('직원 회원가입 성공!');
-                      roles.unshift('employee');                      
-                      return done(null, {
-                        message: '회원 가입 성공! 로그인해주세요.'
-                        // username: username,
-                        // user_id: rows.insertId,
-                        // employee_id: employee_id,
-                        // roles: roles
-                      });
+                      var data ={user_id: rows.insertId, role_id: 4}; //4=employee
+                      connection.query('insert into authorities set ?',data, function(err, result){
+                        connection.query('select * from (user left outer join authorities on user.user_id = authorities.user_id) left outer join role  on authorities.role_id = role.role_id where username = ? ',[username],function(err,results){
+                          roles = []
+                          //사용자 권한 체크
+                          for(var i in results) {
+                            if(results[i].role != null) {
+                              roles.push(results[i].role)
+                            }
+                          }
+                          console.log(results,'직원회원가입성공!');
+                          return done(null, {
+                            username: username,
+                            user_id: rows.insertId,
+                            client_id: client_id,
+                            roles: roles
+                          });
+                        })
+                      })
                     });
                   });
                 } else{ //이미 가입된 직원
@@ -138,7 +148,7 @@ passport.use('join-local', new LocalStrategy({
             }
           });
         } else {
-          //직원번호 확인
+          //고객번호 확인
           connection.query('select * from client where client_id = ?', [client_id], function(err, result){
             console.log(result,'고객');
             if(err) {return done(err);}
@@ -152,15 +162,25 @@ passport.use('join-local', new LocalStrategy({
                     var sql = {username: username, password: hash, name: name , client_id: client_id};
                     connection.query('insert into user set ?', sql, function (err, rows) {
                       if (err) throw err;
-                      roles.unshift('client');
-                      console.log(rows[0],'고객회원가입성공!');
-                      return done(null, {
-                        message: '회원 가입 성공! 로그인해주세요.'
-                        // username: username,
-                        // user_id: rows.insertId,
-                        // client_id: client_id,
-                        // roles: roles
-                      });
+                      var data ={user_id: rows.insertId, role_id: 3}; //3=client
+                      connection.query('insert into authorities set ?',data, function(err, result){
+                        connection.query('select * from (user left outer join authorities on user.user_id = authorities.user_id) left outer join role  on authorities.role_id = role.role_id where username = ? ',[username],function(err,results){
+                          roles = []
+                          //사용자 권한 체크
+                          for(var i in results) {
+                            if(results[i].role != null) {
+                              roles.push(results[i].role)
+                            }
+                          }
+                          console.log(result,'고객회원가입성공!');
+                          return done(null, {
+                            username: username,
+                            user_id: rows.insertId,
+                            client_id: client_id,
+                            roles: roles
+                          });
+                        })
+                      })
                     });
                   });
                 } else{

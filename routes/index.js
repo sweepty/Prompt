@@ -91,7 +91,6 @@ passport.use('login-local', new LocalStrategy({
     if (user.client_id != null){
       console.log('고객입니다');
       console.log(user,'고객정보 확인');
-      roles.unshift('client')
       return done(null, {
         username: user.username,
         user_id: user.user_id,
@@ -101,7 +100,6 @@ passport.use('login-local', new LocalStrategy({
     } else { //직원
       console.log('직원입니다.');
       console.log(user,'직원정보 확인');
-      roles.unshift('employee')
       return done(null, {
         username: user.username,
         user_id: user.user_id,
