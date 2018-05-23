@@ -23,25 +23,37 @@ function needAuth(req, res, next) {
   }
 };
 
-//평가 생성 페이지 get
-router.get('/:id', needAuth, function(req, res, next){
-  var project_id = req.params.id;
-  res.render('evaluation/emp_eva',{
-    user: req.user,
-    title: '평가 생성페이지'
-  });
-});
+// //평가 생성 페이지 get
+// router.get('/:id', needAuth, function(req, res, next){
+//   var project_id = req.params.id;
+//   res.render('evaluation/emp_eva',{
+//     user: req.user,
+//     title: '평가 생성페이지'
+//   });
+// });
 
 //평가 생성
-router.post('/evaluation/:project_id', function(req, res, next){
-  const query = 'insert into evaluation set ?';
-  const query2 = 'insert into evaluation_info set ?';
+router.post('/:id', function(req, res, next){
+  const query = 'insert into project set ?';
+  const query2 = 'insert into evaluation set ?';
 
+  var pname = req.body.project_name;
   var type_of_evaluation = req.body.type_of_evaluation; //평가 종류
   var score = req.body.score; //평가점수
   var content = req.body.content; //평가내용
-  var data = {type_of_evaluation: req.body.type_of_evaluation, score: score, content: content};
+  var data = {name: pname, type_of_evaluation: req.body.type_of_evaluation, score: score, content: content};
   console.log(data);
+  //project insert
+  connection.query(query, data, function(err, rows){
+    if (err) throw(err);
+    var data2 = {project_id: rows.insertId, client_id: client_id, manager: manager_name, email: manager_email};
+    //orderer insert
+    connection.query(query2, data2, function(err, result){
+      if (err) throw(err);
+      //이부분이 이상하다.
+      res.render('/evaluation/:project_id');
+    });
+  });
 });
 
 //질문
@@ -50,9 +62,10 @@ router.get('/:id', function(req, res, next) {
   'from evaluation_info ei join question q '+
   'on ei.question_id = q.question_id ', function(err,rows){
     if (err) throw(err);
+    console.log(rows,'평가목록');
     res.render('/evaluation/:project_id', {
       user: req.user,
-      question: question,
+      question: rows,
       title: '질문'
     });
   });
