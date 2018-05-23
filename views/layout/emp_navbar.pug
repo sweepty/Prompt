@@ -10,10 +10,13 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
           //i.fa.fa-fw.fa-dashboard
           span.nav-link-text
             | 프로젝트
-
+      
+      - var isManager = false
+      
       each item in user.roles
         case item
           when 'management'
+            - isManager = true
             li.nav-item(data-toggle='tooltip', data-placement='right', title='Example Pages')
               a.nav-link.nav-link-collapse.collapsed(data-toggle='collapse', href='#collapseExamplePages', data-parent='#exampleAccordion')
                 span.nav-link-text
@@ -28,11 +31,13 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
                 //i.fa.fa-fw.fa-dashboard
                 span.nav-link-text
                   | 평가관리
-      li.nav-item(data-toggle='tooltip', data-placement='right', title='Dashboard')
-        a.nav-link(href='/evaluation')
-          //i.fa.fa-fw.fa-dashboard
-          span.nav-link-text
-            | 평가하기
+      case isManager
+        when false            
+          li.nav-item(data-toggle='tooltip', data-placement='right', title='Dashboard')
+            a.nav-link(href='/evaluation')
+              //i.fa.fa-fw.fa-dashboard
+              span.nav-link-text
+                | 평가하기
       li.nav-item(data-toggle='tooltip', data-placement='right', title='Dashboard')
         a.nav-link(href='/users/myinfo')
           //i.fa.fa-fw.fa-dashboard
