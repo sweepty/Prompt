@@ -2,6 +2,19 @@ extends ../layout/emp_layout.pug
 
 block content
   h1.main-title 평가 작성
+  table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+    thead
+      tr
+        th id
+        th project name
+        th job
+        th project start date
+        th project end date
+    tbody
+      each pro in question
+        tr
+          td= pro.question
+         
   form(action='/evaluation/:project_id', method='POST')
     .form-group
       label(for='score') 점수
