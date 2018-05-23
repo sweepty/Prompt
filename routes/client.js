@@ -36,10 +36,12 @@ router.get('/', function(req, res, next){
 // 고객 상세 조회 페이지
 router.get('/:id',function(req, res, next){
   var id = req.params.id;
-  connection.query('select * from client c join orderer o on c.client_id=o.client_id '+
+  connection.query('select c.client_id c_id, c.name c_name, c.tel, c.address, o.manager, o.email, p.name p_name ' + 
+  'from client c join orderer o on c.client_id=o.client_id '+
   'join project p on p.project_id=o.project_id where c.client_id = ?', [id], function(err, rows){
+    if (err) throw(err);
     console.log(rows,'고객 상세');
-    res.render('customer/cus_detail',{
+    res.render('customer/detail',{
       user: req.user,
       client: rows
     });

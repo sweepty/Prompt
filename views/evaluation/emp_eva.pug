@@ -14,7 +14,11 @@ block content
       each pro in question
         tr
           td= pro.question
-         
+          td
+            a.title(href=`/project/${pro.project_id}`)=pro.name
+          td= pro.job
+          td= pro.start_date
+          td= pro.end_date
   form(action='/evaluation/:project_id', method='POST')
     .form-group
       label(for='score') 점수
