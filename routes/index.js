@@ -75,6 +75,8 @@ passport.use('login-local', new LocalStrategy({
     user = result[0]
     //비밀번호가 일치하지 않는 경우
     if (!bcrypt.compareSync(password, user.password)) {
+      console.log('비밀번호가 틀렸습니다.')
+      req.flash('danger','틀렸습니다');
       return done(false, null);
     }
 

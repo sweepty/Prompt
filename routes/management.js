@@ -61,6 +61,10 @@ router.get('/:id', function(req, res, next){
       });
     });
   }
-})
+});
+
+router.get('/hr/new', function(req, res, next){
+  res.render('hr/new.pug');
+});
 
 module.exports = router;
