@@ -123,9 +123,8 @@ passport.use('join-local', new LocalStrategy({
                       if (err) throw err;
                       console.log('직원 회원가입 성공!');
                       return done(null, {
-                        user: rows[0],
-                        // username: user.username,
-                        // employee_id: user.employee_id,
+                        username: user.username,
+                        employee_id: user.employee_id,
                         role: 'employee'
                       });
                     });
@@ -157,9 +156,8 @@ passport.use('join-local', new LocalStrategy({
                       if (err) throw err;
                       console.log(rows[0],'고객회원가입성공!');
                       return done(null, {
-                        user: rows[0],
-                        // username: user.username,
-                        // client_id: user.client_id,
+                        username: user.username,
+                        client_id: user.client_id,
                         role: 'client'
                       });
                     });

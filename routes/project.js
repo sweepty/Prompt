@@ -37,7 +37,7 @@ router.get('/', needAuth, function(req, res, next) {
       });
     });
   } else{ //고객 의뢰한 프로젝트만 보여주기 (진행중, 완료)
-    const client_id = req.user.user.client_id;
+    const client_id = req.user.client_id;
     connection.query('select p.project_id, p.name, p.EA, p.start_date, p.end_date, p.price, o.manager '+
     'from project p inner join orderer o on p.project_id = o.project_id '+
     'join client c on o.client_id = c.client_id where c.client_id =?',client_id, function(err,rows){
@@ -116,7 +116,7 @@ function findinProgress(req, res, next) {
   console.log(moment(now.getTime()).format());//timestamp 2018-05-22T00:10:47+09:00
 
   var request = queryy+'where w.end_date is NULL'; // and where UNIX_TIMESTAMP(w.start_date) < ?
-  connection.query(request,[req.user.user.employee_id, current], function(err, rows) {
+  connection.query(request,[req.user.employee_id, current], function(err, rows) {
     if (err) throw(err);
     console.log(rows,'타임스탬프확인')
     req.in_progress = rows;
@@ -126,7 +126,7 @@ function findinProgress(req, res, next) {
 //완료한 프로젝트
 function findDone(req, res, next) {
   var request = queryy +'where w.end_date is not NULL';
-  connection.query(request,[req.user.user.employee_id], function(error, rows) {
+  connection.query(request,[req.user.employee_id], function(error, rows) {
     req.done = rows;
     next();
   });
@@ -140,7 +140,7 @@ function findDone(req, res, next) {
 //   console.log(moment(now.getTime()).format());
 
 //   var request = queryy +'where w.start_date < now()';
-//   connection.query(request,[req.user.user.employee_id], function(err, rows) {
+//   connection.query(request,[req.user.employee_id], function(err, rows) {
 //     if (err) throw(err);
 //     // console.log(rows[0].start_date,'오늘의 타임스탬프~~');
 //     console.log(rows);
@@ -173,7 +173,7 @@ router.get('/:id', function(req, res, next) {
   'join employee e on e.employee_id=w.employee_id '+
   'join job j on j.job_id=w.job_id '+
   'where p.project_id = ? and w.employee_id '
-  const user = req.user.user;
+  const user = req.user;
   connection.query(query_client, [project_id], function(err, rows){
     if (err) throw(err);
     var client = rows[0];
