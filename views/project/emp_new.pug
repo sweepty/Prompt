@@ -28,7 +28,11 @@ block content
     .form-group
       label(for='manager_email') 발주처 이메일
       input.form-control(type='email', id='manager_email', name='manager_email', placeholder='manager_email')
-    
+    .form-group
+      label(for="add_pm") pm 설정
+      select.form-control(name="add_pm")
+        each e in employees
+          option(value=e.employee_id)= e.name
     label 테이블^*^
     // Example DataTables Card
     .card.mb-3

@@ -64,7 +64,9 @@ router.get('/:id', function(req, res, next){
 });
 
 router.get('/hr/new', function(req, res, next){
-  res.render('hr/new.pug');
+  res.render('hr/new.pug',{
+    user: req.user
+  });
 });
 
 module.exports = router;
