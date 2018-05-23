@@ -46,31 +46,29 @@ block content
                 th tel
                 th 추가하기
             tbody
-              each c in clients
+              each c in employees
                 tr
-                  td= c.client_id
+                  td= c.employee_id
                   td= c.name 
-                  td= c.address
-                  td= c.tel
                   td
                     a.btn.btn-outline-info 추가하기            
       | 
     button.btn.btn-primary(type='submit') 프로젝트 등록하기 
   
-  script(type='text/javascript').
-    $(document).ready( function () {
-      $('#example').DataTable({
-        select: true,
-        "lengthMenu" : [ [ 5, 10, 50, -1 ], [ 5, 10, 50, "All" ] ],
-        data: {"dfdf","abc","bdgdfdf","Dfdfdf"},
-        columns: [
-            { title: "Name" },
-            { title: "Position" },
-            { title: "Office" },
-            { title: "Extn." },
-            { title: "Start date" },
-            { title: "Salary" }
-        ]
-      });
-    } );
+script(type='text/javascript').
+  $(document).ready( function () {
+    $('#example').DataTable({
+      select: true,
+      "lengthMenu" : [ [ 5, 10, 50, -1 ], [ 5, 10, 50, "All" ] ],
+      data: {"dfdf","abc","bdgdfdf","Dfdfdf"},
+      columns: [
+          { title: "Name" },
+          { title: "Position" },
+          { title: "Office" },
+          { title: "Extn." },
+          { title: "Start date" },
+          { title: "Salary" }
+      ]
+    });
+  } );
     

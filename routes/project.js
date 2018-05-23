@@ -54,14 +54,16 @@ router.get('/', needAuth, function(req, res, next) {
 //프로젝트 생성 페이지 get
 router.get('/new', needAuth, function(req, res, next){
   // 고객 id를 몰라도 이름으로 알 수 있도록 하기 위해서ㅇㅇ
-  connection.query('select * from client', function(err, rows){
+  connection.query('select * from client', function(err, clients){
     if (err) throw(err);
-    // connection.query('select * from employee ')
-    res.render('project/emp_new',{
-      user: req.user,
-      clients: rows,
-      title: '프로젝트 생성페이지'
-    });
+    connection.query('select * from employee', function(err, employees){
+      res.render('project/emp_new',{
+        user: req.user,
+        clients: clients,
+        employees: employees,
+        title: '프로젝트 생성페이지'
+      });
+    }) 
   });
 });
 
@@ -88,11 +90,10 @@ router.post('/new', function(req, res, next){
     connection.query(query2, data2, function(err, result){
       if (err) throw(err);
       //이부분이 이상하다.
-      res.render('project/emp_list');
+      res.render('project/');
     });
   });
 });
-
 
 // router.get('/list',needAuth, function(req, res, next) {
 //   connection.query('insert into works_on set ?',[],function(err, rows){
