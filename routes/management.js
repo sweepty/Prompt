@@ -63,8 +63,10 @@ router.get('/:id', function(req, res, next){
   }
 });
 
-router.get('/hr/new', function(req, res, next){
-  res.render('hr/new.pug');
+router.get('/hr/emp_new', function(req, res, next){
+  res.render('hr/emp_new', {
+    user: req.user
+  });
 });
 
 module.exports = router;
