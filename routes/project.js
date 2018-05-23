@@ -104,12 +104,19 @@ router.post('/new', function(req, res, next){
     });
   });
 });
-// router.get('/:id/addteam', function(req,res, next){
-//   var id = req.params.id;
-//   var employee_id = req.body.employee_id;
-//   var job_id = req.body.job_id;
-//   connection.query()
-// })
+router.get('/:id/addteam', function(req,res, next){
+  var id = req.params.id;
+  var employee_id = req.body.employee_id;
+  var job_id = req.body.job_id;
+  var data ={project_id: id, employee_id: employee_id, job_id: job_id};
+  connection.query('insert into works_on set ?', data, function(err, result){
+    if (err) throw(err);
+    res.render('project/:id',{
+      user: req.user,
+      
+    })
+  })
+})
 
 // router.get('/list',needAuth, function(req, res, next) {
 //   connection.query('insert into works_on set ?',[],function(err, rows){

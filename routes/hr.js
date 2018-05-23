@@ -26,7 +26,7 @@ function needAuth(req, res, next) {
 //------------직원 추가----------
 router.get('/new', function(req, res, next){
   connection.query('select * from department', function(err, rows){
-    res.render('hr/new.pug',{
+    res.render('hr/emp_new.pug',{
       user: req.user,
       departments: rows
     });
@@ -47,3 +47,4 @@ router.post('/new', function(req, res, next){
     })
   })
 });
+module.exports = router;
