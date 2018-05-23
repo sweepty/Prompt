@@ -32,47 +32,7 @@ block content
       label(for="add_pm") pm 설정
       select.form-control(name="add_pm")
         each e in employees
-          option(value=e.employee_id)= e.name
-    label 테이블^*^
-    // Example DataTables Card
-    .card.mb-3
-      .card-header
-        i.fa.fa-table
-        |  Data Table Example
-      .card-body
-        .table-responsive
-          table#example.table.table-bordered(style='width:100%')
-            thead
-              tr
-                th id
-                th 고객명
-                th 주소
-                th tel
-                th 추가하기
-            tbody
-              each c in employees
-                tr
-                  td= c.employee_id
-                  td= c.name 
-                  td
-                    a.btn.btn-outline-info 추가하기            
+          option(value=e.employee_id)= e.name            
       | 
     button.btn.btn-primary(type='submit') 프로젝트 등록하기 
-  
-  //- script(type='text/javascript').
-  //-   $(document).ready( function () {
-  //-     $('#example').DataTable({
-  //-       select: true,
-  //-       "lengthMenu" : [ [ 5, 10, 50, -1 ], [ 5, 10, 50, "All" ] ],
-  //-       data: {"dfdf","abc","bdgdfdf","Dfdfdf"},
-  //-       columns: [
-  //-           { title: "Name" },
-  //-           { title: "Position" },
-  //-           { title: "Office" },
-  //-           { title: "Extn." },
-  //-           { title: "Start date" },
-  //-           { title: "Salary" }
-  //-       ]
-  //-     });
-  //-   } );
     

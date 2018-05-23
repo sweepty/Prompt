@@ -26,4 +26,8 @@ block content
                   td= pro.start_date
                   td= pro.end_date
                   td
-                    a.btn.btn-outline-info(href=`/evaluation/${pro.project_id}`)=pro.end_date != null ? '평가하기':'평가 불가'
+                    case pro.EA
+                      when 1
+                        a.btn.btn-outline-info(href=`/evaluation/${pro.project_id}`) 평가
+                      when 0
+                        button.btn.btn-default(disabled='disabled') 평가불가
