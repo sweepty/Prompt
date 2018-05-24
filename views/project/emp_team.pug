@@ -21,9 +21,9 @@ block content
                 each e in employees
                   tr
                     form(action=`/project/${id}/new`, method='POST')
-                      td
+                      td= e.employee_id
                         .form-group
-                          input.form-control(id='employee_id', name='employee_id', value= e.employee_id, readonly="")
+                          input.form-control(id='employee_id', name='employee_id', value= e.employee_id,hidden="true")
                       td= e.name
                       td
                         .form-group
