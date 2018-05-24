@@ -215,7 +215,7 @@ router.get('/:id', function(req, res, next) {
   'join client c on c.client_id=o.client_id '+
   'where p.project_id =?'
   var query_members =
-  'select p.project_id p_id, p.EA, w.start_date, w.end_date, w.end_date, e.name, e.employee_id, j.job '+
+  'select p.project_id p_id, p.name p_name, p.EA, w.start_date, w.end_date, w.end_date, e.name, e.employee_id, j.job '+
   'from project p join works_on w on p.project_id=w.project_id '+
   'join employee e on e.employee_id=w.employee_id '+
   'join job j on j.job_id=w.job_id '+
@@ -223,11 +223,11 @@ router.get('/:id', function(req, res, next) {
   const user = req.user;
   connection.query(query_client, [project_id], function(err, rows){
     if (err) throw(err);
-    var client = rows[0];
+    var client = rows;
     console.log(client,'pname확인');
     // 경영진인 경우
     if (req.user.roles.includes("management")) {
-      connection.query(query_members,[project_id], function(err, result){
+      connection.query(query_members, [project_id], function(err, result){
         if (err) throw(err);
         res.render('project/emp_m_detail',{
           user: req.user,

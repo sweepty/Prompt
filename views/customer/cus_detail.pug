@@ -26,7 +26,7 @@ block content
               tr
                 td= c.p_id
                 td
-                  a.title(href='/project/${c.project_id}')= c.p_name
+                  a.title(href=`/project/${c.p_id}`)= c.p_name
                 td= c.start_date 
                 td= c.end_date 
                 td= c.manager

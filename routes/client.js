@@ -53,6 +53,7 @@ router.post('/new', function(req, res, next){
 // 고객 상세 조회 페이지
 router.get('/:id',function(req, res, next){
   var id = req.params.id;
+  console.log(req.params.id, "나와주세요");
   connection.query('select c.client_id c_id, c.name c_name, c.tel, c.address, o.manager, o.email, ' +
   'p.project_id p_id, p.name p_name, p.start_date, p.end_date, p.price ' +  
   'from client c join orderer o on c.client_id=o.client_id '+
@@ -61,7 +62,8 @@ router.get('/:id',function(req, res, next){
     console.log(rows,'고객 상세');
     res.render('customer/cus_detail',{
       user: req.user,
-      client: rows
+      client: rows,
+      id: id
     });
   });
 });
@@ -72,7 +74,7 @@ router.get('/edit/:id', function(req, res, next){
   var id = req.params.id;
   connection.query('select * from client where client_id = ?',[id], function(err, result){
     if (err) throw(err);
-    console.log(result,'고   객');
+    console.log(result,'고  객');
     res.render('customer/cus_edit',{
       user: req.user,
       client: result
