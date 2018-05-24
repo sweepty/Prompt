@@ -32,23 +32,6 @@ router.get('/', function(req, res, next){
     });
   });
 });
-
-// 고객 상세 조회 페이지
-router.get('/:id',function(req, res, next){
-  var id = req.params.id;
-  connection.query('select c.client_id c_id, c.name c_name, c.tel, c.address, o.manager, o.email, ' +
-  'p.project_id p_id, p.name p_name, p.start_date, p.end_date, p.price ' +  
-  'from client c join orderer o on c.client_id=o.client_id '+
-  'join project p on p.project_id=o.project_id where c.client_id = ?', [id], function(err, rows){
-    if (err) throw(err);
-    console.log(rows,'고객 상세');
-    res.render('customer/cus_detail',{
-      user: req.user,
-      client: rows
-    });
-  });
-});
-
 //------------고객 추가----------
 router.get('/new', function(req, res, next){
   res.render('customer/cus_new.pug',{
@@ -67,11 +50,29 @@ router.post('/new', function(req, res, next){
   });
 });
 
+// 고객 상세 조회 페이지
+router.get('/:id',function(req, res, next){
+  var id = req.params.id;
+  connection.query('select c.client_id c_id, c.name c_name, c.tel, c.address, o.manager, o.email, ' +
+  'p.project_id p_id, p.name p_name, p.start_date, p.end_date, p.price ' +  
+  'from client c join orderer o on c.client_id=o.client_id '+
+  'join project p on p.project_id=o.project_id where c.client_id = ?', [id], function(err, rows){
+    if (err) throw(err);
+    console.log(rows,'고객 상세');
+    res.render('customer/cus_detail',{
+      user: req.user,
+      client: rows
+    });
+  });
+});
+
+
 //------------고객 수정----------
 router.get('/edit/:id', function(req, res, next){
   var id = req.params.id;
   connection.query('select * from client where client_id = ?',[id], function(err, result){
     if (err) throw(err);
+    console.log(result,'고   객');
     res.render('customer/cus_edit',{
       user: req.user,
       client: result
@@ -85,7 +86,7 @@ router.post('/edit/:id', function(req, res, next){
   var tel = req.body.tel;
   var address = req.body.address;
   var data = {name: name, tel: tel, address: address};
-  connection.query('update client set ? where client_id = ?',[data,id], function(err, rows){
+  connection.query('update client set ? where client_id = ?',[data, id], function(err, rows){
     if (err) throw(err);
     res.redirect('/client');
   });
