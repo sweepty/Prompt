@@ -46,26 +46,26 @@ block content
                 td= pro.end_date
                 td
                   a.btn.btn-outline-info(href=`/evaluation/${pro.project_id}`) 평가하기
-  //- h3 시작전
-  //- table#dataTable.table.table-bordered(width='100%', cellspacing='0')
-  //-   thead
-  //-     tr
-  //-       th id
-  //-       th project name
-  //-       th job
-  //-       th project start date
-  //-       th project end date
-  //-       th 평가
-  //-   tbody
-  //-     each pro in notyet
-  //-       tr
-  //-         td= pro.project_id
-  //-         td
-  //-           a.title(href=`/project/${pro.project_id}`)=pro.name
-  //-         td= pro.job
-  //-         td= pro.start_date
-  //-         td= pro.end_date
-  //-         td
-  //-           a.btn.btn-outline-info(href=`/evaluation/${pro.project_id}`) 평가하기
+                  
+        h3 시작 전인 프로젝트
+        table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+          thead
+            tr
+              th id
+              th project name
+              th job
+              th project start date
+              th project end date
+          tbody
+            each pro in notyet
+              tr
+                td= pro.project_id
+                td
+                  a.title(href=`/project/${pro.project_id}`)=pro.name
+                td= pro.job
+                td= pro.start_date
+                td= pro.end_date
+                td
+                  a.btn.btn-outline-info(href=`/evaluation/${pro.project_id}`) 평가하기
 
   

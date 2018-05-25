@@ -179,22 +179,16 @@ function findDone(req, res, next) {
   });
 }
 
-// //시작 전인 프로젝트
-// function findDidNotStart(req, res, next) {
-//   //현재시간을 unix
-//   var now = new Date();
-//   var current = now.getTime();
-//   console.log(moment(now.getTime()).format());
-
-//   var request = queryy +'where w.start_date < now()';
-//   connection.query(request,[req.user.employee_id], function(err, rows) {
-//     if (err) throw(err);
-//     // console.log(rows[0].start_date,'오늘의 타임스탬프~~');
-//     console.log(rows);
-//     req.notyet = rows;
-//     next();
-//   });
-// }
+//시작 전인 프로젝트
+function findDidNotStart(req, res, next) {
+  var request = queryy +'where w.start_date > now()';
+  connection.query(request,[req.user.employee_id], function(err, rows) {
+    if (err) throw(err);
+    console.log(rows);
+    req.notyet = rows;
+    next();
+  });
+}
 
 function renderProjectPage(req, res) {
   res.render('project/employee', {
@@ -205,7 +199,7 @@ function renderProjectPage(req, res) {
     user: req.user
   });
 };
-router.get('/my',needAuth, findinProgress, findDone, renderProjectPage);
+router.get('/my',needAuth, findinProgress, findDone, findDidNotStart, renderProjectPage);
 
 //------------------ 프로젝트 상세 조회-----------------------------------
 router.get('/:id', function(req, res, next) {
@@ -221,9 +215,9 @@ router.get('/:id', function(req, res, next) {
   'join job j on j.job_id=w.job_id '+
   'where p.project_id = ? and w.employee_id '
   const user = req.user;
-  connection.query(query_client, [project_id], function(err, rows){
+  connection.query(query_client, [project_id], function(err, row){
     if (err) throw(err);
-    var client = rows;
+    var client = row[0];
     console.log(client,'pname확인');
     // 경영진인 경우
     if (req.user.roles.includes("management")) {
@@ -247,7 +241,7 @@ router.get('/:id', function(req, res, next) {
           connection.query(query_members+'not in (?)',[project_id, user.employee_id], function(err, result){
             if (err) throw(err);
             console.log(rows,'프로젝트확인');
-            
+            console.log(client,'고객있나확인 왜 안뜨냐')
             res.render('project/emp_detail',{
               user: req.user,
               client: client,
