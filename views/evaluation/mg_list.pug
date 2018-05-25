@@ -1,0 +1,28 @@
+extends ../layout/emp_layout.pug
+
+block content
+  h1.main-title 평가 조회 가능 프로젝트 목록(경영진)
+  .container
+    .card.mb-3
+      .card-header
+        .card-body
+          .table-responsive
+            table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+              thead
+                tr 
+                  th No.
+                  th 프로젝트명
+                  th 시작일
+                  th 종료일
+                  th 평가조회
+              tbody
+                each p in project
+                  tr 
+                    td= p.project_id
+                    td= p.name
+                    td= p.start_date
+                    td= p.end_date
+                    td
+                      a.btn.btn-outline-info(href=`/evaluation/${p.project_id}`) 평가조회
+
+
