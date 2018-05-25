@@ -13,8 +13,6 @@ block content
       .container
         .card.mb-3
           .card-header
-            i.fa.fa-table
-            |  전체 직원 조회
             .card-body
               .table-responsive
                 h3 전체 직원 조회
@@ -40,14 +38,12 @@ block content
                         td= emp.department_name
                         td= emp.email
                         td
-                          a.title(href=`/management/${emp.employee_id}`)
+                          a.title(href=`/hr/${emp.employee_id}`)
                               button.btn.btn-primary 보기
     #pills-profile.tab-pane.fade(role='tabpanel', aria-labelledby='pills-profile-tab')
       .container
         .card.mb-3
           .card-header
-            i.fa.fa-table
-            |  프로젝트 참여 직원 조회
             .card-body
               .table-responsive
                 h3 프로젝트 참여 직원 조회
@@ -67,7 +63,7 @@ block content
                         td= emp.p_name
                         td= emp.start_date
                         td
-                          a.title(href=`/management/${emp.employee_id}`)
+                          a.title(href=`/hr/${emp.employee_id}`)
                               button.btn.btn-primary 보기
         
   

@@ -264,21 +264,4 @@ router.get('/:id', function(req, res, next) {
     }
   })
 });
-
-// 경영진 프로젝트 조회
-router.get('/bod', function(req, res, next) {
-  console.log('경영진');
-  connection.query('select distinct p.project_id pid, p.name pname, c.name cname, p.start_date, p.end_date, p.price '+
-  'from orderer o join project p '+
-  'on o.project_id = p.project_id '+
-  'join client c on o.client_id = c.client_id', function(err,rows){
-    if (err) throw(err);
-    console.log(rows,'확인용');
-    res.render('project/bod', {
-      user: req.user,
-      inProgress: rows,
-      title: '프로젝트 전체 조회'
-    });
-  });
-});
 module.exports = router;
