@@ -19,12 +19,11 @@ block content
                   th 담당자 이메일
                   th 수정하기
               tbody
-                each c in client
                   tr
-                    form(action='/client/edit', method='POST')
-                      td= c.name
+                    form(action='/client/${client.id}/edit', method='POST')
+                      td= client.name
                         .form-group
-                          input.form-control(id='name', name='name', value= c.name, hidden="true")
+                          input.form-control(id='name', name='name', value= client.name, hidden="true")
                       td
                         .form-group
                           input.form-control(id='tel', name='tel')

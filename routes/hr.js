@@ -92,9 +92,9 @@ router.get('/:id', function(req, res, next){
 //------------직원 수정----------
 router.get('/:id/edit', function(req, res, next){
   var id = req.params.id;
-  connection.query('select * from employee where employee_id = ?',[id], function(err, result){
+  connection.query('select * from employee where employee_id = ?', [id], function(err, result){
     if (err) throw(err);
-    res.render('hr/edit',{
+    res.render('hr/emp_edit',{
       user: req.user,
       employee: result
     });
@@ -109,7 +109,7 @@ router.post('/:id/edit', function(req, res, next){
   var department = req.body.department;
   var email = req.body.email;
   var data = {name: name, RRNumber: RRNumber, education: education, department: department, email: email};
-  connection.query('update employee set ? where employee_id = ?',[data,id], function(err, rows){
+  connection.query('update employee set ? where employee_id = ?', [data,id], function(err, rows){
     if (err) throw(err);
     res.render('hr/detail', {
       user: req.user,
@@ -120,7 +120,7 @@ router.post('/:id/edit', function(req, res, next){
 // -------------- 직원 삭제 -----------------
 router.delete('/:id/delete', function(req, res, next){
   var id = req.params.id;
-  connection.query('delete from employee where employee_id = ?',[id], function(err, rows){
+  connection.query('delete from employee where employee_id = ?', [id], function(err, rows){
     if (err) throw(err);
     res.redirect('hr/list');
   });

@@ -51,25 +51,29 @@ router.post('/new', function(req, res, next){
 });
 
 //------------고객 수정----------
-router.get('/edit', function(req, res, next){
-  connection.query('select * from client c inner join orderer o on c.client_id = o.client_id group by c.name', function(err, rows){
+router.get('/:id/edit', function(req, res, next){
+  var id = req.params.id;
+  console.log(req.params.id, "나와주세요");
+  connection.query('select * from client c inner join orderer o '+
+  'on c.client_id=o.client_id where c.client_id = ?', [id], function(err, rows){
     if (err) throw(err);
-    console.log(rows, 'ㅎㅎㅎㅎ');
-    res.render('customer/cus_edit', {
+    console.log(rows,'고객 상세');
+    res.render('customer/cus_edit',{
       user: req.user,
-      client: rows
+      client: rows,
+      id: id
     });
   });
 });
 
-router.post('/edit', function(req, res, next){
+router.post('/:id/edit', function(req, res, next){
   var id = req.params.id;
   var name = req.body.name;
   var tel = req.body.tel;
   var address = req.body.address;
   var manager = req.body.manager;
   var email = req.body.email;
-  var data = {name: name, tel: tel, address: address};
+  var data = {name: name, tel: tel, address: address, manager: manager, email: email};
   connection.query('update client set ? where client_id = ?', [data, id], function(err, rows){
     if (err) throw(err);
     res.redirect('/client');
@@ -77,19 +81,8 @@ router.post('/edit', function(req, res, next){
 });
 
 // -------------- 고객 삭제 -----------------
-router.get('/delete', function(req, res, next){
-  connection.query('select * from client c inner join orderer o on c.client_id = o.client_id group by c.name', function(err, rows){
-    if (err) throw(err);
-    res.render('customer/cus_delete', {
-      user: req.user,
-      client: rows
-    });
-  });
-});
-
-router.delete('/delete', function(req, res, next){
+router.delete('/:id/delete', function(req, res, next){
   var id = req.params.id;
-  //query문 기억이...흠...
   connection.query('delete from client where client_id = ?', [id], function(err, rows){
     if (err) throw(err);
     res.redirect('/client');

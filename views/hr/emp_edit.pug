@@ -1,0 +1,49 @@
+extends ../layout/emp_layout
+
+block content
+  .container
+    .card.mb-3
+      .card-header
+        i.fa.fa-table
+        |  직원 수정
+        .card-body
+          .table-responsive
+            h3 직원 수정
+            table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+              thead
+                tr
+                  th ID
+                  th 이름
+                  th 주민번호
+                  th 학력
+                  th 입사일
+                  th 부서
+                  th 이메일
+              tbody
+                each e in employee
+                  tr
+                    form(action='/hr/delete', method='POST')
+                      td= e.employee_id
+                        .form-group
+                          input.form-control(id='id', name='id', hidden="true")
+                      td= e.name
+                        .form-group
+                          input.form-control(id='name', name='name', hidden="true")
+                      td= e.RRNumber
+                        .form-group
+                          input.form-control(id='RRN', name='RRN', hidden="true")
+                      td= e.education
+                        .form-group
+                          input.form-control(id='education', name='education')
+                      td= e.date_of_entry
+                        .form-group
+                          input.form-control(id='date_of_entry', name='date_of_entry', hidden="true")
+                      td= e.department_name
+                        .form-group
+                          input.form-control(id='department', name='department')
+                      td= e.email
+                        .form-group
+                          input.form-control(id='email', name='email')
+                      
+                      td
+                        button.btn.btn-primary(type='submit') 수정하기
