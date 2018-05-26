@@ -50,6 +50,52 @@ router.post('/new', function(req, res, next){
   });
 });
 
+//------------고객 수정----------
+router.get('/edit', function(req, res, next){
+  connection.query('select * from client c inner join orderer o on c.client_id = o.client_id group by c.name', function(err, rows){
+    if (err) throw(err);
+    console.log(rows, 'ㅎㅎㅎㅎ');
+    res.render('customer/cus_edit', {
+      user: req.user,
+      client: rows
+    });
+  });
+});
+
+router.post('/edit', function(req, res, next){
+  var id = req.params.id;
+  var name = req.body.name;
+  var tel = req.body.tel;
+  var address = req.body.address;
+  var manager = req.body.manager;
+  var email = req.body.email;
+  var data = {name: name, tel: tel, address: address};
+  connection.query('update client set ? where client_id = ?', [data, id], function(err, rows){
+    if (err) throw(err);
+    res.redirect('/client');
+  });
+});
+
+// -------------- 고객 삭제 -----------------
+router.get('/delete', function(req, res, next){
+  connection.query('select * from client c inner join orderer o on c.client_id = o.client_id group by c.name', function(err, rows){
+    if (err) throw(err);
+    res.render('customer/cus_delete', {
+      user: req.user,
+      client: rows
+    });
+  });
+});
+
+router.delete('/delete', function(req, res, next){
+  var id = req.params.id;
+  //query문 기억이...흠...
+  connection.query('delete from client where client_id = ?', [id], function(err, rows){
+    if (err) throw(err);
+    res.redirect('/client');
+  });
+});
+
 // 고객 상세 조회 페이지
 router.get('/:id',function(req, res, next){
   var id = req.params.id;
@@ -68,38 +114,4 @@ router.get('/:id',function(req, res, next){
   });
 });
 
-
-//------------고객 수정----------
-router.get('/edit/:id', function(req, res, next){
-  var id = req.params.id;
-  connection.query('select * from client where client_id = ?',[id], function(err, result){
-    if (err) throw(err);
-    console.log(result,'고  객');
-    res.render('customer/cus_edit',{
-      user: req.user,
-      client: result
-    });
-  });
-});
-
-router.post('/edit/:id', function(req, res, next){
-  var id = req.params.id;
-  var name = req.body.name;
-  var tel = req.body.tel;
-  var address = req.body.address;
-  var data = {name: name, tel: tel, address: address};
-  connection.query('update client set ? where client_id = ?',[data, id], function(err, rows){
-    if (err) throw(err);
-    res.redirect('/client');
-  });
-});
-// -------------- 고객 삭제 -----------------
-router.delete('/delete/:id', function(req, res, next){
-  var id = req.params.id;
-  //query문 기억이...흠...
-  connection.query('delete from client where client_id = ?',[id], function(err, rows){
-    if (err) throw(err);
-    res.redirect('/client');
-  });
-});
 module.exports = router;
