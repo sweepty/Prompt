@@ -3,7 +3,7 @@ extends ../layout/emp_layout.pug
 block content
   h1= "인사관리 - 전체 직원 상세보기"
   br
-  h2 이름: #{employee[0].e_name}
+  h2 이름: #{employee[0].name}
   .container
     .card.mb-3
           .card-header
@@ -18,9 +18,9 @@ block content
                       th 시작날짜
                       th 종료 날짜
                   tbody 
-                    each emp in employee
+                    each pro in projects
                       tr 
-                        td= emp.project_id
-                        td= emp.p_name
-                        td= emp.start_date
-                        td= emp.end_date
+                        td= pro.project_id
+                        td= pro.p_name
+                        td= pro.start_date
+                        td= pro.end_date

@@ -71,21 +71,24 @@ router.post('/new', function(req, res, next){
     res.redirect('/hr');
   });
 });
+
 // ----------직원 상세 보기----------
 router.get('/:id', function(req, res, next){
   var id = req.params.id;
-  console.log(req.params.id,'아이디?');
   if (req.user.roles.includes("management")) {
     console.log("경영진임")
-    connection.query('select e.employee_id, p.project_id, e.name e_name, p.name p_name, w.start_date, w.end_date '+
-    'from	works_on w right outer join employee e on w.employee_id=e.employee_id '+
-    'right outer join project p on p.project_id=w.project_id where e.employee_id = ?',[id],function(err, rows){
+    connection.query('select * from employee where employee_id = ?',[id], function(err, result){
       if (err) throw(err);
-      res.render('hr/emp_info_detail', {
-        user: req.user,
-        employee: rows
+      connection.query('select p.project_id, p.name p_name, w.start_date, w.end_date '+
+      'from	works_on w join project p on p.project_id=w.project_id where w.employee_id = ?',[id],function(err, rows){
+        if (err) throw(err);
+        res.render('hr/emp_info_detail', {
+          user: req.user,
+          employee: result,
+          projects: rows
+        });
       });
-    });
+    })
   }
 });
 
