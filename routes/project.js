@@ -30,7 +30,7 @@ router.get('/', needAuth, function(req, res, next) {
   if (req.user.roles.includes("management")) {
     connection.query('select * from project',function(err,rows){
       if (err) throw(err);
-      res.render('project/emp_list', {
+      res.render('project/mg_list', {
         user: req.user,
         projects: rows,
         title: '프로젝트 전체 목록'
@@ -40,15 +40,6 @@ router.get('/', needAuth, function(req, res, next) {
     //일반직원
     if (req.user.roles.includes("employee")) {
       res.redirect('/project/my');
-      //직원 우선은 모든 프로젝트를 보여주도록 함.
-      // connection.query('select * from project',function(err,rows){
-      //   if (err) throw(err);
-      //   res.render('project/emp_list', {
-      //     user: req.user,
-      //     projects: rows,
-      //     title: '프로젝트 전체 목록'
-      //   });
-      // });
     } else { //고객 의뢰한 프로젝트만 보여주기 (진행중, 완료)
       const client_id = req.user.client_id;
       connection.query('select p.project_id, p.name, p.EA, p.start_date, p.end_date, p.price, o.manager '+
