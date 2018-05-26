@@ -77,7 +77,7 @@ router.get('/new', needAuth, function(req, res, next){
 router.post('/new', function(req, res, next){
   const query = 'insert into project set ?';
   const query2 = 'insert into orderer set ?';
-  // const query3 = 'insert into works_on set ?';
+  const query3 = 'insert into works_on set ?';
   //나중에 시작일 종료일 수정하기.
   var pname = req.body.project_name; //이름
   var start_date = req.body.start_date +' '+ req.body.start_time; //시작일
@@ -86,7 +86,7 @@ router.post('/new', function(req, res, next){
   var client_id = req.body.client_id; // 발주처
   var manager_name = req.body.manager_name; // 발주처 관리자 이름
   var manager_email = req.body.manager_email; // 발주처 관리자 이메일
-  var pm = req.body.add_pm;
+  var pm = req.body.pm;
   var data = {name: pname, start_date: start_date, end_date: end_date, EA: false, price: price};
   
   console.log(data);
@@ -99,13 +99,11 @@ router.post('/new', function(req, res, next){
     connection.query(query2, data2, function(err, result){
       if (err) throw(err);
       res.redirect('/project');
-      // var data3 = {employee_id: pm, project_id: rows.insertId, job_id: 1};
-      // connection.query(query3,data3, function(err, result){
-      //   if (err) throw(err);
-      //   console.log(result,'웍스온 추가 됐나확인');
-      //   res.redirect('/project');
-      // })
-      
+      var data3 = {employee_id: pm, project_id: rows.insertId, job_id: 1};
+      connection.query(query3,data3, function(err, result){
+        if (err) throw(err);
+        res.redirect('/');
+      });
     });
   });
 });
@@ -136,20 +134,7 @@ router.post('/edit', function(req, res, next){
   });
 });
 
-// 프로젝트 삭제
-router.get('/delete', function(req, res, next){
-  if (req.user.roles.includes("management")) {
-    connection.query('select * from project',function(err,rows){
-      if (err) throw(err);
-      res.render('project/delete', {
-        user: req.user,
-        project: rows,
-        title: '프로젝트 전체 목록'
-      });
-    });
-  }
-});
-router.delete('/delete', function(req, res, next){
+router.delete('/:id/delete', function(req, res, next){
   var project_id = req.params.id;
   connection.query('delete from project where project_id = ?', [project_id], function(err, rows){
     if (err) throw(err);
@@ -349,6 +334,7 @@ router.get('/:id', function(req, res, next) {
     if (req.user.roles.includes("management")) {
       connection.query(query_members, [project_id], function(err, result){
         if (err) throw(err);
+        console.log(result,'몇개임');
         res.render('project/emp_m_detail',{
           user: req.user,
           client: client,

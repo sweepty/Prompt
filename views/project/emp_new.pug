@@ -28,6 +28,28 @@ block content
     .form-group
       label(for='manager_email') 발주처 이메일
       input.form-control(type='email', id='manager_email', name='manager_email', placeholder='manager_email')
+    .form-group
+      label(for='pm') PM선택
+      .container
+        .card.mb-3
+              .card-header
+                .card-body
+                  .table-responsive
+                    h3 
+                    table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+                      thead
+                        tr
+                          th 
+                          th 사원 id
+                          th 사원 이름
+                      tbody 
+                        each emp in employees
+                          tr
+                            td
+                              .form-group
+                                input.form-control(type ='radio', id='pm', name='pm', value=emp.employee_id)
+                            td= emp.employee_id
+                            td= emp.name
       | 
     button.btn.btn-primary(type='submit') 프로젝트 등록하기 
     
