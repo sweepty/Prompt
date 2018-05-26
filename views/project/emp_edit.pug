@@ -1,0 +1,39 @@
+extends ../layout/emp_layout
+
+block content
+  .container
+    .card.mb-3
+      .card-header
+        i.fa.fa-table
+        |  프로젝트 인원 수정
+        .card-body
+          .table-responsive
+            h3 프로젝트 인원 수정
+            table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+              thead
+                tr
+                  th 직원 번호
+                  th 직원명
+                  th 종료일
+                  th job
+                  th 수정하기
+              tbody
+                each pro in project
+                  tr
+                    form(action=`/project/${id}/edit`, method='POST')
+                      td= pro.employee_id
+                        .form-group
+                          input.form-control(id='employee_id', name='employee_id', value= pro.employee_id,hidden="true")
+                      td= pro.name
+                      td
+                        .form-group
+                          input.form-control(type='date', id='end_date', name='end_date', placeholder='end_date')
+                          input.form-control(type='time', id='end_time', name='end_time', placeholder='end_time')
+                      td
+                        .form-group
+                          select.form-control(name="job_id")
+                            each j in job
+                              option(value=j.job_id)= j.job
+                            
+                      td
+                       button.btn.btn-primary(type='submit') 수정하기
