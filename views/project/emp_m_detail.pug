@@ -8,7 +8,7 @@ block content
       i.fa.fa-table
       |  project detail
     .card-body
-      h1 #{project[0].p_name}
+      h1 #{project[0].name}
       br
       h3 프로젝트 상세 내용
       .table-responsive
@@ -35,6 +35,9 @@ block content
       |
       |
       a.btn.btn-primary(href=`/project/${project_id}/edit`) 인원 수정하기
+      |
+      |
+      a.btn.btn-danger(href=`/project/${project_id}/delete`) 인원 삭제하기
       br
       br
       .table-responsive
