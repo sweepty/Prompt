@@ -50,6 +50,28 @@ router.post('/new', function(req, res, next){
   });
 });
 
+// 고객 상세 조회 페이지
+router.get('/:id',function(req, res, next){
+  var id = req.params.id;
+  console.log(req.params.id, "나와주세요");
+  connection.query('select * from client where client_id = ?',[id], function(err, result){
+    if (err) throw(err);
+    connection.query('select c.client_id c_id, c.name c_name, c.tel, c.address, o.manager, o.email, ' +
+    'p.project_id p_id, p.name p_name, p.start_date, p.end_date, p.price ' +  
+    'from client c join orderer o on c.client_id=o.client_id '+
+    'join project p on p.project_id=o.project_id where c.client_id = ?', [id], function(err, rows){
+      if (err) throw(err);
+      console.log(rows,'고객 상세');
+      res.render('customer/cus_detail',{
+        user: req.user,
+        client: result,
+        projects: rows,
+        id: id
+      });
+    });
+  });
+});
+
 //------------고객 수정----------
 router.get('/:id/edit', function(req, res, next){
   var id = req.params.id;
@@ -92,26 +114,10 @@ router.delete('/:id/delete', function(req, res, next){
   var id = req.params.id;
   connection.query('delete from client where client_id = ?', [id], function(err, rows){
     if (err) throw(err);
+    console.log(rows,'삭제 성공했나요?');
     res.redirect('/client');
   });
 });
 
-// 고객 상세 조회 페이지
-router.get('/:id',function(req, res, next){
-  var id = req.params.id;
-  console.log(req.params.id, "나와주세요");
-  connection.query('select c.client_id c_id, c.name c_name, c.tel, c.address, o.manager, o.email, ' +
-  'p.project_id p_id, p.name p_name, p.start_date, p.end_date, p.price ' +  
-  'from client c join orderer o on c.client_id=o.client_id '+
-  'join project p on p.project_id=o.project_id where c.client_id = ?', [id], function(err, rows){
-    if (err) throw(err);
-    console.log(rows,'고객 상세');
-    res.render('customer/cus_detail',{
-      user: req.user,
-      client: rows,
-      id: id
-    });
-  });
-});
 
 module.exports = router;
