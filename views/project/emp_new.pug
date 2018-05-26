@@ -4,7 +4,7 @@ block content
   h1.main-title 프로젝트 등록
   form(action='/project/new', method='POST')
     .form-group
-      label(for='username') 프로젝트 이름
+      label(for='username') 프로젝트 명
       input.form-control(type='text', id='project_name', name='project_name', placeholder='project_name')
     .form-group
       label(for='start_date') 시작일
@@ -23,7 +23,7 @@ block content
         each client in clients
           option(value=client.client_id)= client.name
     .form-group
-      label(for='manager_name') 발주처 관리자이름
+      label(for='manager_name') 발주처 관리자 이름
       input.form-control(type='text', id='manager_name', name='manager_name', placeholder='manager_name')
     .form-group
       label(for='manager_email') 발주처 이메일

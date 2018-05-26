@@ -12,10 +12,10 @@ block content
         table#dataTable.table.table-bordered(width='100%', cellspacing='0')
           thead
             tr
-              th id
-              th project name
-              th job
-              th project start date
+              th ID
+              th 프로젝트 명
+              th 직무
+              th 시작일
           tbody
             each pro in inProgress
               tr
@@ -29,11 +29,11 @@ block content
         table#dataTable.table.table-bordered(width='100%', cellspacing='0')
           thead
             tr
-              th id
-              th project name
-              th job
-              th project start date
-              th project end date
+              th ID
+              th 프로젝트 명
+              th 직무
+              th 시작일
+              th 종료일
               th 평가
           tbody
             each pro in done
@@ -51,11 +51,11 @@ block content
         table#dataTable.table.table-bordered(width='100%', cellspacing='0')
           thead
             tr
-              th id
-              th project name
-              th job
-              th project start date
-              th project end date
+              th ID
+              th 프로젝트 명
+              th 직무
+              th 시작일
+              th 종료일
           tbody
             each pro in notyet
               tr

@@ -12,11 +12,12 @@ block content
             table#dataTable.table.table-bordered(width='100%', cellspacing='0')
               thead
                 tr
-                  th 프로젝트 id
+                  th ID
                   th 프로젝트 명
                   th 시작일
                   th 종료일
-                  td 수정하기
+                  th 가격
+                  th 수정하기
               tbody
                 each pro in project
                   tr
@@ -33,6 +34,9 @@ block content
                         .form-group
                           input.form-control(type='date', id='end_date', name='end_date', placeholder='end_date')
                           input.form-control(type='time', id='end_time', name='end_time', placeholder='end_time')
-                            
+                      td
+                        .form-group
+                          input.form-control(id='price', name='price', value= price)
+
                       td
                        button.btn.btn-primary(type='submit') 수정하기
