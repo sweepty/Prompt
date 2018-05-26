@@ -111,7 +111,7 @@ router.post('/new', function(req, res, next){
 // 프로젝트 수정
 router.get('/edit', function(req, res, next){
   if (req.user.roles.includes("management")) {
-    connection.query('select * from project',function(err,rows){
+    connection.query('select * from project', function(err, rows){
       if (err) throw(err);
       res.render('project/edit', {
         user: req.user,

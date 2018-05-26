@@ -1,18 +1,41 @@
-extends ../layout/emp_layout.pug
+extends ../layout/emp_layout
 
 block content
-  h1.main-title 발주처 변경하기
-  form(action='/client/edit/:id', method='PUT')
-    .form-group
-      label(for='client_name') 발주처명
-      input.form-control(type='text', id='client_name', name='client_name', placeholder='client_name', value=client.name)
-    .form-group
-      label(for='tel') 대표번호
-      input.form-control(type='text', id='tel', name='tel', placeholder='tel')
-    .form-group
-      label(for='address') 주소
-      input.form-control(type='text', id='address', name='address', placeholder='address')
-    button.btn.btn-primary(type='submit') 발주처 수정하기 
-  
-  
-    
+  .container
+    .card.mb-3
+      .card-header
+        i.fa.fa-table
+        |  발주처 수정
+        .card-body
+          .table-responsive
+            h3 발주처 수정
+            table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+              thead
+                tr
+                  th 발주처명
+                  th 전화번호
+                  th 주소
+                  th 담당자 이름
+                  th 담당자 이메일
+                  th 수정하기
+              tbody
+                  tr
+                    form(action='/client/${client.id}/edit', method='POST')
+                      td= client.name
+                        .form-group
+                          input.form-control(id='name', name='name', value= client.name, hidden="true")
+                      td
+                        .form-group
+                          input.form-control(id='tel', name='tel')
+                      td
+                        .form-group
+                          input.form-control(id='address', name='address')
+                      td
+                        .form-group
+                          input.form-control(id='manager', name='manager')
+                      td
+                        .form-group
+                          input.form-control(id='email', name='email')
+                      
+                      td
+                       button.btn.btn-primary(type='submit') 수정하기
