@@ -69,7 +69,7 @@ router.get('/new', needAuth, function(req, res, next){
         employees: employees,
         title: '프로젝트 생성페이지'
       });
-    }) 
+    })
   });
 });
 
@@ -88,7 +88,7 @@ router.post('/new', function(req, res, next){
   var manager_email = req.body.manager_email; // 발주처 관리자 이메일
   var pm = req.body.pm;
   var data = {name: pname, start_date: start_date, end_date: end_date, EA: false, price: price};
-  
+
   console.log(data);
 
   //project insert
@@ -110,6 +110,17 @@ router.post('/new', function(req, res, next){
 
 // 프로젝트 수정
 router.get('/edit', function(req, res, next){
+  project_id = req.query.id
+  if (project_id != undefined) {
+    connection.query('select * from project where project_id = ?', [project_id], function(err, rows){
+      if (err) throw(err);
+      res.render('project/edit', {
+        user: req.user,
+        project: rows,
+        title: '프로젝트 전체 목록'
+      });
+    });
+  }
   if (req.user.roles.includes("management")) {
     connection.query('select * from project', function(err, rows){
       if (err) throw(err);
