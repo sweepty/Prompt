@@ -76,7 +76,7 @@ router.get('/:id',function(req, res, next){
 router.get('/:id/edit', function(req, res, next){
   var id = req.params.id;
   console.log(req.params.id, "나와주세요");
-  connection.query('select * from client where client_id = ?',[id], function(err, result){
+  connection.query('select * from client where client_id = ?', [id], function(err, result){
     if (err) throw(err);
     connection.query('select c.client_id c_id, c.name c_name, c.tel, c.address, o.manager, o.email, ' +
     'p.project_id p_id, p.name p_name, p.start_date, p.end_date, p.price ' +  

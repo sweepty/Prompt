@@ -12,21 +12,38 @@ block content
             table#dataTable.table.table-bordered(width='100%', cellspacing='0')
               thead
                 tr
-                  th 발주처명
-                  th 전화번호
-                  th 주소
-                  th 담당자 이름
-                  th 담당자 이메일
-                  th 삭제
+                  th ID
+                  th 이름
+                  th 주민번호
+                  th 학력
+                  th 입사일
+                  th 부서
+                  th 이메일
               tbody
-                each c in client
+                each e in employee
                   tr
-                    form(action='/client/delete', method='POST')
-                      td= c.name
-                      td= c.tel
-                      td= c.address
-                      td= c.manager
-                      td= c.email
+                    form(action='/hr/edit', method='POST')
+                      td= e.employee_id
+                        .form-group
+                          input.form-control(id='id', name='id', hidden="true")
+                      td= e.name
+                        .form-group
+                          input.form-control(id='name', name='name', hidden="true")
+                      td= e.RRNumber
+                        .form-group
+                          input.form-control(id='RRN', name='RRN', hidden="true")
+                      td= e.education
+                        .form-group
+                          input.form-control(id='education', name='education')
+                      td= e.date_of_entry
+                        .form-group
+                          input.form-control(id='date_of_entry', name='date_of_entry', hidden="true")
+                      td= e.department_name
+                        .form-group
+                          input.form-control(id='department', name='department')
+                      td= e.email
+                        .form-group
+                          input.form-control(id='email', name='email')
                       
                       td
-                        a.btn.btn-danger.need-confirm-btn(href=`/project/${client.id}?_method=delete`) 삭제
+                        a.btn.btn-danger.need-confirm-btn(href=`/project/${e.employee_id}/delete`) 삭제

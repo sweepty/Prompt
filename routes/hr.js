@@ -72,39 +72,20 @@ router.post('/new', function(req, res, next){
   });
 });
 
-// ----------직원 상세 보기----------
-router.get('/:id', function(req, res, next){
-  var id = req.params.id;
-  if (req.user.roles.includes("management")) {
-    console.log("경영진임")
-    connection.query('select * from employee where employee_id = ?',[id], function(err, result){
-      if (err) throw(err);
-      connection.query('select p.project_id, p.name p_name, w.start_date, w.end_date '+
-      'from	works_on w join project p on p.project_id=w.project_id where w.employee_id = ?',[id],function(err, rows){
-        if (err) throw(err);
-        res.render('hr/emp_info_detail', {
-          user: req.user,
-          employee: result,
-          projects: rows
-        });
-      });
-    })
-  }
-});
-
 //------------직원 수정----------
-router.get('/:id/edit', function(req, res, next){
-  var id = req.params.id;
-  connection.query('select * from employee where employee_id = ?', [id], function(err, result){
+router.get('/edit', function(req, res, next){
+  id = req.params.id;
+  connection.query('select * from employee e inner join department d ' + 
+  'on e.department_id = d.department_id', function(err, rows){
     if (err) throw(err);
     res.render('hr/emp_edit',{
       user: req.user,
-      employee: result
+      employee: rows
     });
   });
 });
 
-router.post('/:id/edit', function(req, res, next){
+router.post('/edit', function(req, res, next){
   var id = req.params.id;
   var name = req.body.name;
   var RRNumber = req.body.RRNumber;
@@ -128,4 +109,25 @@ router.delete('/:id/delete', function(req, res, next){
     res.redirect('hr/list');
   });
 });
+
+// ----------직원 상세 보기----------
+router.get('/:id', function(req, res, next){
+  var id = req.params.id;
+  if (req.user.roles.includes("management")) {
+    console.log("경영진임")
+    connection.query('select * from employee where employee_id = ?',[id], function(err, result){
+      if (err) throw(err);
+      connection.query('select p.project_id, p.name p_name, w.start_date, w.end_date '+
+      'from	works_on w join project p on p.project_id=w.project_id where w.employee_id = ?',[id],function(err, rows){
+        if (err) throw(err);
+        res.render('hr/emp_info_detail', {
+          user: req.user,
+          employee: result,
+          projects: rows
+        });
+      });
+    })
+  }
+});
+
 module.exports = router;
