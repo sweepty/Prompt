@@ -6,21 +6,62 @@ block content
   h2 이름: #{employee[0].name}
   .container
     .card.mb-3
-          .card-header
-            .card-body
-              .table-responsive
-                h3 
-                table#dataTable.table.table-bordered(width='100%', cellspacing='0')
-                  thead
-                    tr
-                      th ID
-                      th 프로젝트 명
-                      th 시작일
-                      th 종료일
-                  tbody 
-                    each pro in projects
-                      tr 
-                        td= pro.project_id
-                        td= pro.p_name
-                        td= pro.start_date
-                        td= pro.end_date
+      .card-header
+        i.fa.fa-table
+        |  project list
+      .card-body
+        .table-responsive
+          h3 
+          table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+            thead
+              tr
+                th ID
+                th 프로젝트 명
+                th 시작일
+                th 종료일
+            tbody 
+              each pro in projects
+                tr 
+                  td= pro.project_id
+                  td= pro.p_name
+                  td= pro.start_date
+                  td= pro.end_date
+    .card.mb-3
+      .card-header
+        i.fa.fa-table
+        |  평가 평균 점수
+      .card-body
+        .table-responsive
+          h3 
+          table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+            thead
+              tr
+                th 평가항목
+                th 전체평균
+            tbody 
+              each eva in evaluations
+                tr 
+                  td= eva.question
+                  td= eva.score
+    .card.mb-3
+      .card-header
+        i.fa.fa-table
+        |  평가 상세
+      .card-body
+          .table-responsive
+            h3 
+            table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+              thead
+                tr
+                  th 평가항목
+                  th 점수
+                  th 코멘트
+
+              tbody 
+                each com in comments
+                  tr 
+                    td= com.question
+                    td= com.score
+                    td= com.content
+
+    

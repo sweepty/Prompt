@@ -82,14 +82,29 @@ router.get('/:id', function(req, res, next){
       connection.query('select p.project_id, p.name p_name, w.start_date, w.end_date '+
       'from	works_on w join project p on p.project_id=w.project_id where w.employee_id = ?',[id],function(err, rows){
         if (err) throw(err);
-        res.render('hr/emp_info_detail', {
-          user: req.user,
-          employee: result,
-          projects: rows
+        connection.query('select q.question, avg(i.score) as score '+
+        'from evaluation e right join evaluation_info i on e.evaluation_id=i.evaluation_id '+
+        'join employee m on m.employee_id=e.evaluated_id '+
+        'join question q on q.question_id=i.question_id '+
+        'where e.evaluated_id = ? group by i.question_id',[id], function(err, eval_result){
+          if (err) throw(err);
+          connection.query('select q.question, i.score, i.content '+
+          'from evaluation e right join evaluation_info i on e.evaluation_id=i.evaluation_id '+
+          'join employee m on m.employee_id=e.evaluated_id '+
+          'join question q on q.question_id=i.question_id '+
+          'where e.evaluated_id = ?',[id], function(err, comments){
+            res.render('hr/emp_info_detail', {
+              user: req.user,
+              employee: result,
+              projects: rows,
+              evaluations: eval_result,
+              comments: comments
+            });
+          })
         });
       });
-    })
-  }
+    });
+  };
 });
 
 //------------직원 수정----------
