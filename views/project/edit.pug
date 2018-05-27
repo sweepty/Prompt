@@ -21,7 +21,7 @@ block content
               tbody
                 each pro in project
                   tr
-                    form(action=`/project/edit`, method='POST')
+                    form(action='/project/edit?id='+pro.project_id, method='POST')
                       td= pro.project_id
                         .form-group
                           input.form-control(id='project_id', name='project_id', value= pro.project_id,hidden="true")

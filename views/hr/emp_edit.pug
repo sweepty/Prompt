@@ -22,7 +22,7 @@ block content
               tbody
                 each e in employee
                   tr
-                    form(action='/hr/delete', method='POST')
+                    form(action='/hr/edit?id='+e.employee_id, method='POST')
                       td= e.employee_id
                         .form-group
                           input.form-control(id='id', name='id', hidden="true")
@@ -32,18 +32,18 @@ block content
                       td= e.RRNumber
                         .form-group
                           input.form-control(id='RRN', name='RRN', hidden="true")
-                      td= e.education
+                      td
                         .form-group
-                          input.form-control(id='education', name='education')
+                          input.form-control(id='education', name='education', value=e.education)
                       td= e.date_of_entry
                         .form-group
                           input.form-control(id='date_of_entry', name='date_of_entry', hidden="true")
-                      td= e.department_name
+                      td
                         .form-group
-                          input.form-control(id='department', name='department')
-                      td= e.email
+                          input.form-control(id='department', name='department', value=e.department_name)
+                      td
                         .form-group
-                          input.form-control(id='email', name='email')
+                          input.form-control(id='email', name='email', value=e.email)
                       
                       td
                         button.btn.btn-primary(type='submit') 수정하기

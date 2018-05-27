@@ -50,6 +50,33 @@ router.post('/new', function(req, res, next){
   });
 });
 
+//------------고객 수정----------
+router.get('/edit', function(req, res, next){
+  connection.query('select * from client c inner join orderer o ' + 
+  'on c.client_id = o.client_id group by c.client_id', function(err, rows){
+    if (err) throw(err);
+    console.log(rows, '고객 수정');
+    res.render('customer/cus_edit',{
+      user: req.user,
+      client: rows,
+    });
+  });
+});
+
+router.post('/edit', function(req, res, next){
+  var id = req.params.id;
+  var name = req.body.name;
+  var tel = req.body.tel;
+  var address = req.body.address;
+  var manager = req.body.manager;
+  var email = req.body.email;
+  var data = {name: name, tel: tel, address: address, manager: manager, email: email};
+  connection.query('update client set ? where client_id = ?', [data, id], function(err, rows){
+    if (err) throw(err);
+    res.redirect('/client');
+  });
+});
+
 // 고객 상세 조회 페이지
 router.get('/:id',function(req, res, next){
   var id = req.params.id;
@@ -69,43 +96,6 @@ router.get('/:id',function(req, res, next){
         id: id
       });
     });
-  });
-});
-
-//------------고객 수정----------
-router.get('/:id/edit', function(req, res, next){
-  var id = req.params.id;
-  console.log(req.params.id, "나와주세요");
-  connection.query('select * from client where client_id = ?',[id], function(err, result){
-    if (err) throw(err);
-    connection.query('select c.client_id c_id, c.name c_name, c.tel, c.address, o.manager, o.email, ' +
-    'p.project_id p_id, p.name p_name, p.start_date, p.end_date, p.price ' +  
-    'from client c join orderer o on c.client_id=o.client_id '+
-    'left outer join project p on p.project_id=o.project_id where c.client_id = ?', [id], function(err, rows){
-      if (err) throw(err);
-      console.log(result,'고객 상세');
-      res.render('customer/cus_detail',{
-        user: req.user,
-        client: result,
-        projects: rows,
-        id: id
-      });
-
-    });
-  });
-});
-
-router.post('/:id/edit', function(req, res, next){
-  var id = req.params.id;
-  var name = req.body.name;
-  var tel = req.body.tel;
-  var address = req.body.address;
-  var manager = req.body.manager;
-  var email = req.body.email;
-  var data = {name: name, tel: tel, address: address, manager: manager, email: email};
-  connection.query('update client set ? where client_id = ?', [data, id], function(err, rows){
-    if (err) throw(err);
-    res.redirect('/client');
   });
 });
 
