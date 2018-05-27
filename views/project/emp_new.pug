@@ -32,24 +32,26 @@ block content
       label(for='pm') PM선택
       .container
         .card.mb-3
-              .card-header
-                .card-body
-                  .table-responsive
-                    h3 
-                    table#dataTable.table.table-bordered(width='100%', cellspacing='0')
-                      thead
-                        tr
-                          th 
-                          th 사원 id
-                          th 사원 이름
-                      tbody 
-                        each emp in employees
-                          tr
-                            td
-                              .form-group
-                                input.form-control(type ='radio', id='pm', name='pm', value=emp.employee_id)
-                            td= emp.employee_id
-                            td= emp.name
+          .card-header
+            i.fa.fa-table
+            |  pm 선택
+          .card-body
+            .table-responsive
+              h3 
+              table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+                thead
+                  tr
+                    th 
+                    th 사원 id
+                    th 사원 이름
+                tbody 
+                  each emp in employees
+                    tr
+                      td
+                        .form-group
+                          input.form-control(type ='radio', id='pm', name='pm', value=emp.employee_id)
+                      td= emp.employee_id
+                      td= emp.name
       | 
-    button.btn.btn-primary(type='submit') 프로젝트 등록하기 
+      button.btn.btn-primary(type='submit') 프로젝트 등록하기 
     
