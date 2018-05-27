@@ -111,9 +111,9 @@ router.post('/new', function(req, res, next){
   });
 });
 
-// 프로젝트 수정
+// 프로젝트 수정 @@@@@@@@@@이상하게 생겼음. 고칠것
 router.get('/edit', function(req, res, next){
-  project_id = req.query.id
+  project_id = req.params.id
   if (project_id != undefined) {
     connection.query('select * from project where project_id = ?', [project_id], function(err, rows){
       if (err) throw(err);
@@ -187,7 +187,7 @@ router.post('/:id/new', function(req, res, next){
   });
 });
 
-// 프로젝트 참여 직원 수정
+// 프로젝트 참여 직원 수정@@@@@@@@@@@@@@@@@@@고쳐야한다
 router.get('/:id/edit', function(req,res, next){
   var project_id = req.params.id;
   var query_client = 'select p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
@@ -200,27 +200,20 @@ router.get('/:id/edit', function(req,res, next){
   'join employee e on e.employee_id=w.employee_id '+
   'join job j on j.job_id=w.job_id '+
   'where p.project_id = ? and w.employee_id '
-  const user = req.user;
-  connection.query(query_client, [project_id], function(err, row){
-    if (err) throw(err);
-    var client = row[0];
-    console.log(client,'pname확인');
-    // 경영진인 경우
-    if (req.user.roles.includes("management")) {
-      connection.query(query_members, [project_id], function(err, result){
-        if (err) throw(err);
-        connection.query('select * from job', function(err, job){
-          res.render('project/emp_edit',{
-            user: req.user,
-            client: client,
-            project: result,
-            project_id: project_id,
-            job: job
-          });
+  if (req.user.roles.includes("management")) {
+    connection.query(query_members, [project_id], function(err, result){
+      if (err) throw(err);
+      connection.query('select * from job', function(err, job){
+        res.render('project/emp_edit',{
+          user: req.user,
+          client: client,
+          project: result,
+          project_id: project_id,
+          job: job
         });
       });
-    }
-  })
+    });
+  }
 });
 
 router.post('/:id/edit', function(req, res, next){
@@ -284,7 +277,7 @@ var queryy = 'select distinct p.project_id, p.name, p.created_at, j.job , p.EA, 
 //진행중인 프로젝트
 function findinProgress(req, res, next) {
   var request = queryy+'where w.start_date < now() and w.end_date is NULL';
-  connection.query(request,[req.user.employee_id, current], function(err, rows) {
+  connection.query(request,[req.user.employee_id], function(err, rows) {
     if (err) throw(err);
     console.log(rows,'타임스탬프확인')
     req.in_progress = rows;
@@ -325,7 +318,7 @@ router.get('/my', needAuth, findinProgress, findDone, findDidNotStart, renderPro
 //------------------ 프로젝트 상세 조회-----------------------------------
 router.get('/:id', function(req, res, next) {
   var project_id = req.params.id;
-  var query_client = 'select p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
+  var query_client = 'select p.project_id p_id, p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
   'from project p join orderer o on p.project_id=o.project_id '+
   'join client c on c.client_id=o.client_id '+
   'where p.project_id =?'

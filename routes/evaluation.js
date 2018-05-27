@@ -149,98 +149,77 @@ router.post('/:id/form/:member_id', function(req, res, next){
   'where e.employee_id = ? and w.project_id = ?';
 
   console.log(req.params.member_id,'피평가자 id확인하기');
-  var score = req.body.score;
-  var content = req.body.content;
-  
-  //질문개수 받기
-  connection.query('select count(*) from question', function(err, num){
-    if (err) throw(err);
-    // 고객
-    if (req.user.roles.includes('client')) {
-      var data = {evaluator_id: req.user.client_id, evaluated_id: req.params.member_id, type_of_evaluation: 'client'};
-      connection.query(query, data, function(err, rows){
-        if (err) throw(err);
-        var data2 = {evaluation_id: rows.insertId, question_id: rows.insertId, score: score, content: content};
-        connection.query(query2, data2, function(err, result){
+  // 고객  - 외않되
+  if (req.user.roles.includes('client')) {
+    var data = {project_id: req.params.id, evaluator_id: req.user.client_id, evaluated_id: req.params.member_id, type_of_evaluation: 'client'};
+    console.log(data,'evaluation에 넣을 데이터 확인')
+    
+    connection.query(query, data, function(err, result){
+      if (err) throw(err);
+      // 질문 각 바디에 넣기
+      for(i=0; i < req.body.question_id.length; i++){
+        connection.query('insert into evaluation_info(evaluation_id, question_id, score, content) values(?,?,?,?)', 
+        [result.insertId, req.body.question_id[i], req.body.score[i], req.body.content[i]], function(err, result2){
           if (err) throw(err);
-          res.redirect(`/evaluation/${req.params.id}/form/${req.params.member_id}`);
         });
-      });
-    }
-
-    //직원 
-    else {
-      // 경영진
-      if (req.user.roles.includes('management')){
-        res.redirect('/evaluation');
       }
-      // 직원
-      else{
-        //사용자가 pm인지 아닌지 판별
-        connection.query(isPM, [req.user.employee_id, req.params.id], function(err, result){
-          if (err) throw(err);
-          console.log(result,'pmdlswl dkslswl ghkrdlsgoddfu');
-          console.log(req.body,'바디에 뭐있나확인');
-          console.log(req.body.question_id.length,'길이확인')
-          if (result.job == 'PM') {
-            
-            console.log('현재 평가자가 pm이므로 pm 평가로 넘어갑니다.');
+    });
+    res.redirect(`/evaluation/${req.params.id}`);
+  }
+
+  //직원 
+  else {
+    // 경영진
+    if (req.user.roles.includes('management')){
+      res.redirect('/evaluation'); //@@@@2추가
+    }
+    // 직원
+    else{
+      //사용자가 pm인지 아닌지 판별
+      connection.query(isPM, [req.user.employee_id, req.params.id], function(err, result){
+        if (err) throw(err);
+        console.log(result[0].job,'이 프로젝트에서의 내 직무');
+        if (result[0].job == 'PM') {
+          
+          console.log('현재 평가자가 pm이므로 pm 평가로 넘어갑니다.');
+          var data = {project_id: req.params.id, evaluator_id: req.user.employee_id, evaluated_id: req.params.member_id, type_of_evaluation: 'PM'};
+          console.log(data,'evaluation에 넣을 데이터 확인')
+
+          connection.query(query, data, function(err, result){
+            if (err) throw(err);
             // 질문 각 바디에 넣기
             for(i=0; i < req.body.question_id.length; i++){
-              console.log(req.body.question_id[i],'번호임');
-              // var i = {evaluation_id: result.insertId, question_id: rows.insertId, score: score, content: content}
+              connection.query('insert into evaluation_info(evaluation_id, question_id, score, content) values(?,?,?,?)', 
+              [result.insertId, req.body.question_id[i], req.body.score[i], req.body.content[i]], function(err, result2){
+                if (err) throw(err);
+              });
             }
-            var data = {project_id: req.params.id, evaluator_id: req.user.employee_id, evaluated_id: req.params.member_id, type_of_evaluation: 'pm'};
+          });
+          res.redirect(`/evaluation/${req.params.id}`);
+        } else {
+          console.log('동료평가임')
+          //evaluation에 넣을 거
+          var data = {project_id: req.params.id, evaluator_id: req.user.employee_id, evaluated_id: req.params.member_id, type_of_evaluation: 'peer'};
+          console.log(data,'evaluation에 넣을 데이터 확인')
 
-            // connection.query(query, data, function(err, result){
-            //   if (err) throw(err);
-            //   console.log(result, '첫번째 insert 잘 되었나 확인');
-
-            //   var data2 = {evaluation_id: result.insertId, question_id: rows.insertId, score: score, content: content};
-            //   connection.query(query2, data2, function(err, result2){
-            //     if (err) throw(err);
-            //     console.log(result2, '두번째 insert 잘 되었음. 확인해보세요 calllbackkkhelll');
-            //     res.redirect(`/evaluation/${req.params.id}/form/${req.params.member_id}`);
-
-            //   });
-            // });
-          } else {
-            console.log('동료평가임')
-            
-            // for(i=0; i < req.body.question_id.length; i++){
-            //   // var i = {evaluation_id: result.insertId, question_id: req.body.question_id[i], score: req.body.score[i], content: req.body.content[i]};
-            //   var i = {question_id: req.body.question_id[i], score: req.body.score[i], content: req.body.content[i]};
-            //   console.log(i,'info에 넣을 데이터 확인')
-            //   // connection.query(query2, i, function(err, result2){
-            //   //   if (err) throw(err);
-            //   //   console.log(result2, '두번째 insert 잘 되었음. 확인해보세요 calllbackkkhelll');
-            //   // });
-            // }
-            //evaluation에 넣을 거
-            var data = {project_id: req.params.id, evaluator_id: req.user.employee_id, evaluated_id: req.params.member_id, type_of_evaluation: 'peer'};
-            console.log(data,'evaluation에 넣을 데이터 확인')
-
-            connection.query(query, data, function(err, result){
-              if (err) throw(err);
-              console.log(result, '첫번째 insert 잘 되었나 확인');
-              console.log(req.body.question_id.length,'길이');
-              // 질문 각 바디에 넣기
-              for(i=0; i < req.body.question_id.length; i++){
-                // var i = {evaluation_id: result.insertId, question_id: req.body.question_id[i], score: req.body.score[i], content: req.body.content[i]};
-                // console.log(i,'info에 넣을 데이터 확인')
-                connection.query('insert into evaluation_info(evaluation_id, question_id, score, content) values(?,?,?,?)', 
-                [result.insertId, req.body.question_id[i], req.body.score[i], req.body.content[i]], function(err, result2){
-                  if (err) throw(err);
-                  console.log(result2, '두번째 insert 잘 되었음. 확인해보세요 calllbackkkhelll');
-                });
-              }
-            });
-            res.redirect(`/evaluation/${req.params.id}`);
-          }
-        });
-      }
+          connection.query(query, data, function(err, result){
+            if (err) throw(err);
+            console.log(result, '첫번째 insert 잘 되었나 확인');
+            console.log(req.body.question_id.length,'길이');
+            // 질문 각 바디에 넣기
+            for(i=0; i < req.body.question_id.length; i++){
+              connection.query('insert into evaluation_info(evaluation_id, question_id, score, content) values(?,?,?,?)', 
+              [result.insertId, req.body.question_id[i], req.body.score[i], req.body.content[i]], function(err, result2){
+                if (err) throw(err);
+                console.log(result2, '두번째 insert 잘 되었음. 확인해보세요 calllbackkkhelll');
+              });
+            }
+          });
+          res.redirect(`/evaluation/${req.params.id}`);
+        }
+      });
     }
-  })
+  }
 });
 
 module.exports = router;
