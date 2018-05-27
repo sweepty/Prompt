@@ -28,7 +28,7 @@ block content
                 td= c.tel
                 td= c.address
                 td
-                  a.btn.btn-primary(href=`/client/${c.client_id}/edit`) 수정
+                  a.btn.btn-primary(href='/client/edit?id='+c.client_id) 수정
                 td
                   a.btn.btn-danger(href=`/client/${c.client_id}/delete`) 삭제
         

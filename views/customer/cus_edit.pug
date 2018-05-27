@@ -19,23 +19,24 @@ block content
                   th 담당자 이메일
                   th 수정하기
               tbody
-                  tr
-                    form(action='/client/${client.id}/edit', method='POST')
-                      td= client.name
-                        .form-group
-                          input.form-control(id='name', name='name', value= client.name, hidden="true")
-                      td
-                        .form-group
-                          input.form-control(id='tel', name='tel')
-                      td
-                        .form-group
-                          input.form-control(id='address', name='address')
-                      td
-                        .form-group
-                          input.form-control(id='manager', name='manager')
-                      td
-                        .form-group
-                          input.form-control(id='email', name='email')
-                      
-                      td
-                       button.btn.btn-primary(type='submit') 수정하기
+                  each c in client
+                    tr
+                      form(action='/client/edit?id='+c.client_id, method='POST')
+                        td= c.name
+                          .form-group
+                            input.form-control(id='name', name='name', hidden="true")
+                        td
+                          .form-group
+                            input.form-control(id='tel', name='tel', value= c.tel)
+                        td
+                          .form-group
+                            input.form-control(id='address', name='address', value= c.address)
+                        td
+                          .form-group
+                            input.form-control(id='manager', name='manager', value= c.manager)
+                        td
+                          .form-group
+                            input.form-control(id='email', name='email', value= c.email)
+                        
+                        td
+                          button.btn.btn-primary(type='submit') 수정하기
