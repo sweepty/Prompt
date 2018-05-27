@@ -18,6 +18,12 @@ block content
       label(for='price') 가격
       input.form-control(type='text', id='price', name='price', placeholder='price')
     .form-group
+      label(for='language') 언어
+      input.form-control(type='text', id='language', name='language', placeholder='language')
+    .form-group
+      label(for='framework') 프레임워크
+      input.form-control(type='text', id='framework', name='framework', placeholder='framework')
+    .form-group
       label(for="client_id") 발주처
       select.form-control(name="client_id")
         each client in clients
