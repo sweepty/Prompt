@@ -21,16 +21,20 @@ block content
             tr
               th ID
               th 프로젝트 명
+              th 투입인원
               th 시작일
               th 종료일
               th 가격
+              
             tbody
               each pro in projects
                 tr
                   td= pro.project_id
                   td
                     a.title(href=`/project/${pro.project_id}`)=pro.name
+                  td= pro.members
                   td= pro.start_date
                   td= pro.end_date
                   td #{pro.price} 원
+                  
   

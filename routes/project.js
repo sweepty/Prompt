@@ -28,7 +28,10 @@ router.get('/', needAuth, function(req, res, next) {
   console.log(req.user, '유저info');
   //경영진
   if (req.user.roles.includes("management")) {
-    connection.query('select * from project',function(err,rows){
+    connection.query('select p.project_id, p.name, p.start_date, p.end_date, p.price, count(w.project_id) as members '+
+    'from project p join works_on w on p.project_id=w.project_id '+
+    'group by p.name '+
+    'order by p.project_id asc',function(err,rows){
       if (err) throw(err);
       res.render('project/mg_list', {
         user: req.user,
