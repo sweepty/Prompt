@@ -270,13 +270,7 @@ var queryy = 'select distinct p.project_id, p.name, p.created_at, j.job , p.EA, 
 'join job j on w.job_id = j.job_id ';
 //진행중인 프로젝트
 function findinProgress(req, res, next) {
-  //현재시간
-  var now = new Date();
-  console.log(now.getTime()); //unix 1526915447212
-  var current = now.getTime();
-  console.log(moment(now.getTime()).format());//timestamp 2018-05-22T00:10:47+09:00
-
-  var request = queryy+'where w.end_date is NULL'; // and where UNIX_TIMESTAMP(w.start_date) < ?
+  var request = queryy+'where w.start_date < now() and w.end_date is NULL';
   connection.query(request,[req.user.employee_id, current], function(err, rows) {
     if (err) throw(err);
     console.log(rows,'타임스탬프확인')
