@@ -10,12 +10,6 @@ block content
     .card-body
       .table-responsive
         a.btn.btn-outline-primary.mb-3(href='/project/new') 프로젝트 등록
-        |
-        |
-        a.btn.btn-outline-primary.mb-3(href='/project/edit') 프로젝트 수정
-        |
-        |
-        a.btn.btn-outline-danger.mb-3(href=`/project/delete`) 프로젝트 삭제
         table#dataTable.table.table-bordered(width='100%', cellspacing='0')
           thead
             tr
@@ -25,16 +19,23 @@ block content
               th 시작일
               th 종료일
               th 가격
-              
+              th
             tbody
               each pro in projects
                 tr
                   td= pro.project_id
                   td
-                    a.title(href=`/project/${pro.project_id}`)=pro.name
+                    a.title(href='/project/'+pro.project_id)=pro.name
                   td= pro.members
                   td= pro.start_date
                   td= pro.end_date
                   td #{pro.price} 원
-                  
+                  td
+                    a.btn.btn-outline-primary.mb-3.btn-sm(href='/project/edit?id='+pro.project_id) 수정
+                    |
+                    |
+                    |
+                    |
+                    |
+                    a.btn.btn-outline-danger.mb-3.btn-sm(href=`/project/${pro.project_id}/delete`) 삭제
   

@@ -72,7 +72,7 @@ router.get('/new', needAuth, function(req, res, next){
         employees: employees,
         title: '프로젝트 생성페이지'
       });
-    }) 
+    })
   });
 });
 
@@ -91,7 +91,7 @@ router.post('/new', function(req, res, next){
   var manager_email = req.body.manager_email; // 발주처 관리자 이메일
   var pm = req.body.pm;
   var data = {name: pname, start_date: start_date, end_date: end_date, EA: false, price: price};
-  
+
   console.log(data);
 
   //project insert
@@ -113,6 +113,17 @@ router.post('/new', function(req, res, next){
 
 // 프로젝트 수정
 router.get('/edit', function(req, res, next){
+  project_id = req.query.id
+  if (project_id != undefined) {
+    connection.query('select * from project where project_id = ?', [project_id], function(err, rows){
+      if (err) throw(err);
+      res.render('project/edit', {
+        user: req.user,
+        project: rows,
+        title: '프로젝트 전체 목록'
+      });
+    });
+  }
   if (req.user.roles.includes("management")) {
     connection.query('select * from project', function(err, rows){
       if (err) throw(err);
@@ -137,6 +148,7 @@ router.post('/edit', function(req, res, next){
   });
 });
 
+// 프로젝트 삭제
 router.delete('/:id/delete', function(req, res, next){
   var project_id = req.params.id;
   connection.query('delete from project where project_id = ?', [project_id], function(err, rows){
@@ -223,46 +235,47 @@ router.post('/:id/edit', function(req, res, next){
   });
 });
 
-// 프로젝트 참여 직원 삭제
-router.get('/:id/delete', function(req,res, next){
-  var project_id = req.params.id;
-  var query_client = 'select p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
-  'from project p join orderer o on p.project_id=o.project_id '+
-  'join client c on c.client_id=o.client_id '+
-  'where p.project_id =?'
-  var query_members =
-  'select p.project_id p_id, p.name p_name, p.EA, w.start_date, w.end_date, w.end_date, e.name, e.employee_id, j.job '+
-  'from project p join works_on w on p.project_id=w.project_id '+
-  'join employee e on e.employee_id=w.employee_id '+
-  'join job j on j.job_id=w.job_id '+
-  'where p.project_id = ? and w.employee_id '
-  const user = req.user;
-  connection.query(query_client, [project_id], function(err, row){
-    if (err) throw(err);
-    var client = row[0];
-    if (req.user.roles.includes("management")) {
-      connection.query(query_members, [project_id], function(err, result){
-        if (err) throw(err);
-        connection.query('select * from job', function(err, job){
-          res.render('project/emp_delete',{
-            user: req.user,
-            client: client,
-            project: result,
-            project_id: project_id,
-            job: job
-          });
-        });
-      });
-    }
-  })
-});
-router.delete('/:id/delete', function(req, res, next){
-  var id = req.params.id;
-  connection.query('delete from works_on where employee_id = ?',[id], function(err, rows){
-    if (err) throw(err);
-    res.redirect('/project/${id}/delete');
-  });
-});
+// // 프로젝트 참여 직원 삭제
+// router.get('/:id/delete', function(req,res, next){
+//   var project_id = req.params.id;
+//   var query_client = 'select p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
+//   'from project p join orderer o on p.project_id=o.project_id '+
+//   'join client c on c.client_id=o.client_id '+
+//   'where p.project_id =?'
+//   var query_members =
+//   'select p.project_id p_id, p.name p_name, p.EA, w.start_date, w.end_date, w.end_date, e.name, e.employee_id, j.job '+
+//   'from project p join works_on w on p.project_id=w.project_id '+
+//   'join employee e on e.employee_id=w.employee_id '+
+//   'join job j on j.job_id=w.job_id '+
+//   'where p.project_id = ? and w.employee_id '
+//   const user = req.user;
+//   connection.query(query_client, [project_id], function(err, row){
+//     if (err) throw(err);
+//     var client = row[0];
+//     if (req.user.roles.includes("management")) {
+//       connection.query(query_members, [project_id], function(err, result){
+//         if (err) throw(err);
+//         connection.query('select * from job', function(err, job){
+//           res.render('project/emp_delete',{
+//             user: req.user,
+//             client: client,
+//             project: result,
+//             project_id: project_id,
+//             job: job
+//           });
+//         });
+//       });
+//     }
+//   })
+// });
+// 위에꺼랑 겹쳐서 잠시 주석처리
+// router.delete('/:id/delete', function(req, res, next){
+//   var id = req.params.id;
+//   connection.query('delete from works_on where employee_id = ?',[id], function(err, rows){
+//     if (err) throw(err);
+//     res.redirect('/project/${id}/delete');
+//   });
+// });
 
 //----------------직원 프로젝트(진행, 완료, 시작) 페이지------------------------
 var queryy = 'select distinct p.project_id, p.name, p.created_at, j.job , p.EA, w.start_date, w.end_date '+
