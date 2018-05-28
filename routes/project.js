@@ -113,7 +113,7 @@ router.post('/new', function(req, res, next){
 
 // 프로젝트 수정
 router.get('/edit', function(req, res, next){
-  project_id = req.params.id
+  project_id = req.query.id;
   if (project_id != undefined) {
     connection.query('select * from project where project_id = ?', [project_id], function(err, rows){
       if (err) throw(err);
