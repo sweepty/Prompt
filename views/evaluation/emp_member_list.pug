@@ -1,27 +1,23 @@
 extends ../layout/emp_layout.pug
 
 block content
-  h1.main-title 평가할 멤버 선택
+  h1.main-title 평가 점수 및 코멘트 조회
   .container
     .card.mb-3
       .card-header
         .card-body
           .table-responsive
-            a.btn.btn-outline-primary.mb-3(href='/question') 질문추가
             table#dataTable.table.table-bordered(width='100%', cellspacing='0')
               thead
                 tr 
                   th ID
                   th 직원명
-                  th 업무 시작일
-                  th 업무 종료일
-                  th 평가하기
+                  th Score
+                  th Commnet
               tbody
                 each m in members
                   tr
                     td= m.employee_id
                     td= m.name
-                    td= m.start_date
-                    td= m.end_date
                     td
-                      a.btn.btn-outline-info(href=`/evaluation/${project[0].project_id}/form/${m.employee_id}`) 평가하기
+                    td
