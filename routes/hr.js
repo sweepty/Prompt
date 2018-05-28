@@ -31,6 +31,26 @@ router.get('/', needAuth, function(req, res, next) {
     connection.query('select * from employee e join department d on e.department_id = d.department_id',function(err, rows){
       if (err) throw(err);
       console.log(rows);
+      // // 진행중
+      // connection.query(query+'where w.start_date < now() and w.end_date is NULL',[req.user.employee_id], function(err, progress){
+      //   if (err) throw(err);
+      //   //완료
+      //   connection.query(query +'where w.end_date is not NULL',[req.user.employee_id], function(err, done){
+      //     if (err) throw(err);
+      //     // 시작 전
+      //     connection.query(query +'where w.start_date > now()',[req.user.employee_id], function(err, notyet){
+      //       if (err) throw(err);
+      //       res.render('hr/emp_info',{
+      //         user: req.user,
+      //         employees: rows,
+      //         progress: progress,
+      //         done: done,
+      //         notyet: notyet
+      //       })
+      //     })
+      //   })
+      // })
+      
       connection.query('select e.employee_id, e.name e_name, p.name p_name, w.start_date '+
       'from	works_on w right outer join employee e on w.employee_id=e.employee_id '+
       'right outer join project p on p.project_id=w.project_id where e.employee_id is not null', function(err, result){
@@ -113,31 +133,45 @@ router.delete('/:id/delete', function(req, res, next){
 // ----------직원 상세 보기----------
 router.get('/:id', function(req, res, next){
   var id = req.params.id;
+  var query = 'select distinct p.project_id, p.name, p.created_at, j.job , p.EA, w.start_date, w.end_date '+
+  'from works_on w join project p on w.project_id = p.project_id and w.employee_id = ? '+
+  'join job j on w.job_id = j.job_id ';
   if (req.user.roles.includes("management")) {
     console.log("경영진임")
     connection.query('select * from employee where employee_id = ?',[id], function(err, result){
       if (err) throw(err);
-      connection.query('select p.project_id, p.name p_name, w.start_date, w.end_date '+
-      'from	works_on w join project p on p.project_id=w.project_id where w.employee_id = ?',[id],function(err, rows){
+      connection.query('select q.question, avg(i.score) as score '+
+      'from evaluation e right join evaluation_info i on e.evaluation_id=i.evaluation_id '+
+      'join employee m on m.employee_id=e.evaluated_id '+
+      'join question q on q.question_id=i.question_id '+
+      'where e.evaluated_id = ? group by i.question_id',[id], function(err, eval_result){
         if (err) throw(err);
-        connection.query('select q.question, avg(i.score) as score '+
+        connection.query('select q.question, i.score, i.content '+
         'from evaluation e right join evaluation_info i on e.evaluation_id=i.evaluation_id '+
         'join employee m on m.employee_id=e.evaluated_id '+
         'join question q on q.question_id=i.question_id '+
-        'where e.evaluated_id = ? group by i.question_id',[id], function(err, eval_result){
+        'where e.evaluated_id = ?',[id], function(err, comments){
           if (err) throw(err);
-          connection.query('select q.question, i.score, i.content '+
-          'from evaluation e right join evaluation_info i on e.evaluation_id=i.evaluation_id '+
-          'join employee m on m.employee_id=e.evaluated_id '+
-          'join question q on q.question_id=i.question_id '+
-          'where e.evaluated_id = ?',[id], function(err, comments){
-            res.render('hr/emp_info_detail', {
-              user: req.user,
-              employee: result,
-              projects: rows,
-              evaluations: eval_result,
-              comments: comments
-            });
+          // 진행중
+          connection.query(query+'where w.start_date < now() and w.end_date is NULL',[req.user.employee_id], function(err, progress){
+            if (err) throw(err);
+            //완료
+            connection.query(query +'where w.end_date is not NULL',[req.user.employee_id], function(err, done){
+              if (err) throw(err);
+              // 시작 전
+              connection.query(query +'where w.start_date > now()',[req.user.employee_id], function(err, notyet){
+                if (err) throw(err);
+                res.render('hr/emp_info_detail',{
+                  user: req.user,
+                  employee: result,
+                  evaluations: eval_result,
+                  comments: comments,
+                  progress: progress,
+                  done: done,
+                  notyet: notyet
+                })
+              })
+            })
           })
         });
       });
