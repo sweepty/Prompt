@@ -59,6 +59,7 @@ block content
                                   case project.employee_id
                                     when emp.employee_id
                                       tr
-                                        td= project.p_name
+                                        td
+                                          a.title(href=`/project/${project.project_id}`) #{project.p_name}
                                         td= moment(project.start_date).locale('ko').format('YYYY년 MMMM Do')
                                         td= moment(project.end_date).locale('ko').format('YYYY년 MMMM Do')

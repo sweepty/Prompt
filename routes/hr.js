@@ -30,12 +30,10 @@ router.get('/', needAuth, function(req, res, next) {
     console.log("경영진임")
     connection.query('select * from employee e join department d on e.department_id = d.department_id',function(err, rows){
       if (err) throw(err);
-      console.log(rows);
-      connection.query('select e.employee_id, e.name e_name, p.name p_name, w.start_date '+
+      connection.query('select e.employee_id, e.name e_name, p.name p_name, w.start_date, p.project_id '+
       'from	works_on w right outer join employee e on w.employee_id=e.employee_id '+
       'right outer join project p on p.project_id=w.project_id where e.employee_id is not null', function(err, result){
         if (err) throw(err)
-        console.log(result)
         res.render('hr/emp_info', {
           user: req.user,
           employees: rows,
