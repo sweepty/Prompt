@@ -26,8 +26,8 @@ block content
                 td= client.c_name
                 td= client.manager
                 td= client.m_email
-                td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
-                td= client.end_date == null ? '진행중': moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
+                td= moment(client.start_date).locale('ko').format('YYYY년 MMMM Do')
+                td= client.end_date == null ? '진행중': moment(client.end_date).locale('ko').format('YYYY년 MMMM Do')
       br
       h3 내 정보
       .table-responsive
