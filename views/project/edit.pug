@@ -17,8 +17,6 @@ block content
                   th 시작일
                   th 종료일
                   th 가격
-                  th 언어
-                  th 프레임워크
                   th 수정하기
               tbody
                 each pro in project
@@ -39,11 +37,5 @@ block content
                       td
                         .form-group
                           input.form-control(id='price', name='price', value= price)
-                      td
-                        .form-group
-                          input.form-control(id='language', name='language', value= language)
-                      td
-                        .form-group
-                          input.form-control(id='framework', name='framework', value= framework)
                       td
                        button.btn.btn-primary(type='submit') 수정하기

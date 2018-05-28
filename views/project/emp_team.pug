@@ -15,7 +15,9 @@ block content
                   th ID
                   th 직원명
                   th 시작일
-                  th 직원
+                  th 직무
+                  th 언어
+                  th 프레임워크
                   th 투입하기
               tbody
                 each e in employees
@@ -34,6 +36,11 @@ block content
                           select.form-control(name="job_id")
                             each j in job
                               option(value=j.job_id)= j.job
-                            
+                      td
+                        .form-group
+                          input.form-control(type='language', id='language', name='language', placeholder='language')
+                      td
+                        .form-group
+                          input.form-control(type='framework', id='framework', name='framework', placeholder='framework')     
                       td
                        button.btn.btn-primary(type='submit') 투입하기
