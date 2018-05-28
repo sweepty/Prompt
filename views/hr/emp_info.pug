@@ -64,6 +64,7 @@ block content
                       th 프로젝트 명
                       th 시작일
                       th 상세보기
+                      th
                   tbody 
                     each emp in p_employees
                       tr 
@@ -74,6 +75,11 @@ block content
                         td
                           a.title(href=`/hr/${emp.employee_id}`)
                               button.btn.btn-primary 보기
-        
-  
-  
+                        td
+                          a.btn.btn-outline-primary.mb-3.btn-sm(href='/hr/edit?id='+emp.employee_id) 수정
+                          |
+                          |
+                          |
+                          |
+                          |
+                          a.btn.btn-outline-danger.mb-3.btn-sm(href=`/hr/${emp.employee_id}/delete`) 삭제
