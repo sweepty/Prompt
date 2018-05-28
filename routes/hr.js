@@ -30,28 +30,7 @@ router.get('/', needAuth, function(req, res, next) {
     console.log("경영진임")
     connection.query('select * from employee e join department d on e.department_id = d.department_id',function(err, rows){
       if (err) throw(err);
-      console.log(rows);
-      // // 진행중
-      // connection.query(query+'where w.start_date < now() and w.end_date is NULL',[req.user.employee_id], function(err, progress){
-      //   if (err) throw(err);
-      //   //완료
-      //   connection.query(query +'where w.end_date is not NULL',[req.user.employee_id], function(err, done){
-      //     if (err) throw(err);
-      //     // 시작 전
-      //     connection.query(query +'where w.start_date > now()',[req.user.employee_id], function(err, notyet){
-      //       if (err) throw(err);
-      //       res.render('hr/emp_info',{
-      //         user: req.user,
-      //         employees: rows,
-      //         progress: progress,
-      //         done: done,
-      //         notyet: notyet
-      //       })
-      //     })
-      //   })
-      // })
-      
-      connection.query('select e.employee_id, e.name e_name, p.name p_name, w.start_date '+
+      connection.query('select e.employee_id, e.name e_name, p.name p_name, w.start_date, p.project_id '+
       'from	works_on w right outer join employee e on w.employee_id=e.employee_id '+
       'right outer join project p on p.project_id=w.project_id where e.employee_id is not null', function(err, result){
         if (err) throw(err)
@@ -95,7 +74,7 @@ router.post('/new', function(req, res, next){
 //------------직원 수정----------
 router.get('/edit', function(req, res, next){
   employee_id = req.query.id;
-  connection.query('select * from employee e inner join department d ' + 
+  connection.query('select * from employee e inner join department d ' +
   'on e.department_id = d.department_id where employee_id = ?', [employee_id], function(err, rows){
     if (err) throw(err);
     res.render('hr/emp_edit',{
