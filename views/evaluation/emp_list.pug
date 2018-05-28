@@ -20,8 +20,8 @@ block content
                   tr 
                     td= p.project_id
                     td= p.name
-                    td= p.start_date
-                    td= p.end_date
+                    td= moment(p.start_date).locale('ko').format('YYYY년 MMMM Do')
+                    td= moment(p.end_date).locale('ko').format('YYYY년 MMMM Do')
                     td
                       a.btn.btn-outline-info(href=`/evaluation/${p.project_id}`) 평가하기
 

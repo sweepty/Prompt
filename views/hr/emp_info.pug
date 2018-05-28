@@ -35,7 +35,7 @@ block content
                         td= emp.name
                         td= emp.RRNumber
                         td= emp.education
-                        td= emp.date_of_entry
+                        td= moment(emp.date_of_entry).locale('ko').format('YYYY년 MMMM Do')
                         td= emp.department_name
                         td= emp.email
                         td
@@ -71,7 +71,7 @@ block content
                         td= emp.employee_id
                         td= emp.e_name
                         td= emp.p_name
-                        td= emp.start_date
+                        td= moment(emp.start_date).locale('ko').format('YYYY년 MMMM Do')
                         td
                           a.title(href=`/hr/${emp.employee_id}`)
                               button.btn.btn-primary 보기

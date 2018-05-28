@@ -52,8 +52,9 @@ router.post('/new', function(req, res, next){
 
 //------------고객 수정----------
 router.get('/edit', function(req, res, next){
+  client_id = req.query.id;
   connection.query('select * from client c inner join orderer o ' + 
-  'on c.client_id = o.client_id group by c.client_id', function(err, rows){
+  'on c.client_id = o.client_id where c.client_id = ? group by c.client_id', [client_id], function(err, rows){
     if (err) throw(err);
     console.log(rows, '고객 수정');
     res.render('customer/cus_edit',{

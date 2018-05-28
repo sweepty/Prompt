@@ -23,8 +23,8 @@ block content
                   tr
                     td= pro.employee_id
                     td= pro.name
-                    td= pro.start_date
-                    td= pro.end_date
+                    td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
+                    td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
                     td= pro.job
 
                     td
