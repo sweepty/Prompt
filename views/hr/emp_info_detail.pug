@@ -11,7 +11,7 @@ block content
         |  project list
       .card-body
         .table-responsive
-          h3 
+          h3 진행중인 프로젝트
           table#dataTable.table.table-bordered(width='100%', cellspacing='0')
             thead
               tr
@@ -20,17 +20,47 @@ block content
                 th 시작일
                 th 종료일
             tbody 
-              each pro in projects
+              each pro in progress
                 tr 
                   td= pro.project_id
-                  td= pro.p_name
-                  td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
                   td
-                    case pro.end_date
-                      when null
-                        p= '진행중'
-                      default 
-                        p= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
+                    a.title(href=`/project/${pro.project_id}`)=pro.name
+                  td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
+                  td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
+
+          h3 완료한 프로젝트
+          table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+            thead
+              tr
+                th ID
+                th 프로젝트 명
+                th 시작일
+                th 종료일
+            tbody 
+              each pro in done
+                tr 
+                  td= pro.project_id
+                  td
+                    a.title(href=`/project/${pro.project_id}`)=pro.name
+                  td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
+                  td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
+
+          h3 시작 전인 프로젝트
+          table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+            thead
+              tr
+                th ID
+                th 프로젝트 명
+                th 시작일
+                th 종료일
+            tbody 
+              each pro in notyet
+                tr 
+                  td= pro.project_id
+                  td
+                    a.title(href=`/project/${pro.project_id}`)=pro.name
+                  td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
+                  td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
     .card.mb-3
       .card-header
         i.fa.fa-table
@@ -68,5 +98,3 @@ block content
                     td= com.question
                     td= com.score
                     td= com.content
-
-    
