@@ -27,8 +27,8 @@ block content
                   td
                     a.title(href='/project/'+pro.project_id)=pro.name
                   td= pro.members
-                  td= pro.start_date
-                  td= pro.end_date
+                  td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
+                  td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
                   td #{pro.price} 원
                   td
                     a.btn.btn-outline-primary.mb-3.btn-sm(href='/project/edit?id='+pro.project_id) 수정

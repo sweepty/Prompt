@@ -23,7 +23,7 @@ block content
                 td
                   a.title(href=`/project/${pro.project_id}`)=pro.name
                 td= pro.job
-                td= pro.start_date
+                td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
         
         h3 완료한 프로젝트
         table#dataTable.table.table-bordered(width='100%', cellspacing='0')
@@ -42,8 +42,8 @@ block content
                 td
                   a.title(href=`/project/${pro.project_id}`)=pro.name
                 td= pro.job
-                td= pro.start_date
-                td= pro.end_date
+                td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
+                td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
                 td
                   a.btn.btn-outline-info(href=`/evaluation/${pro.project_id}`) 평가하기
                   
@@ -63,8 +63,8 @@ block content
                 td
                   a.title(href=`/project/${pro.project_id}`)=pro.name
                 td= pro.job
-                td= pro.start_date
-                td= pro.end_date
+                td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
+                td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
                 td
                   a.btn.btn-outline-info(href=`/evaluation/${pro.project_id}`) 평가하기
 
