@@ -25,6 +25,27 @@ block content
                       td= p.end_date
     .card.mb-3
       .card-header
+        p 피평가자 정보
+        .card-body
+          .table-responsive
+            table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+              thead
+                tr 
+                  th ID
+                  th 직원명
+                  th 직무
+                  th 업무 시작일
+                  th 업무 종료일
+              tbody
+                each eva in evaluated
+                    tr
+                      td= eva.project_id
+                      td= eva.name
+                      td= eva.job
+                      td= eva.w_start_date
+                      td= eva.w_end_date
+    .card.mb-3
+      .card-header
         .card-body
           .table-responsive
             table#dataTable.table.table-bordered(width='100%', cellspacing='0')

@@ -113,27 +113,36 @@ router.get('/:id', function(req, res, next) {
 router.get('/:id/form/:member_id', function(req, res, next) {
   var project_id = req.params.id;
   var evaluated_id = req.params.member_id;
+  // 질문 불러오기
   var query_q = 'select * from question';
+  // 프로젝트 상세
   var query2 = 'select * from project where project_id = ?';
+  // 피평가자 정보
+  var query_evaluated = 'select w.project_id, e.employee_id, e.name, w.start_date w_start_date, w.end_date w_end_date, '+
+  'j.job from works_on w join employee e on w.employee_id=e.employee_id join job j on j.job_id=w.job_id where w.employee_id = ? and w.project_id= ?';
 
   if (req.user.roles.includes('management')) {
     res.redirect('back')
   } else {
-    connection.query(query_q, function(err,rows){
+    connection.query(query_evaluated,[evaluated_id, project_id], function(err, evaluated){
       if (err) throw(err);
-      console.log(evaluated_id,'ppppp평가자 아이디 확인함')
 
-      connection.query(query2, [project_id], function(err, result){
+      connection.query(query_q, function(err,rows){
         if (err) throw(err);
-        console.log(rows,'평가목록');
-
-        res.render('evaluation/emp_eva', {
-          user: req.user,
-          project: result,
-          questions: rows,
-          evaluated_id: req.params.member_id,
-        });
-      }); 
+        console.log(evaluated_id,'ppppp평가자 아이디 확인함')
+  
+        connection.query(query2, [project_id], function(err, result){
+          if (err) throw(err);
+          console.log(rows,'평가목록');
+  
+          res.render('evaluation/emp_eva', {
+            user: req.user,
+            project: result,
+            questions: rows,
+            evaluated: evaluated
+          });
+        }); 
+      });
     });
   }
 });
@@ -149,7 +158,7 @@ router.post('/:id/form/:member_id', function(req, res, next){
   'where e.employee_id = ? and w.project_id = ?';
 
   console.log(req.params.member_id,'피평가자 id확인하기');
-  // 고객  - 외않되
+  // 고객  - 외않되@@@@@@@@@@@@여기 되나 확인하기 기억이 안난다 근데 된거 같은데
   if (req.user.roles.includes('client')) {
     var data = {project_id: req.params.id, evaluator_id: req.user.client_id, evaluated_id: req.params.member_id, type_of_evaluation: 'client'};
     console.log(data,'evaluation에 넣을 데이터 확인')

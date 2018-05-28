@@ -367,8 +367,18 @@ router.get('/:id', function(req, res, next) {
           })
         });
       } else { //고객
-
-
+        connection.query(query_members, [project_id], function(err, result){
+          if (err) throw(err);
+          console.log(result,'몇개임');
+          console.log(client,'왜 아무것도 없냐')
+          console.log(project_id,'프로젝트 아이디')
+          res.render('project/cus_detail',{
+            user: req.user,
+            client: client,
+            project: result,
+            project_id: project_id
+          })
+        });
       }
     }
   })
