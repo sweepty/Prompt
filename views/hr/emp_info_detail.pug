@@ -25,7 +25,12 @@ block content
                   td= pro.project_id
                   td= pro.p_name
                   td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
-                  td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
+                  td
+                    case pro.end_date
+                      when null
+                        p= '진행중'
+                      default 
+                        p= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
     .card.mb-3
       .card-header
         i.fa.fa-table

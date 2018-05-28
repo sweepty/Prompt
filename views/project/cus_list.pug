@@ -24,7 +24,12 @@ block content
                   td
                     a.title(href='/project/'+pro.project_id)= pro.name
                   td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
-                  td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
+                  td
+                    case pro.end_date
+                      when null
+                        p= '진행중'
+                      default 
+                        p= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
                   td
                     case pro.EA
                       when 1

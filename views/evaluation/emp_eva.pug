@@ -13,7 +13,6 @@ block content
                 tr 
                   th ID
                   th 프로젝트명
-                  th 직원명
                   th 업무 시작일
                   th 업무 종료일
               tbody
@@ -22,8 +21,12 @@ block content
                       td= p.project_id
                       td= p.name
                       td= moment(p.start_date).locale('ko').format('YYYY년 MMMM Do')
-                      td= moment(p.end_date).locale('ko').format('YYYY년 MMMM Do')
                       td
+                        case p.end_date
+                          when null
+                            p= '진행중'
+                          default 
+                            p= moment(p.end_date).locale('ko').format('YYYY년 MMMM Do')
     .card.mb-3
       .card-header
         p 피평가자 정보
@@ -43,8 +46,13 @@ block content
                       td= eva.project_id
                       td= eva.name
                       td= eva.job
-                      td= eva.w_start_date
-                      td= eva.w_end_date
+                      td= moment(eva.w_start_date).locale('ko').format('YYYY년 MMMM Do')
+                      td
+                        case eva.w_end_date
+                          when null
+                            p= '진행중'
+                          default 
+                            p= moment(eva.w_end_date).locale('ko').format('YYYY년 MMMM Do')
     .card.mb-3
       .card-header
         .card-body

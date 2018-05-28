@@ -21,7 +21,12 @@ block content
                   tr
                     td= m.employee_id
                     td= m.name
-                    td= m.start_date
-                    td= m.end_date
+                    td= moment(m.start_date).locale('ko').format('YYYY년 MMMM Do')
+                    td
+                      case m.end_date
+                        when null
+                          p= '진행중'
+                        default 
+                          p= moment(m.end_date).locale('ko').format('YYYY년 MMMM Do')
                     td
                       a.btn.btn-outline-info(href=`/evaluation/${project[0].project_id}/form/${m.employee_id}`) 평가하기

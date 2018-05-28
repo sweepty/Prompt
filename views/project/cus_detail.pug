@@ -22,8 +22,13 @@ block content
               tr
                 td= client.p_id
                 td= client.p_name
-                td= client.start_date
-                td= client.end_date
+                td= moment(client.start_date).locale('ko').format('YYYY년 MMMM Do')
+                td
+                  case client.end_date
+                    when null
+                      p= '진행중'
+                    default 
+                      p= moment(client.end_date).locale('ko').format('YYYY년 MMMM Do')
                 td= client.manager
                 td= client.m_email
   .card.mb-3
@@ -45,8 +50,13 @@ block content
                 tr
                   td= pro.employee_id
                   td= pro.name
-                  td= pro.start_date
-                  td= pro.end_date == null ? '진행 중' : pro.end_date
+                  td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
+                  td
+                    case pro.end_date
+                      when null
+                        p= '진행중'
+                      default 
+                        p= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
                   td
                     case pro.EA
                       when 1

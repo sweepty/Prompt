@@ -55,7 +55,6 @@ block content
               th 프로젝트 명
               th 직무
               th 시작일
-              th 종료일
           tbody
             each pro in notyet
               tr
@@ -64,8 +63,6 @@ block content
                   a.title(href=`/project/${pro.project_id}`)=pro.name
                 td= pro.job
                 td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
-                td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
-                td
-                  a.btn.btn-outline-info(href=`/evaluation/${pro.project_id}`) 평가하기
+
 
   
