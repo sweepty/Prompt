@@ -18,6 +18,12 @@ block content
       label(for='price') 가격
       input.form-control(type='text', id='price', name='price', placeholder='price')
     .form-group
+      label(for='language') 언어
+      input.form-control(type='text', id='language', name='language', placeholder='language')
+    .form-group
+      label(for='framework') 프레임워크
+      input.form-control(type='text', id='framework', name='framework', placeholder='framework')
+    .form-group
       label(for="client_id") 발주처
       select.form-control(name="client_id")
         each client in clients
@@ -32,24 +38,26 @@ block content
       label(for='pm') PM선택
       .container
         .card.mb-3
-              .card-header
-                .card-body
-                  .table-responsive
-                    h3 
-                    table#dataTable.table.table-bordered(width='100%', cellspacing='0')
-                      thead
-                        tr
-                          th 
-                          th 사원 id
-                          th 사원 이름
-                      tbody 
-                        each emp in employees
-                          tr
-                            td
-                              .form-group
-                                input.form-control(type ='radio', id='pm', name='pm', value=emp.employee_id)
-                            td= emp.employee_id
-                            td= emp.name
+          .card-header
+            i.fa.fa-table
+            |  pm 선택
+          .card-body
+            .table-responsive
+              h3 
+              table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+                thead
+                  tr
+                    th 
+                    th 사원 id
+                    th 사원 이름
+                tbody 
+                  each emp in employees
+                    tr
+                      td
+                        .form-group
+                          input.form-control(type ='radio', id='pm', name='pm', value=emp.employee_id)
+                      td= emp.employee_id
+                      td= emp.name
       | 
-    button.btn.btn-primary(type='submit') 프로젝트 등록하기 
+      button.btn.btn-primary(type='submit') 프로젝트 등록하기 
     

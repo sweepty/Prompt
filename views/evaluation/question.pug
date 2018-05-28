@@ -1,0 +1,20 @@
+extends ../layout/emp_layout.pug
+
+block content
+  h1.main-title 질문 추가하기
+  form(action='/evaluation/:id', method='POST')
+    .form-group
+      label(for='q_id') 질문항목
+      input.form-control(type='text', id='project_name', name='project_name', placeholder='project_name')
+    .form-group
+      label(for='q_question') 평가항목
+      input.form-control(type='text', id='project_name', name='project_name', placeholder='project_name')
+    .form-group
+      label(for='q_score') 점수
+      input.form-control(type='number', id='score', name='score', min="1" max="10", placeholder='score')
+    .form-group
+      label(for='q_comment') 코멘트
+      input.form-control(id='content', name='content', placeholder='content')
+
+    button.btn.btn-primary(type='submit') 질문 추가하기 
+    

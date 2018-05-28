@@ -72,6 +72,40 @@ router.post('/new', function(req, res, next){
   });
 });
 
+// ----------직원 상세 보기----------
+router.get('/:id', function(req, res, next){
+  var id = req.params.id;
+  if (req.user.roles.includes("management")) {
+    console.log("경영진임")
+    connection.query('select * from employee where employee_id = ?',[id], function(err, result){
+      if (err) throw(err);
+      connection.query('select p.project_id, p.name p_name, w.start_date, w.end_date '+
+      'from	works_on w join project p on p.project_id=w.project_id where w.employee_id = ?',[id],function(err, rows){
+        if (err) throw(err);
+        connection.query('select q.question, avg(i.score) as score '+
+        'from evaluation e right join evaluation_info i on e.evaluation_id=i.evaluation_id '+
+        'join employee m on m.employee_id=e.evaluated_id '+
+        'join question q on q.question_id=i.question_id '+
+        'where e.evaluated_id = ? group by i.question_id',[id], function(err, eval_result){
+          if (err) throw(err);
+          connection.query('select q.question, i.score, i.content '+
+          'from evaluation e right join evaluation_info i on e.evaluation_id=i.evaluation_id '+
+          'join employee m on m.employee_id=e.evaluated_id '+
+          'join question q on q.question_id=i.question_id '+
+          'where e.evaluated_id = ?',[id], function(err, comments){
+            res.render('hr/emp_info_detail', {
+              user: req.user,
+              employee: result,
+              projects: rows,
+              evaluations: eval_result,
+              comments: comments
+            });
+          })
+        });
+      });
+    });
+  };
+});
 //------------직원 수정----------
 router.get('/edit', function(req, res, next){
   id = req.params.id;

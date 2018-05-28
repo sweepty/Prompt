@@ -102,7 +102,7 @@ router.post('/new', function(req, res, next){
     connection.query(query2, data2, function(err, result){
       if (err) throw(err);
       res.redirect('/project');
-      var data3 = {employee_id: pm, project_id: rows.insertId, job_id: 1};
+      var data3 = {employee_id: pm, project_id: rows.insertId, job_id: 1, start_date: start_date, end_date: null};
       connection.query(query3,data3, function(err, result){
         if (err) throw(err);
         res.redirect('/');
@@ -111,7 +111,7 @@ router.post('/new', function(req, res, next){
   });
 });
 
-// 프로젝트 수정 @@@@@@@@@@이상하게 생겼음. 고칠것
+// 프로젝트 수정
 router.get('/edit', function(req, res, next){
   project_id = req.params.id
   if (project_id != undefined) {

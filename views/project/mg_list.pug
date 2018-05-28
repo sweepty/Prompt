@@ -19,6 +19,8 @@ block content
               th 시작일
               th 종료일
               th 가격
+              th 언어
+              th 프레임워크
               th
             tbody
               each pro in projects
@@ -30,6 +32,8 @@ block content
                   td= pro.start_date
                   td= pro.end_date
                   td #{pro.price} 원
+                  td= pro.language
+                  td= pro.framework
                   td
                     a.btn.btn-outline-primary.mb-3.btn-sm(href='/project/edit?id='+pro.project_id) 수정
                     |
