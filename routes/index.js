@@ -11,6 +11,9 @@ mysql_dbc.test_open(connection);
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (req.isAuthenticated()) {
+    if(req.user.roles.includes("management")) {
+      res.render('admin_main', {user: req.user})
+    }
     res.redirect('/project')
   } else {
     res.render('index', { title: 'Prompt Solution' });
