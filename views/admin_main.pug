@@ -6,6 +6,79 @@ block content
     li.breadcrumb-item
       a(href='#') Dashboard
     li.breadcrumb-item.active Charts
+  .card.mb-3
+    .card-header
+      i.fa.fa-area-chart
+      |  년도별 매출
+    .card-body
+      .table-responsive
+        table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+          thead
+            tr 
+              th year
+              th 매출
+
+          tbody
+            each y in year
+              tr 
+                td= y.years
+                td= y.prices
+  .card.mb-3
+    .card-header
+      i.fa.fa-area-chart
+      |  분기별 매출 현황
+    .card-body
+      .table-responsive
+        table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+          thead
+            tr 
+              th 분기
+              th 매출
+
+          tbody
+            each q in quarter
+              tr 
+                td= q.quarters
+                td= q.prices
+  .card.mb-3
+    .card-header
+      i.fa.fa-area-chart
+      |  월별 매출 현황
+    .card-body
+      .table-responsive
+        table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+          thead
+            tr 
+              th 월
+              th 매출
+
+          tbody
+            each m in month
+              tr 
+                td= m.months
+                td= m.prices
+  .card.mb-3
+    .card-header
+      i.fa.fa-area-chart
+      |  프로젝트 현황
+    .card-body
+      .table-responsive
+        table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+          thead
+            tr 
+              th 프로젝트 전체
+              th 시작 전
+              th 진행 중
+              th 완료
+
+          tbody
+            tr
+              td= all.counter
+              td= notyet.counter
+              td= ing.counter
+              td= done.counter
+
+        
   // Area Chart Example
   .card.mb-3
     .card-header
