@@ -43,7 +43,7 @@ block content
               tbody
                 each eva in evaluated
                     tr
-                      td= eva.project_id
+                      td= eva.employee_id
                       td= eva.name
                       td= eva.job
                       td= moment(eva.w_start_date).locale('ko').format('YYYY년 MMMM Do')
@@ -63,9 +63,10 @@ block content
                   th ID
                   th 프로젝트명
                   th 점수
-                  th 코멘트
+                  th 코멘트 
+                  
               tbody
-                form(action=`/evaluation/${project[0].project_id}/form/${evaluated_id}`, method='POST')
+                form(action=`/evaluation/${project[0].project_id}/form/${evaluated[0].employee_id}`, method='POST')
                   each q in questions
                     tr
                       td

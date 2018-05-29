@@ -89,29 +89,36 @@ router.get('/:id', function(req, res, next) {
   var query_client = 'select * from works_on w join employee e on w.employee_id=e.employee_id where w.project_id = ?';
   var query_employee = 'select * from works_on w join employee e on w.employee_id=e.employee_id where w.project_id = ? and w.employee_id != ?';
   var query2 = 'select * from project where project_id = ?';
-  var query_eva = 'select  q.question,i.question_id, m.employee_id, m.name, i.score, i.content '+
+  var query_eva = 'select q.question, i.question_id, m.employee_id, m.name, i.score, i.content '+
   'from evaluation e join evaluation_info i on e.evaluation_id=i.evaluation_id '+
   'join employee m on m.employee_id=e.evaluated_id '+
   'join question q on q.question_id=i.question_id '+
   'where e.project_id = ? and e.type_of_evaluation = ?';
+
   var query_avg = 'select m.employee_id, m.name, avg(i.score) score '+
   'from evaluation e join evaluation_info i on e.evaluation_id=i.evaluation_id '+
   'join employee m on m.employee_id=e.evaluated_id '+
   'join question q on q.question_id=i.question_id '+
-  'where e.project_id = ? group by e.evaluated_id order by avg(i.score) desc';
+  'where e.project_id = ?'+
+  'group by e.evaluated_id order by avg(i.score) desc';
 
   if (req.user.roles.includes('management')) {
     //pm 평가
-    connection.query(query_eva, [project_id,'pm'],function(err,eva_pm){
+    connection.query(query_eva, [project_id,'PM'],function(err,eva_pm){
+      console.log(eva_pm)
       if (err) throw(err);
       // 동료평가
       connection.query(query_eva, [project_id,'peer'],function(err,eva_peer){
         if (err) throw(err);
+        //고객평가
         connection.query(query_eva, [project_id,'client'],function(err,eva_client){
           if (err) throw(err);
+          //평균
           connection.query(query_avg,[project_id], function(err, avg){
             if (err) throw(err);
-            console.log(avg,'평균ㅇㅇㅇㅇㅇㅇ')
+            console.log(eva_pm,'pm')
+            console.log(eva_peer,'eva_peer')
+            console.log(eva_client,'eva_client')
             res.render('evaluation/mg_detail', {
               user: req.user,
               eva_pm: eva_pm,
@@ -122,7 +129,6 @@ router.get('/:id', function(req, res, next) {
           })
         })
       })
-      
     });
   } else {
     if (req.user.roles.includes('client')) {
@@ -180,15 +186,27 @@ router.get('/:id/form/:member_id', function(req, res, next) {
         connection.query(query2, [project_id], function(err, result){
           if (err) throw(err);
           console.log(rows,'평가목록');
-          connection.query('select j.job from works_on w join job j on w.job_id=j.job_id where w.employee_id = ?',[req.user.employee_id], function(err,jobs){
-            if (err) throw(err);
-            if (jobs = 'PM') {
-              console.log('pm이네요')
-              var title = 'PM 평가';
-            } else {
-              console.log('그냥 직원임')
-              var title = '동료 평가'
-            }
+          if (req.user.employee_id != null) {
+            connection.query('select j.job from works_on w join job j on w.job_id=j.job_id where w.employee_id = ? and w.project_id=?',[req.user.employee_id, project_id], function(err,jobs){
+              if (err) throw(err);
+              if (jobs[0].job=='PM') {
+                console.log('pm이네요')
+                var title = 'PM 평가';
+              } else {
+                console.log('그냥 직원임')
+                var title = '동료 평가'
+              }
+              res.render('evaluation/emp_eva', {
+                user: req.user,
+                project: result,
+                questions: rows,
+                evaluated: evaluated,
+                title: title
+              });
+            })
+          } else {
+            console.log('고객')
+            var title = '고객 평가'
             res.render('evaluation/emp_eva', {
               user: req.user,
               project: result,
@@ -196,8 +214,7 @@ router.get('/:id/form/:member_id', function(req, res, next) {
               evaluated: evaluated,
               title: title
             });
-          })
-          
+          }
         }); 
       });
     });
@@ -207,13 +224,14 @@ router.get('/:id/form/:member_id', function(req, res, next) {
 //평가 생성
 router.post('/:id/form/:member_id', function(req, res, next){
   //job과 role에 따라 나누자
+  var evaluated_id = req.params.member_id;
   var query = 'insert into evaluation set ?';
   var query2 = 'insert into evaluation_info set ?';
   var isPM = 'select j.job job '+
   'from works_on w join employee e on w.employee_id=e.employee_id '+
   'join job j on w.job_id = j.job_id '+
   'where e.employee_id = ? and w.project_id = ?';
-
+  console.log(000,'피평가자 id확인하기');
   console.log(req.params.member_id,'피평가자 id확인하기');
   // 고객
   if (req.user.roles.includes('client')) {
