@@ -20,20 +20,22 @@ block content
                   th 수정하기
               tbody
                 each pro in project
-                  tr
-                    form(action='/project/edit?id='+pro.project_id, method='POST')
+                  form(action=`/project/edit/${pro.project_id}`, method='POST')
+                    tr
                       td= pro.project_id
                         .form-group
-                          input.form-control(id='project_id', name='project_id', value= pro.project_id,hidden="true")
-                      td= pro.name
+                          input.form-control(id='project_id', name='project_id', value= pro.project_id, hidden="true")
                       td
                         .form-group
-                          input.form-control(type='date', id='start_date', name='start_date', placeholder='start_date')
+                          input.form-control(id='name', name='name', value= pro.name)
                       td
                         .form-group
-                          input.form-control(type='date', id='end_date', name='end_date', placeholder='end_date')
+                          input.form-control(type='date', id='start_date', name='start_date', value=pro.stat_date ,placeholder='start_date')
                       td
                         .form-group
-                          input.form-control(id='price', name='price', value= price)
+                          input.form-control(type='date', id='end_date', name='end_date', value=pro.end_date ,placeholder='end_date')
                       td
-                       button.btn.btn-primary(type='submit') 수정하기
+                        .form-group
+                          input.form-control(id='price', value=pro.price, name='price')
+                      td
+                        button.btn.btn-primary(type='submit') 수정하기

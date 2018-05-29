@@ -22,7 +22,8 @@ block content
               tbody
                 each pro in project
                   tr
-                    form(action=`/project/${id}/edit`, method='POST')
+                    // 할거면 링크 고치기
+                    form(action=`/project/edit/${id}`, method='POST')
                       td= pro.employee_id
                         .form-group
                           input.form-control(id='employee_id', name='employee_id', value= pro.employee_id,hidden="true")
