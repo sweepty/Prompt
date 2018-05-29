@@ -42,16 +42,17 @@ router.get('/', needAuth, function(req, res, next) {
           console.log(year,'연도')
           console.log(quarter,'분기별')
           console.log(month,'월별')
-          // var dataArray = [23, 13, 21, 14, 37, 15, 18, 34, 30];
-          // var svg = d3.select("body").append("svg")
-          //   .attr("height","100%")
-          //   .attr("width","100%");        
-          res.render('management/mg',{
-            
+          var price = [];
+          for(i=0;i<month.length;i++){
+            price.push(month[i].prices);
+          }
+          console.log(price);
+          res.render('admin_main',{
             user: req.user,
             year: year,
             quarter: quarter,
             month: month,
+            price: price
             
           })
         })
