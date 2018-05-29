@@ -83,8 +83,8 @@ router.post('/new', function(req, res, next){
   const query3 = 'insert into works_on set ?';
   //나중에 시작일 종료일 수정하기.
   var pname = req.body.project_name; //이름
-  var start_date = req.body.start_date +' '+ req.body.start_time; //시작일
-  var end_date = req.body.end_date +' '+ req.body.end_time; //종료일
+  var start_date = req.body.start_date +' 00:00:00' //시작일
+  var end_date = req.body.end_date +' 00:00:00'; //종료일
   var price = req.body.price; //가격
   var client_id = req.body.client_id; // 발주처
   var manager_name = req.body.manager_name; // 발주처 관리자 이름
@@ -101,11 +101,10 @@ router.post('/new', function(req, res, next){
     //orderer insert
     connection.query(query2, data2, function(err, result){
       if (err) throw(err);
-      res.redirect('/project');
       var data3 = {employee_id: pm, project_id: rows.insertId, job_id: 1, start_date: start_date, end_date: null};
       connection.query(query3,data3, function(err, result){
         if (err) throw(err);
-        res.redirect('/');
+        res.redirect('/project');
       });
     });
   });
@@ -162,7 +161,7 @@ router.get('/:id/new', function(req,res, next){
   var id = req.params.id;
   connection.query('select * from employee', function(err, result){
     if (err) throw(err);
-    connection.query('select * from job', function(err, job){
+    connection.query('select * from job where job_id != 1', function(err, job){
       res.render('project/emp_team',{
         user: req.user,
         employees: result,
@@ -176,14 +175,22 @@ router.get('/:id/new', function(req,res, next){
 router.post('/:id/new', function(req, res, next){
   var id = req.params.id;
   var employee_id = req.body.employee_id;
-  var start_date = req.body.start_date+' '+req.body.start_time;
+  var start_date = req.body.start_date+' 00:00:00';
   var job_id = req.body.job_id;
-  var data ={project_id: id, employee_id: employee_id, job_id: job_id, start_date: start_date, end_date: null};
+  var language = req.body.language;
+  var framework = req.body.framework;
+  var data = {project_id: id, employee_id: employee_id, job_id: job_id, start_date: start_date, end_date: null};
   console.log(data,' 데이터 확인 ');
   connection.query('insert into works_on set ?', data, function(err, result){
     if (err) throw(err);
     console.log('투입완료');
-    res.redirect(`/project/${id}`);
+    var skill_data = {works_on_id: result.insertId, language: language, framework: framework};
+    connection.query('insert into skill_set set ?', skill_data, function(err, rows){
+      if (err) throw(err);
+      console.log(rows,'확인');
+      res.redirect(`/project/${id}`);
+    })
+
   });
 });
 
@@ -218,7 +225,7 @@ router.get('/:id/edit', function(req,res, next){
 
 router.post('/:id/edit', function(req, res, next){
   var id = req.params.id;
-  var end_date = req.body.end_date+' '+req.body.end_time;
+  var end_date = req.body.end_date+' 00:00:00';
   var job_id = req.body.job_id;
   var data = {end_date: end_date, job_id: job_id};
   connection.query('update works_on set ? where employee_id = ?', [data,id], function(err, rows){

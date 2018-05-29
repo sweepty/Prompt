@@ -1,0 +1,36 @@
+doctype html
+style.
+  .chart div {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+  }
+//- body 
+//-   script.
+//-     var dataArray = [23, 13, 21, 14, 37, 15, 18, 34, 30];
+
+//-     var svg = d3.select("body").append("svg")
+//-         .attr("height","100%")
+//-         .attr("width","100%");
+
+//-     svg.selectAll("rect")
+//-         .data(dataArray)
+//-         .enter().append("rect")
+//-             .attr("height","250")
+//-             .attr("width","40")
+//-             .attr("x", function(d, i) {return (i * 60) + 25})
+//-             .attr("y","50");
+    
+.chart
+  p= "year"
+  each y in year
+    div(style=`width: ${y.prices/1000000}px;`)=y.years
+  p= "quarter"
+  each q in quarter
+    div(style=`width: ${q.prices/1000000}px;`)=q.years,q.quarters
+  p= "month"
+  each m in month
+    div(style=`width: ${m.prices/1000000}px;`)=m.months

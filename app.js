@@ -16,6 +16,7 @@ var projectRouter = require('./routes/project');
 var evaluationRouter = require('./routes/evaluation');
 var hrRouter = require('./routes/hr');
 var clientRouter = require('./routes/client');
+var mgRouter = require('./routes/management');
 var app = express();
 
 // view engine setup
@@ -48,6 +49,7 @@ app.use('/project', projectRouter);
 app.use('/evaluation', evaluationRouter);
 app.use('/hr', hrRouter);
 app.use('/client', clientRouter);
+app.use('/management', mgRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
