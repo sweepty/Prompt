@@ -96,12 +96,15 @@ router.get('/edit', function(req, res, next){
     if (employee_id != undefined) {
       connection.query('select * from employee e inner join department d ' + 
       'on e.department_id = d.department_id where employee_id = ?', [employee_id], function(err, rows){
-        if (err) throw(err);
-        console.log(rows,'머나오냐')
-        res.render('hr/emp_edit', {
-          user: req.user,
-          employee: rows,
-        });
+        connection.query('select * from department',function(err, departments){
+          if (err) throw(err);
+          console.log(rows,'머나오냐')
+          res.render('hr/emp_edit', {
+            user: req.user,
+            employee: rows,
+            departments: departments
+          });
+        }); 
       });
     }
   }

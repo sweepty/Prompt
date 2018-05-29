@@ -27,21 +27,27 @@ block content
                       td= e.employee_id
                         .form-group
                           input.form-control(id='employee_id', name='employee_id', hidden="true")
-                      td= e.name
-                        .form-group
-                          input.form-control(id='name', name='name', hidden="true")
-                      td= e.RRNumber
-                        .form-group
-                          input.form-control(id='RRNumber', name='RRNumber', hidden="true")
                       td
                         .form-group
-                          input.form-control(id='education', name='education', value=e.education)
-                      td= e.date_of_entry
+                          input.form-control(id='name', name='name', value=e.name)
+                      td= e.RRNumber
+                        .form-group
+                          input.form-control(id='RRNumber', name='RRNumber', value=e.RRNumber, hidden="true")
+                      td
+                        .form-group
+                          select.form-control(name="education")
+                            option(value="고졸")= "고졸"
+                            option(value="학사")= "학사"
+                            option(value="석사")= "석사"
+                            option(value="박사")= "박사"
+                      td= moment(e.date_of_entry).locale('ko').format('YYYY년 MMMM Do')
                         .form-group
                           input.form-control(id='date_of_entry', name='date_of_entry', value=e.date_of_entry, hidden="true")
                       td
                         .form-group
-                          input.form-control(id='department_name', name='department_name', value=e.department_name)
+                          select.form-control(name="department_id")
+                            each department in departments
+                              option(value=department.department_id)= department.department_name
                       td
                         .form-group
                           input.form-control(id='email', name='email', value=e.email)
