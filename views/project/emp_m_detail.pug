@@ -53,7 +53,7 @@ block content
                   td= pro.employee_id
                   td= pro.name
                   td= pro.job
-                  th= pro.languages
+                  th= pro.lang
                   th= pro.framework
                   td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
                   td= pro.end_date == null ? '진행중': moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
