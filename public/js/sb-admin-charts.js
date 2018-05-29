@@ -4,20 +4,6 @@ Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSyste
 Chart.defaults.global.defaultFontColor = '#292b2c';
 // -- Area Chart Example
 var ctx = document.getElementById("myAreaChart");
-// 쿼리
-var query = 'select year(end_date) years , quarter(end_date) quarters , month(end_date) months, sum(price) prices '+
-  'from project group by ';
-var years =[];
-//년도 별
-function years(req, res, next) {
-  connection.query(query+'years', function(err, year){
-    if (err) throw(err);
-    for(i=0;i<year.length;i++){
-      years.add(year[i]);
-    }
-    console.log(years,'배열ㄹㄹㄹ')
-    next();
-  })
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
