@@ -91,29 +91,37 @@ router.post('/new', function(req, res, next){
 //------------직원 수정----------
 router.get('/edit', function(req, res, next){
   employee_id = req.query.id;
-  connection.query('select * from employee e inner join department d ' +
-  'on e.department_id = d.department_id where employee_id = ?', [employee_id], function(err, rows){
-    if (err) throw(err);
-    res.render('hr/emp_edit',{
-      user: req.user,
-      employee: rows
-    });
-  });
+  console.log(req.query);
+  if (req.user.roles.includes("management")) {
+    if (employee_id != undefined) {
+      connection.query('select * from employee e inner join department d ' + 
+      'on e.department_id = d.department_id where employee_id = ?', [employee_id], function(err, rows){
+        if (err) throw(err);
+        console.log(rows,'머나오냐')
+        res.render('hr/emp_edit', {
+          user: req.user,
+          employee: rows,
+        });
+      });
+    }
+  }
 });
 
-router.post('/edit', function(req, res, next){
-  var id = req.params.id;
+router.post('/edit/:id', function(req, res, next){
+  var employee_id = req.params.id;
   var name = req.body.name;
   var RRNumber = req.body.RRNumber;
   var education = req.body.education;
-  var department = req.body.department;
+  var date_of_entry = req.body.date_of_entry;
+  var department_id = req.body.department_id;
+  var department_name = req.body.department_name;
   var email = req.body.email;
-  var data = {name: name, RRNumber: RRNumber, education: education, department: department, email: email};
-  connection.query('update employee set ? where employee_id = ?', [data,id], function(err, rows){
+  var data = {name: name, RRNumber: RRNumber, education: education, date_of_entry: date_of_entry, department_id: department_id, email: email};
+  console.log(data,'안녕');
+  connection.query('update employee set ? where employee_id = ?', [data,employee_id], function(err, rows){
     if (err) throw(err);
-    res.render('hr/detail', {
-      user: req.user,
-    });
+    console.log(rows,'결과확인');
+    res.redirect('/hr');
   });
 });
 
