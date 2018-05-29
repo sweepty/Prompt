@@ -369,15 +369,24 @@ router.get('/:id', function(req, res, next) {
           // 자신을 제외한 팀원들을 보여주도록 함.
           connection.query(query_members+'not in (?)',[project_id, user.employee_id], function(err, result){
             if (err) throw(err);
-            console.log(rows,'프로젝트확인');
-            console.log(client,'고객있나확인 왜 안뜨냐')
-            res.render('project/emp_detail',{
-              user: req.user,
-              client: client,
-              project: result,
-              my: my,
-              title: '프로젝트 상세 조회'
+            connection.query('select j.job from works_on w join job j on w.job_id=j.job_id where w.employee_id = ? and w.project_id=?',[req.user.employee_id, project_id], function(err,jobs){
+              if (err) throw(err);
+              if (jobs[0].job=='PM') {
+                console.log('pm이네요')
+                var isPM = 1;
+              } else {
+                var isPM = 0;
+              }
+              res.render('project/emp_detail',{
+                user: req.user,
+                client: client,
+                project: result,
+                my: my,
+                isPM: isPM,
+                title: '프로젝트 상세 조회'
+              });
             });
+            
           })
         });
       } else { //고객
@@ -397,4 +406,7 @@ router.get('/:id', function(req, res, next) {
     }
   })
 });
+// router.update('/:id', function(req, res, next){
+//   connection.query('update ')
+// });
 module.exports = router;

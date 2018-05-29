@@ -35,13 +35,13 @@ block content
                   th 점수
                   th 코멘트
               tbody
-                each eva in eva_pm
+                each pm in eva_pm
                   tr 
-                    td= eva.employee_id
-                    td= eva.name
-                    td= eva.question
-                    td= eva.score
-                    td= eva.content
+                    td= pm.employee_id
+                    td= pm.name
+                    td= pm.question
+                    td= pm.score
+                    td= pm.content
     .card.mb-3
       .card-header
         h3 동료 평가
@@ -56,13 +56,13 @@ block content
                   th 점수
                   th 코멘트
               tbody
-                each eva in eva_peer
+                each peer in eva_peer
                   tr 
-                    td= eva.employee_id
-                    td= eva.name
-                    td= eva.question
-                    td= eva.score
-                    td= eva.content
+                    td= peer.employee_id
+                    td= peer.name
+                    td= peer.question
+                    td= peer.score
+                    td= peer.content
     .card.mb-3
       .card-header
         h3 고객 평가
@@ -77,10 +77,10 @@ block content
                   th 점수
                   th 코멘트
               tbody
-                each eva in eva_client
+                each client in eva_client
                   tr 
-                    td= eva.employee_id
-                    td= eva.name
-                    td= eva.question
-                    td= eva.score
-                    td= eva.content
+                    td= client.employee_id
+                    td= client.name
+                    td= client.question
+                    td= client.score
+                    td= client.content
