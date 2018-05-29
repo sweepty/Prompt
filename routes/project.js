@@ -197,25 +197,37 @@ router.post('/:id/new', function(req, res, next){
 // 프로젝트 참여 직원 수정@@@@@@@@@@@@@@@@@@@고쳐야한다
 router.get('/:id/edit', function(req,res, next){
   var project_id = req.params.id;
+  var query_client = 'select p.project_id p_id, p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
+  'from project p join orderer o on p.project_id=o.project_id '+
+  'join client c on c.client_id=o.client_id '+
+  'where p.project_id =?'
   var query_members =
   'select p.project_id p_id, p.name p_name, p.EA, w.start_date, w.end_date, w.end_date, e.name, e.employee_id, j.job '+
   'from project p join works_on w on p.project_id=w.project_id '+
   'join employee e on e.employee_id=w.employee_id '+
   'join job j on j.job_id=w.job_id '+
   'where p.project_id = ? and w.employee_id '
-  if (req.user.roles.includes("management")) {
-    connection.query(query_members, [project_id], function(err, result){
-      if (err) throw(err);
-      connection.query('select * from job', function(err, job){
-        res.render('project/emp_edit',{
-          user: req.user,
-          project: result,
-          project_id: project_id,
-          job: job
+  const user = req.user;
+  connection.query(query_client, [project_id], function(err, row){
+    if (err) throw(err);
+    var client = row[0];
+    console.log(client,'pname확인');
+    // 경영진인 경우
+    if (req.user.roles.includes("management")) {
+      connection.query(query_members, [project_id], function(err, result){
+        if (err) throw(err);
+        connection.query('select * from job', function(err, job){
+          res.render('project/emp_edit',{
+            user: req.user,
+            client: client,
+            project: result,
+            project_id: project_id,
+            job: job
+          });
         });
       });
-    });
-  }
+    }
+  })
 });
 
 router.post('/:id/edit', function(req, res, next){

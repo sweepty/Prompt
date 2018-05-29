@@ -59,6 +59,30 @@ router.get('/', needAuth, function(req, res, next){
   }
 });
 
+//질문 추가 페이지 get
+router.get('/new', needAuth, function(req, res, next){
+  res.render('evaluation/question_new',{
+    user: req.user,
+    title: '질문 추가 페이지'
+  });
+});
+
+//질문 추가
+router.post('/new', function(req, res, next){
+  const query = 'insert into question set ?';
+  var score = req.body.score; //점수(bool)
+  var comment = req.body.comment; //코멘트(bool)
+  var question = req.body.question; //질문
+  var data = {score: score, comment: comment, question: question};
+  console.log(data);
+
+  //question insert
+  connection.query(query, data, function(err, rows){
+    if (err) throw(err);
+    res.redirect('/evaluation');
+  });
+});
+
 // 평가하고자 하는 프로젝트 memberlist
 router.get('/:id', function(req, res, next) {
   var project_id = req.params.id;

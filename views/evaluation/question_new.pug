@@ -1,0 +1,31 @@
+extends ../layout/emp_layout.pug
+
+block content
+  h1.main-title 질문 추가
+  form(action='/evaluation/new', method='POST')
+    .form-group
+      label(for='question') 질문
+      input.form-control(type='text', id='question', name='question', placeholder='question')
+    .form-group
+      label(for="score") 점수
+      br
+      label.radio-inline.mr-5
+        input(type='radio' name='score' value='true')
+        |  점수 입력 가능
+      label.radio-inline.mr-5
+        input(type='radio' name='score' value='false')
+        |  점수 입력 불가능
+    .form-group
+      label(for="comment") 코멘트
+      br
+      label.radio-inline.mr-5
+        input(type='radio' name='comment' value='true')
+        |  코멘트 입력 가능
+      label.radio-inline.mr-5
+        input(type='radio' name='comment' value='false')
+        |  코멘트 입력 불가능
+    br
+    button.btn.btn-primary(type='submit') 질문 추가하기 
+  
+
+    
