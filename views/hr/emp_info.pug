@@ -11,7 +11,7 @@ block content
             .card-body
               .table-responsive
                 h3 전체 직원 조회
-                table#dataTable.table.table-bordered(width='100%', cellspacing='0').accordion-toggle
+                table.table.table-bordered(width='100%', cellspacing='0').accordion-toggle
                   thead
                     tr 
                       th ID
@@ -23,7 +23,6 @@ block content
                       th 이메일
                       th 프로젝트
                       th 상세보기
-                      th
                   tbody 
                     each emp in employees
                       tr 
