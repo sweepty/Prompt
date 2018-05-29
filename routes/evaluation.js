@@ -89,18 +89,40 @@ router.get('/:id', function(req, res, next) {
   var query_client = 'select * from works_on w join employee e on w.employee_id=e.employee_id where w.project_id = ?';
   var query_employee = 'select * from works_on w join employee e on w.employee_id=e.employee_id where w.project_id = ? and w.employee_id != ?';
   var query2 = 'select * from project where project_id = ?';
+  var query_eva = 'select  q.question,i.question_id, m.employee_id, m.name, i.score, i.content '+
+  'from evaluation e join evaluation_info i on e.evaluation_id=i.evaluation_id '+
+  'join employee m on m.employee_id=e.evaluated_id '+
+  'join question q on q.question_id=i.question_id '+
+  'where e.project_id = ? and e.type_of_evaluation = ?';
+  var query_avg = 'select m.employee_id, m.name, avg(i.score) score '+
+  'from evaluation e join evaluation_info i on e.evaluation_id=i.evaluation_id '+
+  'join employee m on m.employee_id=e.evaluated_id '+
+  'join question q on q.question_id=i.question_id '+
+  'where e.project_id = ? group by e.evaluated_id order by avg(i.score) desc';
 
   if (req.user.roles.includes('management')) {
-    connection.query(query_client, [project_id],function(err,rows){
+    //pm 평가
+    connection.query(query_eva, [project_id,'pm'],function(err,eva_pm){
       if (err) throw(err);
-      connection.query(query2, [project_id], function(err, result){
-        console.log(rows,'평가목록');
-        res.render('evaluation/emp_member_list', {
-          user: req.user,
-          project: result,
-          members: rows,
-        });
-      }); 
+      // 동료평가
+      connection.query(query_eva, [project_id,'peer'],function(err,eva_peer){
+        if (err) throw(err);
+        connection.query(query_eva, [project_id,'client'],function(err,eva_client){
+          if (err) throw(err);
+          connection.query(query_avg,[project_id], function(err, avg){
+            if (err) throw(err);
+            console.log(avg,'평균ㅇㅇㅇㅇㅇㅇ')
+            res.render('evaluation/mg_detail', {
+              user: req.user,
+              eva_pm: eva_pm,
+              eva_peer: eva_peer,
+              eva_client: eva_client,
+              avg: avg
+            });
+          })
+        })
+      })
+      
     });
   } else {
     if (req.user.roles.includes('client')) {
@@ -150,21 +172,32 @@ router.get('/:id/form/:member_id', function(req, res, next) {
   } else {
     connection.query(query_evaluated,[evaluated_id, project_id], function(err, evaluated){
       if (err) throw(err);
-
+      
       connection.query(query_q, function(err,rows){
         if (err) throw(err);
         console.log(evaluated_id,'ppppp평가자 아이디 확인함')
-  
+        
         connection.query(query2, [project_id], function(err, result){
           if (err) throw(err);
           console.log(rows,'평가목록');
-  
-          res.render('evaluation/emp_eva', {
-            user: req.user,
-            project: result,
-            questions: rows,
-            evaluated: evaluated
-          });
+          connection.query('select j.job from works_on w join job j on w.job_id=j.job_id where w.employee_id = ?',[req.user.employee_id], function(err,jobs){
+            if (err) throw(err);
+            if (jobs = 'PM') {
+              console.log('pm이네요')
+              var title = 'PM 평가';
+            } else {
+              console.log('그냥 직원임')
+              var title = '동료 평가'
+            }
+            res.render('evaluation/emp_eva', {
+              user: req.user,
+              project: result,
+              questions: rows,
+              evaluated: evaluated,
+              title: title
+            });
+          })
+          
         }); 
       });
     });
@@ -182,7 +215,7 @@ router.post('/:id/form/:member_id', function(req, res, next){
   'where e.employee_id = ? and w.project_id = ?';
 
   console.log(req.params.member_id,'피평가자 id확인하기');
-  // 고객  - 외않되@@@@@@@@@@@@여기 되나 확인하기 기억이 안난다 근데 된거 같은데
+  // 고객
   if (req.user.roles.includes('client')) {
     var data = {project_id: req.params.id, evaluator_id: req.user.client_id, evaluated_id: req.params.member_id, type_of_evaluation: 'client'};
     console.log(data,'evaluation에 넣을 데이터 확인')

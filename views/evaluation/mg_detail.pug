@@ -1,0 +1,86 @@
+extends ../layout/emp_layout.pug
+
+block content
+  h1.main-title 프로젝트 별 평가 조회
+  .container
+    .card.mb-3
+      .card-header
+        h3 평가 순위 (평균)
+      .card-body
+          .table-responsive
+            table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+              thead
+                tr 
+                  th 직원번호
+                  th 직원명
+                  th 점수
+
+              tbody
+                each eva in avg
+                  tr 
+                    td= eva.employee_id
+                    td= eva.name
+                    td= eva.score
+    .card.mb-3
+      .card-header
+        h3 pm 평가
+      .card-body
+          .table-responsive
+            table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+              thead
+                tr 
+                  th 직원번호
+                  th 직원명
+                  th 질문 내용
+                  th 점수
+                  th 코멘트
+              tbody
+                each eva in eva_pm
+                  tr 
+                    td= eva.employee_id
+                    td= eva.name
+                    td= eva.question
+                    td= eva.score
+                    td= eva.content
+    .card.mb-3
+      .card-header
+        h3 동료 평가
+      .card-body
+          .table-responsive
+            table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+              thead
+                tr 
+                  th 직원번호
+                  th 직원명
+                  th 질문 내용
+                  th 점수
+                  th 코멘트
+              tbody
+                each eva in eva_peer
+                  tr 
+                    td= eva.employee_id
+                    td= eva.name
+                    td= eva.question
+                    td= eva.score
+                    td= eva.content
+    .card.mb-3
+      .card-header
+        h3 고객 평가
+      .card-body
+          .table-responsive
+            table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+              thead
+                tr 
+                  th 직원번호
+                  th 직원명
+                  th 질문 내용
+                  th 점수
+                  th 코멘트
+              tbody
+                each eva in eva_client
+                  tr 
+                    td= eva.employee_id
+                    td= eva.name
+                    td= eva.question
+                    td= eva.score
+                    td= eva.content
