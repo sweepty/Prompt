@@ -1,6 +1,21 @@
 extends ../layout/emp_layout.pug
 
 block content
-  h1.main-title 우수 사원
-
   
+  h1.main-title 우수 사원
+  .card.mb-3
+    .card-body
+      .table-responsive
+        table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+          thead
+            tr 
+              th 사원 번호
+              th 이름
+              th 평가점수(평균)
+
+          tbody
+            each emp in employees
+              tr 
+                td= emp.employee_id
+                td= emp.name
+                td= emp.score

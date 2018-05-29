@@ -43,6 +43,23 @@ router.get('/', needAuth, function(req, res, next) {
     });
   }
 });
+// ----------이달의 사원----------
+router.get('/best', function(req, res, next){
+  if (req.user.roles.includes("management")) {
+    console.log("경영진임")
+    connection.query('select m.employee_id, m.name, avg(i.score) score '+
+    'from evaluation e join evaluation_info i on e.evaluation_id=i.evaluation_id '+
+    'join employee m on m.employee_id=e.evaluated_id '+
+    'join question q on q.question_id=i.question_id '+
+    'group by e.evaluated_id order by avg(i.score) desc limit 5', function(err, result){
+      if (err) throw(err);
+      res.render('hr/emp_best', {
+        user: req.user,
+        employees: result,
+      });
+    })
+  }
+});
 
 //------------직원 추가----------
 router.get('/new', function(req, res, next){
@@ -157,25 +174,5 @@ router.get('/:id', function(req, res, next){
     });
   };
 });
-
-// // ----------직원 상세 보기----------
-// router.get('/:id', function(req, res, next){
-//   var id = req.params.id;
-//   if (req.user.roles.includes("management")) {
-//     console.log("경영진임")
-//     connection.query('select * from employee where employee_id = ?',[id], function(err, result){
-//       if (err) throw(err);
-//       connection.query('select p.project_id, p.name p_name, w.start_date, w.end_date '+
-//       'from	works_on w join project p on p.project_id=w.project_id where w.employee_id = ?',[id],function(err, rows){
-//         if (err) throw(err);
-//         res.render('hr/emp_info_detail', {
-//           user: req.user,
-//           employee: result,
-//           projects: rows
-//         });
-//       });
-//     })
-//   }
-// });
 
 module.exports = router;
