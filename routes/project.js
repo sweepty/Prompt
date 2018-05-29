@@ -197,10 +197,6 @@ router.post('/:id/new', function(req, res, next){
 // 프로젝트 참여 직원 수정@@@@@@@@@@@@@@@@@@@고쳐야한다
 router.get('/:id/edit', function(req,res, next){
   var project_id = req.params.id;
-  var query_client = 'select p.name p_name, p.start_date, p.end_date, o.manager, o.email m_email, c.name c_name '+
-  'from project p join orderer o on p.project_id=o.project_id '+
-  'join client c on c.client_id=o.client_id '+
-  'where p.project_id =?'
   var query_members =
   'select p.project_id p_id, p.name p_name, p.EA, w.start_date, w.end_date, w.end_date, e.name, e.employee_id, j.job '+
   'from project p join works_on w on p.project_id=w.project_id '+
@@ -213,7 +209,6 @@ router.get('/:id/edit', function(req,res, next){
       connection.query('select * from job', function(err, job){
         res.render('project/emp_edit',{
           user: req.user,
-          client: client,
           project: result,
           project_id: project_id,
           job: job
