@@ -19,28 +19,29 @@ block content
                   th 입사일
                   th 부서
                   th 이메일
+                  th 수정하기
               tbody
                 each e in employee
                   tr
-                    form(action='/hr/edit?id='+e.employee_id, method='POST')
+                    form(action=`/hr/edit/${e.employee_id}`, method='POST')
                       td= e.employee_id
                         .form-group
-                          input.form-control(id='id', name='id', hidden="true")
+                          input.form-control(id='employee_id', name='employee_id', hidden="true")
                       td= e.name
                         .form-group
                           input.form-control(id='name', name='name', hidden="true")
                       td= e.RRNumber
                         .form-group
-                          input.form-control(id='RRN', name='RRN', hidden="true")
+                          input.form-control(id='RRNumber', name='RRNumber', hidden="true")
                       td
                         .form-group
                           input.form-control(id='education', name='education', value=e.education)
                       td= e.date_of_entry
                         .form-group
-                          input.form-control(id='date_of_entry', name='date_of_entry', hidden="true")
+                          input.form-control(id='date_of_entry', name='date_of_entry', value=e.date_of_entry, hidden="true")
                       td
                         .form-group
-                          input.form-control(id='department', name='department', value=e.department_name)
+                          input.form-control(id='department_name', name='department_name', value=e.department_name)
                       td
                         .form-group
                           input.form-control(id='email', name='email', value=e.email)

@@ -139,7 +139,7 @@ router.post('/edit/:id', function(req, res, next){
   var data = {name: name, start_date: start_date, end_date: end_date, price: price};
   connection.query('update project set ? where project_id = ?', [data,project_id], function(err, rows){
     if (err) throw(err);
-    console.log(rows,'결과확인')
+    console.log(rows,'결과확인');
     res.redirect('/project');
   });
 });
