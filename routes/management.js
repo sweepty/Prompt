@@ -49,14 +49,14 @@ router.get('/', needAuth, function(req, res, next) {
                 if (err) throw(err);
                 connection.query(query_project,function(err, all){
                   if (err) throw(err);
-                  console.log(all,'연도')
+                  console.log(year,'연도')
                   console.log(quarter,'분기별')
                   console.log(month,'월별')
                   var price = [];
                   for(i=0;i<month.length;i++){
                     price.push(month[i].prices);
                   }
-                  console.log(price);
+                  console.log(price,'아직ㅎㅎ');
                   res.render('admin_main',{
                     user: req.user,
                     year: year,
@@ -66,8 +66,20 @@ router.get('/', needAuth, function(req, res, next) {
                     notyet: notyet[0],
                     ing: ing[0],
                     done: done[0],
-                    all: all[0]
+                    all: all[0],
+                    arr: [1,2,3,4]
                   })
+                  // res.send('success', {
+                  //   user: req.user,
+                  //   year: year,
+                  //   quarter: quarter,
+                  //   month: month,
+                  //   price: price,
+                  //   notyet: notyet[0],
+                  //   ing: ing[0],
+                  //   done: done[0],
+                  //   all: all[0],
+                  // })
                 });
               });
             });
