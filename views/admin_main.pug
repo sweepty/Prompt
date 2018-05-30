@@ -6,85 +6,13 @@ block content
     li.breadcrumb-item
       a(href='#') Dashboard
     li.breadcrumb-item.active Charts
-  //- .card.mb-3
-  //-   .card-header
-  //-     i.fa.fa-area-chart
-  //-     |  년도별 매출
-  //-   .card-body
-  //-     .table-responsive
-  //-       table#dataTable.table.table-bordered(width='100%', cellspacing='0')
-  //-         thead
-  //-           tr 
-  //-             th year
-  //-             th 매출
-
-  //-         tbody
-  //-           each y in year
-  //-             tr 
-  //-               td= y.years
-  //-               td= y.prices
-  //- .card.mb-3
-  //-   .card-header
-  //-     i.fa.fa-area-chart
-  //-     |  분기별 매출 현황
-  //-   .card-body
-  //-     .table-responsive
-  //-       table#dataTable.table.table-bordered(width='100%', cellspacing='0')
-  //-         thead
-  //-           tr 
-  //-             th 분기
-  //-             th 매출
-
-  //-         tbody
-  //-           each q in quarter
-  //-             tr 
-  //-               td= q.quarters
-  //-               td= q.prices
-  //- .card.mb-3
-  //-   .card-header
-  //-     i.fa.fa-area-chart
-  //-     |  월별 매출 현황
-  //-   .card-body
-  //-     .table-responsive
-  //-       table#dataTable.table.table-bordered(width='100%', cellspacing='0')
-  //-         thead
-  //-           tr 
-  //-             th 월
-  //-             th 매출
-
-  //-         tbody
-  //-           each m in month
-  //-             tr 
-  //-               td= m.months
-  //-               td= m.prices
-  //- .card.mb-3
-  //-   .card-header
-  //-     i.fa.fa-area-chart
-  //-     |  프로젝트 현황
-  //-   .card-body
-  //-     .table-responsive
-  //-       table#dataTable.table.table-bordered(width='100%', cellspacing='0')
-  //-         thead
-  //-           tr 
-  //-             th 프로젝트 전체
-  //-             th 시작 전
-  //-             th 진행 중
-  //-             th 완료
-
-  //-         tbody
-  //-           tr
-  //-             td= all.counter
-  //-             td= notyet.counter
-  //-             td= ing.counter
-  //-             td= done.counter
-
-        
   // Area Chart Example
   .card.mb-3
     .card-header
       i.fa.fa-area-chart
-      |  매출 현황
+      |  월별 매출 현황
     .card-body
+      p= '단위 천원'
       canvas#myAreaChart(width='100%', height='30')
   .row
     .col-lg-8
@@ -92,7 +20,8 @@ block content
       .card.mb-3
         .card-header
           i.fa.fa-bar-chart
-          |  고객 만족도
+          |  분기별 매출 현황
+          p= '단위 만원'
         .card-body
           canvas#myBarChart(width='100', height='50')
     .col-lg-4
@@ -100,19 +29,18 @@ block content
       .card.mb-3
         .card-header
           i.fa.fa-pie-chart
-          |  프로젝트 진행 현황
+          |  프로젝트 투입 현황
         .card-body
           canvas#myPieChart(width='100%', height='100')
 
     script(src='vendor/chart.js/Chart.min.js')          
     script(src='js/sb-admin-charts.js')
     script.
-      //매출
       var ctx = document.getElementById("myAreaChart");
       var myLineChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ["Mar 1", "Mar 2", "Mar 3", "Mar 4", "Mar 5", "Mar 6", "Mar 7", "Mar 8", "Mar 9", "Mar 10", "Mar 11", "Mar 12", "Mar 13"],
+          labels: ['#{month[1].months}','#{month[2].months}','#{month[3].months}','#{month[4].months}','#{month[5].months}','#{month[6].months}','#{month[7].months}'],
           datasets: [{
             label: "Sessions",
             lineTension: 0.3,
@@ -125,7 +53,8 @@ block content
             pointHoverBackgroundColor: "rgba(2,117,216,1)",
             pointHitRadius: 20,
             pointBorderWidth: 2,
-            data: [100000,1220000,230232323,1231233,5555555],
+            data: ['#{month[1].prices}'/1000,'#{month[2].prices}'/1000,
+            '#{month[3].prices}'/1000,'#{month[4].prices}'/1000,'#{month[5].prices}'/1000,'#{month[6].prices}'/1000,'#{month[7].prices}'/1000],
           }],
         },
         options: {
@@ -143,8 +72,8 @@ block content
             }],
             yAxes: [{
               ticks: {
-                min: 0,
-                max: 40000,
+                min: 100,
+                max: 400000,
                 maxTicksLimit: 5
               },
               gridLines: {
@@ -157,6 +86,49 @@ block content
           }
         }
       });
+      // -- Bar Chart Example
+      var ctx = document.getElementById("myBarChart");
+      var myLineChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ["1분기", "2분기", "3분기", "4분기"],
+          datasets: [{
+            label: "Revenue",
+            backgroundColor: "rgba(2,117,216,1)",
+            borderColor: "rgba(2,117,216,1)",
+            data: ['#{quarter[0].prices}'/10000,'#{quarter[1].prices}'/10000,'#{quarter[2].prices}'/10000,'#{quarter[3].prices}'/10000],
+          }],
+        },
+        options: {
+          scales: {
+            xAxes: [{
+              time: {
+                unit: 'month'
+              },
+              gridLines: {
+                display: false
+              },
+              ticks: {
+                maxTicksLimit: 6
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                min: 1000,
+                max: 40000,
+                maxTicksLimit: 5
+              },
+              gridLines: {
+                display: true
+              }
+            }],
+          },
+          legend: {
+            display: false
+          }
+        }
+      });
+
       // -- Pie Chart Example
       var ctx = document.getElementById("myPieChart");
       var aa = [1,2,3,4];
@@ -168,9 +140,9 @@ block content
       var myPieChart = new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: ["진행중 프로젝트", "완료된 프로젝트", "시작 전인 프로젝트"],
+          labels: ["참가하는 프로젝트가 없는 직원", "1개의 프로젝트에 참여하는 직원", "2개의 프로젝트에 참여하는 직원","3개 이상의 프로젝트에 참여하는 직원"],
           datasets: [{
-            data: ['#{nothing.counter}','#{ing.counter}','#{done.counter}'],
+            data: ['#{none.counter}','#{one.counter}','#{two.counter}','#{upthree.counter}'],
             backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745'],
           }],
         },

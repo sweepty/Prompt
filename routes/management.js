@@ -28,7 +28,13 @@ function needAuth(req, res, next) {
 router.get('/', needAuth, function(req, res, next) {
   var query = 'select year(end_date) years , quarter(end_date) quarters , month(end_date) months, sum(price) prices '+
   'from project group by ';
-  var query_project = 'select count(*) counter from project p ';
+  var query_project = 'select count(*) counter from (select distinct e.name, w.employee_id, count(*) '+
+  'from works_on w join employee e on w.employee_id=e.employee_id '+
+  'where w.start_date < now() and w.end_date is null group by w.employee_id ';
+  var query_none = 'select count(*) counter from (select p.works_on_id wk from employee e left join '+
+  '(select * from works_on w where start_date < now() and end_date is null) p '+
+  'on e.employee_id=p.employee_id '+
+  'group by e.employee_id) pp where pp.wk is null;';
   if (req.user.roles.includes("management")) {
     //년도별
     connection.query(query+'years', function(err, year){
@@ -36,50 +42,38 @@ router.get('/', needAuth, function(req, res, next) {
       // 분기별
       connection.query(query+'quarters', function(err, quarter){
         if (err) throw(err);
-        //월별 콜백헬 극혐이지만 ㅎ...살려줏ㄷ
+        //월별
         connection.query(query+'months', function(err, month){
-          //시작전
-          connection.query(query_project+'where p.start_date > now()',function(err, notyet){
+          //0개
+          connection.query(query_none,function(err, none){
             if (err) throw(err);
-            //진행중
-            connection.query(query_project+'where p.start_date < now() and p.end_date > now()',function(err, ing){
+            //1개
+            connection.query(query_project+'having count(w.employee_id) = 1) p;',function(err, one){
               if (err) throw(err);
-              //완료
-              connection.query(query_project+'where p.end_date < now()',function(err, done){
+              //2개
+              connection.query(query_project+'having count(w.employee_id) = 2) p;',function(err, two){
                 if (err) throw(err);
-                connection.query(query_project,function(err, all){
+                connection.query(query_project+'having count(w.employee_id) >= 3) p;',function(err, upthree){
                   if (err) throw(err);
-                  console.log(year,'연도')
-                  console.log(quarter,'분기별')
-                  console.log(month,'월별')
+                  console.log(year,'0빵개')
+                  console.log(quarter,'1개ㅐㅐㅐㅐㅐ')
+                  console.log(month,'달별')
                   var price = [];
                   for(i=0;i<month.length;i++){
                     price.push(month[i].prices);
                   }
-                  console.log(price,'아직ㅎㅎ');
+                  console.log(price,'3이상')
                   res.render('admin_main',{
                     user: req.user,
                     year: year,
                     quarter: quarter,
                     month: month,
-                    price: price,
-                    notyet: notyet[0],
-                    ing: ing[0],
-                    done: done[0],
-                    all: all[0],
-                    arr: [1,2,3,4]
+                    price: price[0],
+                    none: none[0],
+                    one: one[0],
+                    two: two[0],
+                    upthree: upthree[0],
                   })
-                  // res.send('success', {
-                  //   user: req.user,
-                  //   year: year,
-                  //   quarter: quarter,
-                  //   month: month,
-                  //   price: price,
-                  //   notyet: notyet[0],
-                  //   ing: ing[0],
-                  //   done: done[0],
-                  //   all: all[0],
-                  // })
                 });
               });
             });
