@@ -6,6 +6,23 @@ block content
     li.breadcrumb-item
       a(href='#') Dashboard
     li.breadcrumb-item.active Charts
+  .card.mb-3
+    .card-header
+      i.fa.fa-table
+      |  연도별 매출액
+    .card-body
+      .table-responsive
+        table#dataTable.table.table-bordered(width='100%', cellspacing='0')
+          thead
+            tr
+              th 연도
+              th 매출
+          tbody
+            each yy in year
+              tr
+                td= yy.years
+                td= yy.prices
+    
   // Area Chart Example
   .card.mb-3
     .card-header
