@@ -93,7 +93,7 @@ router.get('/:id', function(req, res, next) {
   'from evaluation e join evaluation_info i on e.evaluation_id=i.evaluation_id '+
   'join employee m on m.employee_id=e.evaluated_id '+
   'join question q on q.question_id=i.question_id '+
-  'where e.project_id = ? and e.type_of_evaluation = ?';
+  'where e.project_id = ? and e.type_of_evaluation = ? order by m.employee_id asc';
 
   var query_avg = 'select m.employee_id, m.name, avg(i.score) score '+
   'from evaluation e join evaluation_info i on e.evaluation_id=i.evaluation_id '+

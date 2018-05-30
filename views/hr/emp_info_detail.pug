@@ -26,7 +26,7 @@ block content
                   td
                     a.title(href=`/project/${pro.project_id}`)=pro.name
                   td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
-                  td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
+                  td= pro.end_date == null ? '진행중': moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
 
           h3 완료한 프로젝트
           table#dataTable.table.table-bordered(width='100%', cellspacing='0')
