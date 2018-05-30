@@ -12,7 +12,7 @@ mysql_dbc.test_open(connection);
 router.get('/', function(req, res, next) {
   if (req.isAuthenticated()) {
     if(req.user.roles.includes("management")) {
-      res.render('admin_main', {user: req.user})
+      res.redirect('/management')
     }
     res.redirect('/project')
   } else {
