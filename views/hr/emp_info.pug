@@ -60,5 +60,5 @@ block content
                                       tr
                                         td
                                           a.title(href=`/project/${project.project_id}`) #{project.p_name}
-                                        td= moment(project.start_date).locale('ko').format('YYYY년 MMMM Do')
-                                        td= moment(project.end_date).locale('ko').format('YYYY년 MMMM Do')
+                                        td= moment(project.p_start_date).locale('ko').format('YYYY년 MMMM Do')
+                                        td= moment(project.p_end_date).locale('ko').format('YYYY년 MMMM Do')
