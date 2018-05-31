@@ -160,14 +160,15 @@ router.get('/:id', function(req, res, next){
         'where e.evaluated_id = ?',[id], function(err, comments){
           if (err) throw(err);
           // 진행중
-          connection.query(query+'where w.start_date < now() and w.end_date is NULL',[req.user.employee_id], function(err, progress){
+          connection.query(query+'where w.start_date < now() and w.end_date is NULL',[id], function(err, progress){
             if (err) throw(err);
             //완료
-            connection.query(query +'where w.end_date is not NULL',[req.user.employee_id], function(err, done){
+            connection.query(query +'where w.end_date is not NULL',[id], function(err, done){
               if (err) throw(err);
               // 시작 전
-              connection.query(query +'where w.start_date > now()',[req.user.employee_id], function(err, notyet){
+              connection.query(query+'where w.start_date > now()',[id], function(err, notyet){
                 if (err) throw(err);
+                console.log(notyet);
                 res.render('hr/emp_info_detail',{
                   user: req.user,
                   employee: result,
@@ -175,7 +176,7 @@ router.get('/:id', function(req, res, next){
                   comments: comments,
                   progress: progress,
                   done: done,
-                  notyet: notyet
+                  notyet: notyet,
                 })
               })
             })
