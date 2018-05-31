@@ -41,8 +41,6 @@ block content
               th ID
               th 직원명
               th 직무
-              th 언어
-              th 프레임워크
               th 시작일
               th 종료일
               th 평가확인
@@ -53,8 +51,6 @@ block content
                   td= pro.employee_id
                   td= pro.name
                   td= pro.job
-                  th= pro.lang
-                  th= pro.framework
                   td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
                   td= pro.end_date == null ? '진행중': moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
                   td
