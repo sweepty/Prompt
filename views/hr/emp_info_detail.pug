@@ -52,7 +52,7 @@ block content
                 th ID
                 th 프로젝트 명
                 th 시작일
-                th 종료일
+                //- th 종료일
             tbody 
               each pro in notyet
                 tr 
@@ -60,7 +60,7 @@ block content
                   td
                     a.title(href=`/project/${pro.project_id}`)=pro.name
                   td= moment(pro.start_date).locale('ko').format('YYYY년 MMMM Do')
-                  td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
+                  //- td= moment(pro.end_date).locale('ko').format('YYYY년 MMMM Do')
     .card.mb-3
       .card-header
         i.fa.fa-table
