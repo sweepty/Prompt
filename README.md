@@ -2,7 +2,7 @@
 
 SI업체 사내 업무용 웹 기반 서비스
 
-<br>
+
 
 ## Tech Stack
 
@@ -19,13 +19,13 @@ SI업체 사내 업무용 웹 기반 서비스
 - [DataTables](https://datatables.net)
 - bcrypt
 
-<br>
+
 
 ## Database Design - ERWin
 
 ![erwindiagram](https://user-images.githubusercontent.com/29784606/43495522-902e32b2-9573-11e8-812d-c0396b426cfd.png)
 
-<br>
+
 
 ## Features
 
@@ -84,21 +84,19 @@ SI업체 사내 업무용 웹 기반 서비스
 
   
 
-<br>
-
 ## Screenshots
 
 프로젝트 전체 목록
 
 ![프로젝트 전체 목록](https://user-images.githubusercontent.com/29784606/43494964-6cb76efa-9570-11e8-8443-7267a570e88c.png)
 
-<br>
+
 
 인사관리 - 직원 조회
 
 ![직원조회](https://user-images.githubusercontent.com/29784606/43495109-35937742-9571-11e8-9119-5c2865317678.png)
 
-<br>
+
 
 경영관리
 
